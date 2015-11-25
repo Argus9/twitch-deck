@@ -44,5 +44,15 @@ class DisplayController < ApplicationController
 		@streamers = online_streamers + offline_streamers
 
 		# We are now ready to use the +@streamers+ Array to render streams in the view!
+    rescue SocketError
+        render status: 500, text: 'Unable to connect to Twitch API.'
+	end
+
+	def demo
+		@streamers = [ { name: 'day9tv', priority: 0, status: :offline },
+                       { name: 'kinggothalion', priority: 1, status: :offline },
+                       { name: 'professorbroman', priority: 2, status: :offline },
+                       { name: 'covert_muffin', priority: 3, status: :offline } ]
+        render :embed_streams
 	end
 end

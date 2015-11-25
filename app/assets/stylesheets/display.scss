@@ -7,27 +7,11 @@ $light-purple: #815FC0;
 $dark-purple: #4B307B;
 $dark-gray: #737373;
 
-//div {
-//    &.stream-queue {
-//        iframe {
-//            width: 20%;
-//            height: auto;
-//        }
-//    }
-//
-//    &.main-stream {
-//        iframe {
-//            width: 100%;
-//            height: auto;
-//        }
-//    }
-//}
-
 h1 {
     color: $purple;
 }
 
-html {
+body {
     background-color: black;
     font-family: arial;
 }

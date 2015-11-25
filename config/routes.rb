@@ -56,9 +56,9 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
   
-  # The main way we let users enter the list of streamers they want to view, in order.
+  get 'demo', controller: :display
   get '*streamers', to: 'display#embed_streams'
-  
+
   # If nothing else fits, take us to the main welcome landing.
   root 'display#index'
 end
