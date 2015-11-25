@@ -1,18 +1,23 @@
 <div class="container">
+    <%= @streamers.count %> streamers.
     <div class="row">
         <div class="col-xs-12" id="stream-queue">
-            Stream queue goes here
+            <% unless @streamers.count < 2 %>
+                <% @streamers[ 1..-1 ].each_with_index do | streamer, index | %>
+                    <iframe id="deck-player-<%= index %>" src="//player.twitch.tv/?channel=<%= streamer[ :name ] %>" frameborder="0" scrolling="no" width="320" height="320"></iframe>
+                <% end %>
+            <% end %>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-2" id="left-buffer">
-            Left buffer
+            <!--Left buffer-->
         </div>
         <div class="col-xs-8" id="main-stream">
-            <iframe src="//player.twitch.tv/?channel=day9tv" frameborder="0" scrolling="no" height="378" width="620"></iframe>
+            <iframe id="main-stream-player" src="//player.twitch.tv/?channel=<%= @streamers.first[ :name ] %>" frameborder="0" scrolling="no" width="900" height="900"></iframe>
         </div>
         <div class="col-xs-2" id="right-buffer">
-            Right buffer
+            <!--Right buffer-->
         </div>
     </div>
 </div>
