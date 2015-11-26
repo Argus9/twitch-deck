@@ -2,9 +2,9 @@
     <% if @streamers.count > 1 %>
         <!-- Stream queue -->
         <div class="row">
-            <div class="col-md-12" id="stream-queue">
+            <div class="col-md-12" id="stream-queue" style="float: left;">
                 <% @streamers[ 1..-1 ].each_with_index do | streamer, index | %>
-                    <iframe id="deck-player-<%= index %>" src="//player.twitch.tv/?channel=<%= streamer[ :name ] %>" frameborder="0" scrolling="no" style="width: 20%;"></iframe>
+                    <iframe id="deck-player-<%= index %>" class="deck-stream-player" src="//player.twitch.tv/?channel=<%= streamer[ :name ] %>" frameborder="0" scrolling="no"></iframe>
                 <% end %>
 
             </div>
@@ -15,7 +15,7 @@
             <!--Left buffer-->
         </div>
         <div class="col-md-8" id="main-stream">
-            <iframe id="main-stream-player" src="//player.twitch.tv/?channel=<%= @streamers.first[ :name ] %>" frameborder="0" scrolling="no" style="width: 80%;"></iframe>
+            <iframe id="main-stream-player" src="//player.twitch.tv/?channel=<%= @streamers.first[ :name ] %>" frameborder="0" scrolling="no"></iframe>
         </div>
         <div class="col-md-2" id="right-buffer">
             <!--Right buffer-->

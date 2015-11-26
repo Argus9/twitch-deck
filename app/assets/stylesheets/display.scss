@@ -7,6 +7,30 @@ $light-purple: #815FC0;
 $dark-purple: #4B307B;
 $dark-gray: #737373;
 
+div {
+    &#stream-queue {
+        display: inline-block;
+        white-space: nowrap;
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+
+    &#main-stream {
+        text-align: center;
+    }
+}
+
+iframe {
+    &#main-stream-player {
+        width: 80%;
+        margin: auto;
+    }
+
+    &.deck-stream-player {
+        width: 20%;
+    }
+}
+
 h1 {
     color: $purple;
 }

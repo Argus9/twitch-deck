@@ -52,7 +52,9 @@ class DisplayController < ApplicationController
 		@streamers = [ { name: 'day9tv', priority: 0, status: :offline },
                        { name: 'kinggothalion', priority: 1, status: :offline },
                        { name: 'professorbroman', priority: 2, status: :offline },
-                       { name: 'covert_muffin', priority: 3, status: :offline } ]
+                       { name: 'covert_muffin', priority: 3, status: :offline },
+                       { name: 'man_vs_game', priority: 4, status: :offline },
+                       { name: 'trumpetmcool', priority: 5, status: :offline } ]
         render :embed_streams
 	end
 end
