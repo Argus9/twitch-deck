@@ -1,15 +1,4 @@
 <div class="container">
-    <% if @streamers.count > 1 %>
-        <!-- Stream queue -->
-        <div class="row">
-            <div class="col-md-12" id="stream-queue" style="float: left;">
-                <% @streamers[ 1..-1 ].each_with_index do | streamer, index | %>
-                    <iframe id="deck-player-<%= index %>" class="deck-stream-player" src="//player.twitch.tv/?channel=<%= streamer[ :name ] %>" frameborder="0" scrolling="no"></iframe>
-                <% end %>
-
-            </div>
-        </div>
-    <% end %>
     <div class="row">
         <div class="col-md-2" id="left-buffer">
             <!--Left buffer-->
@@ -21,9 +10,26 @@
             <!--Right buffer-->
         </div>
     </div>
+    <% if @streamers.count > 1 %>
+        <!-- Stream queue -->
+        <div class="row">
+            <div class="col-md-12" id="stream-queue" style="float: left;">
+                <% @streamers[ 1..-1 ].each do | streamer | %>
+                    <iframe id="deck-player-<%= streamer[ :name ] %>" class="deck-stream-player" src="//player.twitch.tv/?channel=<%= streamer[ :name ] %>" frameborder="0" scrolling="no"></iframe>
+                <% end %>
+
+            </div>
+        </div>
+    <% end %>
 </div>
 
 <script>
     var main_player_width = $( '#main-stream-player' ).width();
     $( '#main-stream-player' ).css( { 'height': main_player_width + 'px' } );
+
+    // Set up an interval to update stream layouts on the page every 10 seconds.
+    setInterval( function() {
+        // Check if main stream is online
+        $.get( 'is_main_stream_online', function( data ) {} );
+    }, 10000);
 </script>

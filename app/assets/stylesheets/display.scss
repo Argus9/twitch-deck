@@ -6,6 +6,7 @@ $purple: #6441A5;
 $light-purple: #815FC0;
 $dark-purple: #4B307B;
 $dark-gray: #737373;
+$abyss: #111111;
 
 div {
     &#stream-queue {
@@ -36,7 +37,7 @@ h1 {
 }
 
 body {
-    background-color: black;
+    background-color: $abyss;
     font-family: arial;
 }
 
