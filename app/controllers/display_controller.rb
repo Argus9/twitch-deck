@@ -34,16 +34,9 @@ class DisplayController < ApplicationController
 	end
 
     ##
-    # Sets +@streamers+ to a pre-defined set of streamers and renders the TwitchDeck page. Useful for testing purposes.
+    # Calls +embed_streams+ with a pre-set list of streamers.
 	def demo
-		@streamers = [ { name: 'day9tv', priority: 0, status: :offline },
-                       { name: 'kinggothalion', priority: 1, status: :offline },
-                       { name: 'professorbroman', priority: 2, status: :offline },
-                       { name: 'covert_muffin', priority: 3, status: :offline },
-                       { name: 'man_vs_game', priority: 4, status: :offline },
-                       { name: 'trumpetmcool', priority: 5, status: :offline } ]
-        session[ :streamers ] = @streamers.to_json
-        render :embed_streams
+        redirect_to '/day9tv/kinggothalion/professorbroman/covert_muffin/man_vs_game/trumpetmcool'
     end
 
     ##
