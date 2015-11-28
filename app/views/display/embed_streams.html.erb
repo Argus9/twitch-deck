@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-md-12" id="stream-queue" style="float: left;">
                 <% @streamers[ 1..-1 ].each do | streamer | %>
-                    <object type="application/x-shockwave-flash" data="//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="20%">
+                    <object type="application/x-shockwave-flash" data="//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="19%">
                         <param name="allowScriptAccess" value="always" />
                         <param name="allowFullScreen" value="true" />
                         <param name="flashvars" value="channel=<%= streamer[ :name ] %>&auto_play=true&start_volume=0"/>
