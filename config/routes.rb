@@ -59,6 +59,7 @@ Rails.application.routes.draw do
   get 'demo', controller: :display
   get 'is_main_stream_online', controller: :display
   get 'update_streams', controller: :display
+  get 'replace_main_stream', controller: :display
   get '*streamers', to: 'display#embed_streams'
 
   # If nothing else fits, take us to the main welcome landing.
