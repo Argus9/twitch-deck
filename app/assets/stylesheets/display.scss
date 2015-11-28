@@ -2,41 +2,36 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-$purple: #6441A5;
 $light-purple: #815FC0;
+$purple: #6441A5;
 $dark-purple: #4B307B;
 $dark-gray: #737373;
 $abyss: #111111;
 
 div {
-    &#stream-queue {
-        display: inline-block;
-        white-space: nowrap;
-        overflow-x: scroll;
-        overflow-y: hidden;
-    }
-
     &#main-stream {
         text-align: center;
     }
-}
 
-iframe {
-    &#main-stream-player {
-        width: 80%;
-        margin: auto;
-    }
-
-    &.deck-stream-player {
-        width: 20%;
+    &#stream-queue {
+        display: inline-block;
+        overflow-x: auto;
+        overflow-y: hidden;
+        text-align: center;
+        white-space: nowrap;
     }
 }
 
 h1 {
+    color: $light-purple;
+}
+
+h3 {
     color: $purple;
 }
 
 body {
+    color: $dark-purple;
     background-color: $abyss;
     font-family: arial;
 }

@@ -1,13 +1,11 @@
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-2" id="left-buffer">
-            <!--Left buffer-->
-        </div>
-        <div class="col-md-8" id="main-stream">
-            <iframe id="main-stream-player" src="//player.twitch.tv/?channel=<%= @streamers.first[ :name ] %>" frameborder="0" scrolling="no"></iframe>
-        </div>
-        <div class="col-md-2" id="right-buffer">
-            <!--Right buffer-->
+        <div class="col-md-12" id="main-stream">
+            <object id="main-stream-player" type="application/x-shockwave-flash" data="//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="75%">
+                <param name="allowScriptAccess" value="always" />
+                <param name="allowFullScreen" value="true" />
+                <param name="flashvars" value="channel=<%= @streamers.first[ :name ] %>&auto_play=true&start_volume=100" />
+            </object>
         </div>
     </div>
     <% if @streamers.count > 1 %>
@@ -15,21 +13,37 @@
         <div class="row">
             <div class="col-md-12" id="stream-queue" style="float: left;">
                 <% @streamers[ 1..-1 ].each do | streamer | %>
-                    <iframe id="deck-player-<%= streamer[ :name ] %>" class="deck-stream-player" src="//player.twitch.tv/?channel=<%= streamer[ :name ] %>" frameborder="0" scrolling="no"></iframe>
+                    <object type="application/x-shockwave-flash" data="//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="20%">
+                        <param name="allowScriptAccess" value="always" />
+                        <param name="allowFullScreen" value="true" />
+                        <param name="flashvars" value="channel=<%= streamer[ :name ] %>&auto_play=true&start_volume=0"/>
+                    </object>
                 <% end %>
-
             </div>
         </div>
     <% end %>
 </div>
 
 <script>
-    var main_player_width = $( '#main-stream-player' ).width();
-    $( '#main-stream-player' ).css( { 'height': main_player_width + 'px' } );
+    /*
+     * Resizes the video player so the height is 9/16th of the width (16:9 aspect ratio).
+     */
+    var resize_main_player = function() {
+        var main_player_width = $( '#main-stream-player' ).width();
+        $( '#main-stream-player' ).css( { 'height': ( 9 * main_player_width / 16 ) + 'px' } );
+    }
+
+    // Whenever the window resizes, re-adjust the height of the main player div.
+    $( window ).resize( function() {
+        resize_main_player();
+    } );
 
     // Set up an interval to update stream layouts on the page every 10 seconds.
     setInterval( function() {
         // Check if main stream is online
         $.get( 'is_main_stream_online', function( data ) {} );
     }, 10000);
+
+    // Do the initial video player re-size.
+    resize_main_player();
 </script>
