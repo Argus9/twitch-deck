@@ -4,6 +4,16 @@ $dark-purple: #4B307B;
 $dark-gray: #737373;
 $abyss: #111111;
 
+a {
+    color: $light-purple;
+}
+
+body {
+    color: $purple;
+    background-color: $abyss;
+    font-family: arial;
+}
+
 div {
     &#stream-queue {
         display: inline-block;
@@ -20,12 +30,5 @@ h1 {
 }
 
 h3 {
-    color: $purple;
+    color: $light-purple;
 }
-
-body {
-    color: $dark-purple;
-    background-color: $abyss;
-    font-family: arial;
-}
-

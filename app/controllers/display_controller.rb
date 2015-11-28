@@ -36,7 +36,7 @@ class DisplayController < ApplicationController
     ##
     # Calls +embed_streams+ with a pre-set list of streamers.
 	def demo
-        redirect_to '/day9tv/kinggothalion/professorbroman/covert_muffin/man_vs_game/trumpetmcool'
+        redirect_to '/day9tv/kinggothalion/professorbroman/covert_muffin/totalbiscuit/man_vs_game/trumpetmcool'
     end
 
     ##
@@ -57,6 +57,7 @@ class DisplayController < ApplicationController
     # according to the changing priorities.
     # @return Hash +@streamers+ as a JSON Hash.
     def update_streams
+        @streamers = JSON.parse session[ :streamers ]
         status = poll_twitch_for_streams
         update_stream_online_status status unless status[ 'streams' ].empty?
 
@@ -67,6 +68,18 @@ class DisplayController < ApplicationController
         render json: @streamers
     rescue SocketError
         render json: {}
+    end
+
+    def replace_main_stream
+        @streamers = JSON.parse session[ :streamers ]
+        new_url_string = '/'
+
+        @streamers.delete_if { | streamer | streamer[ 'name' ] == params[ :streamer ] }
+        @streamers.unshift( { 'name' => params[ :streamer ] } )
+        session[ :streamers ] = @streamers.to_json
+
+        @streamers.each { | streamer | new_url_string << "#{ streamer[ 'name' ] }/"}
+        redirect_to new_url_string
     end
 
     private
