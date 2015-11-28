@@ -5,12 +5,9 @@ $dark-gray: #737373;
 $abyss: #111111;
 
 div {
-    &#main-stream {
-        text-align: center;
-    }
-
     &#stream-queue {
         display: inline-block;
+        float: left;
         overflow-x: auto;
         overflow-y: hidden;
         text-align: center;

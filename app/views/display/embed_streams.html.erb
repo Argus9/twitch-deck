@@ -6,6 +6,10 @@
                 <param name="allowFullScreen" value="true" />
                 <param name="flashvars" value="channel=<%= @streamers.first[ :name ] %>&auto_play=true&start_volume=100" />
             </object>
+            <span>
+                <iframe id="chat" frameborder="0" scrolling="no" src="http://twitch.tv/<%= @streamers.first[ :name ] %>/chat?popout=" width="25%" style="position: absolute;">
+                </iframe>
+            </span>
         </div>
     </div>
     <% if @streamers.count > 1 %>
@@ -31,6 +35,8 @@
     var resize_main_player = function() {
         var main_player_width = $( '#main-stream-player' ).width();
         $( '#main-stream-player' ).css( { 'height': ( 9 * main_player_width / 16 ) + 'px' } );
+        var chat_height = $( '#main-stream-player').height();
+        $( '#chat' ).css( { 'height': chat_height + 'px' } );
     }
 
     // Whenever the window resizes, re-adjust the height of the main player div.
