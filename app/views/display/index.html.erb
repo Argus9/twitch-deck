@@ -1,5 +1,5 @@
 <div class="container">
-    <h1>Welcome to TwitchDeck!</h1>
+    <h1>Welcome to the TwitchDeck Beta!</h1>
     <h3>What is TwitchDeck?</h3>
     <p>A web application that lets you watch multiple Twitch streams on the same page, at the same time. Inspired by the fantastic <a href="http://www.multitwitch.tv">MultiTwitch</a>, TwitchDeck displays a "primary" streamer in a larger player, with your other streamers displayed below in smaller players, with volume turned down by default.</p>
     <p>For a demo of the app in action, click <%= link_to 'here', demo_path %>.</p>
@@ -18,4 +18,6 @@
     <p>Last updated November 29, 2015.</p>
     <p>TwitchDeck is provided free-of-charge for general use, does not collect any personal information or login credentials, and is subject to all of the terms of service of Twitch's embedded video players and chat.</p>
     <p>All code assets are property of the developer, Jonathan Zisser. TwitchDeck will be open-source once it leaves beta status. When this occurs, you are welcome to create your own fork of TwitchDeck as long as you provide credit to the original developer.</p>
+
+    <%= render 'partials/beta_tag' %>
 </div>
