@@ -9,7 +9,7 @@
     </div>
     <div class="row">
         <div class="col-md-12" id="main-stream">
-            <object id="main-stream-player" type="application/x-shockwave-flash" data="https://www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="70%">
+            <object id="main-stream-player" type="application/x-shockwave-flash" data="http://www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="70%">
                 <param name="allowScriptAccess" value="always" />
                 <param name="allowFullScreen" value="true" />
                 <param name="flashvars" value="channel=<%= @streamers.first[ :name ] %>&auto_play=true&start_volume=100" />
@@ -25,7 +25,7 @@
         <div class="row">
             <div class="col-md-12" id="stream-queue" style="float: left;">
                 <% @streamers[ 1..-1 ].each do | streamer | %>
-                    <object type="application/x-shockwave-flash" data="https://www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="19%">
+                    <object type="application/x-shockwave-flash" data="http://www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="19%">
                         <param name="allowScriptAccess" value="always" />
                         <param name="allowFullScreen" value="true" />
                         <param name="flashvars" value="channel=<%= streamer[ :name ] %>&auto_play=true&start_volume=0"/>
