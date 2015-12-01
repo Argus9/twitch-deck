@@ -9,7 +9,8 @@
     <p>Note that currently, TwitchDeck checks whether the main stream is online or not by sending out an HTTP GET request to Twitch's APIs every 10 seconds. Each request is only a few KBs in size, but consider this if you're using TwitchDeck on a metered connection.</p>
 
     <h3>How do I use it?</h3>
-    <p>Enter the names of the streamers you'd like to watch, in order of priority. For instance: <b>twitchdeck.tv/day9tv/covert_muffin/kinggothalion</b> will display <a href="http://www.twitch.tv/day9tv">Day[9]</a>'s stream in the main player, with <a href="http://www.twitch.tv/covert_muffin">Covert_Muffin</a>'s and <a href="http://www.twitch.tv/kinggothalion">KingGothalion</a>'s streams below it. TwitchDeck will order the streams on-page first by whether they're online or offline, then by the priority you specify.</p>
+    <p>Enter the names of the streamers you'd like to watch, in order of priority. For instance: <b>twitch-deck.herokuapp.com/day9tv&covert_muffin&kinggothalion</b> will display <a href="http://www.twitch.tv/day9tv">Day[9]</a>'s stream in the main player, with <a href="http://www.twitch.tv/covert_muffin">Covert_Muffin</a>'s and <a href="http://www.twitch.tv/kinggothalion">KingGothalion</a>'s streams below it. TwitchDeck will order the streams on-page first by whether they're online or offline, then by the priority you specify.</p>
+    <p>In this example, once Day[9]'s stream goes offline, TwitchDeck will check the other two streams, and if either are online, it will take the main stream over and move Day[9]'s stream to the deck.</p>
 
     <h3>Where can I get updates, request features, or report a problem?</h3>
     <p>Check out the TwitchDeck subreddit at <%= link_to 'r/twitchdeck', 'http://www.reddit.com/r/twitchdeck' %></p>

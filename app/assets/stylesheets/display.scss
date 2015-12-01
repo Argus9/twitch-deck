@@ -43,3 +43,9 @@ h1 {
 h3 {
     color: $light-purple;
 }
+
+p {
+    &.beta {
+        color: $light-purple;
+    }
+}
