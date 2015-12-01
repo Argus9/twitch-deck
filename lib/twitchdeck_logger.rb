@@ -1,3 +1,5 @@
+require 'logger'
+
 class TwitchDeckLogger < Logger
     def format_message severity, timestamp, _, msg
         # noinspection RubyResolve
