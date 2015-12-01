@@ -23,6 +23,6 @@ module Workspace
 
 		# Do not swallow errors in after_commit/after_rollback callbacks.
 		config.active_record.raise_in_transactional_callbacks = true
-		config.logger = TwitchDeckLogger.new File.join 'log', "#{ Rails.env }.log" unless Rails.env == 'production'
+		config.logger = TwitchDeckLogger.new File.join 'log', "#{ Rails.env }.log"
 	end
 end
