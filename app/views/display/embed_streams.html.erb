@@ -3,7 +3,7 @@
         <div class="col-md-12" id="stream-switch-tabs">
             <span>Switch to...</span>
             <% @streamers.each do | streamer | %>
-                <a class="button" href="<%= url_for controller: :display, action: :replace_main_stream, streamer: streamer[ :name ] %>"> <%= streamer[ :name ] %></a>
+                <a class="button" href="<%= url_for controller: :display, action: :replace_main_stream, streamer: streamer[ 'name' ] %>"> <%= streamer[ 'name' ] %></a>
             <% end %>
         </div>
     </div>
@@ -12,10 +12,10 @@
             <object id="main-stream-player" type="application/x-shockwave-flash" data="https://www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="70%">
                 <param name="allowScriptAccess" value="always" />
                 <param name="allowFullScreen" value="true" />
-                <param name="flashvars" value="channel=<%= @streamers.first[ :name ] %>&auto_play=true&start_volume=100" />
+                <param name="flashvars" value="channel=<%= @streamers.first[ 'name' ] %>&auto_play=true&start_volume=100" />
             </object>
             <span>
-                <iframe id="chat" frameborder="0" scrolling="no" src="https://twitch.tv/<%= @streamers.first[ :name ] %>/chat?popout=" width="30%" style="position: absolute;">
+                <iframe id="chat" frameborder="0" scrolling="no" src="https://twitch.tv/<%= @streamers.first[ 'name' ] %>/chat?popout=" width="30%" style="position: absolute;">
                 </iframe>
             </span>
         </div>
@@ -28,7 +28,7 @@
                     <object class="on-deck-stream" type="application/x-shockwave-flash" data="https://www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="19%">
                         <param name="allowScriptAccess" value="always" />
                         <param name="allowFullScreen" value="true" />
-                        <param name="flashvars" value="channel=<%= streamer[ :name ] %>&auto_play=true&start_volume=0"/>
+                        <param name="flashvars" value="channel=<%= streamer[ 'name' ] %>&auto_play=true&start_volume=0"/>
                     </object>
                 <% end %>
             </div>
@@ -64,7 +64,7 @@
     // Set up an interval to update stream layouts on the page every 10 seconds.
     setInterval( function() {
         // Check if main stream is online
-        $.get( 'is_main_stream_online', function( data ) {} );
+        $.get( 'are_streams_online', function( data ) {} );
     }, 10000);
 
     // Do the initial video player re-size.

@@ -56,9 +56,8 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
-  get 'is_main_stream_online', to: 'display#is_main_stream_online'
+  get 'are_streams_online', to: 'display#are_streams_online'
   get 'demo', controller: :display
-  get 'update_streams', controller: :display
   get 'replace_main_stream', controller: :display
   get '*streamers', to: 'display#embed_streams'
 

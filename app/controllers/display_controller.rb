@@ -14,8 +14,8 @@ class DisplayController < ApplicationController
 		@streamers = []
 
 		params[ :streamers ].split( '&' ).each do | name |
-			@streamers << { name: name, priority: @streamers.count, status: :offline } unless
-                @streamers.select{ | streamer | streamer[ :name ] == name }.present?
+			@streamers << { 'name' => name, 'priority' => @streamers.count, 'status' => 'offline' } unless
+                @streamers.select{ | streamer | streamer[ 'name' ] == name }.present?
 		end
 
 		status = poll_twitch_for_streams
@@ -23,8 +23,8 @@ class DisplayController < ApplicationController
 
 		# Once we know which streams are online, sort them based on online status, preserving the order given by the
 		# user.
-		online_streamers = @streamers.select { | streamer | streamer[ :status ] == :online }
-		offline_streamers = @streamers.select { | streamer | streamer[ :status ] == :offline }
+		online_streamers = @streamers.select { | streamer | streamer[ 'status' ] == 'online' }
+		offline_streamers = @streamers.select { | streamer | streamer[ 'status' ] == 'offline' }
 		@streamers = online_streamers + offline_streamers
 
 		# We are now ready to use the +@streamers+ Array to render streams in the view!
@@ -40,34 +40,22 @@ class DisplayController < ApplicationController
     end
 
     ##
-    # Queries the Twitch API to see if the main player's channel is online. If true, render nothing. Otherwise, render
-    # javascript to reload the page.
-    def is_main_stream_online
-        @streamers = JSON.parse session[ :streamers ]
-        response = JSON.parse make_request "https://api.twitch.tv/kraken/streams/#{ @streamers.first[ 'name' ] }"
-        if response[ 'stream' ].present?
-            render nothing: true
+    # Queries the Twitch API to see if the main player's channel is online. If it isn't, reload the page. Otherwise,
+	# render nothing (covers the case where the main stream is online or all streams are offline)
+    def are_streams_online
+        update_streams
+
+        if @streamers.all? { | streamer | streamer[ 'status' ] == 'offline' } ||
+	        @streamers.first[ 'status' ] == 'online'
+			logger.info 'Main stream is online, or all streams are offline - doing nothing'
+	        render nothing: true
+        elsif @streamers.first[ 'status' ] == 'offline'
+			logger.info 'Main streamer is offline - reloading page'
+			render js: 'location.reload()'
         else
-            render js: 'location.reload()'
+			logger.warn '`are_streams_online` default option - should not get here! May indicate a code problem'
+			render nothing: true
         end
-    end
-
-    ##
-    # Checks the status of all streamers and updates priorities. The Javascript in the view will update the page layout
-    # according to the changing priorities.
-    # @return Hash +@streamers+ as a JSON Hash.
-    def update_streams
-        @streamers = JSON.parse session[ :streamers ]
-        status = poll_twitch_for_streams
-        update_stream_online_status status unless status[ 'streams' ].empty?
-
-        # Finally, re-order the streamers by online status and priority, then update priorities on all streams.
-        @streamers.sort_by! { | streamer | [ streamer[ :status ] == :online ? 0 : 1, streamer[ :priority ] ] }
-        @streamers.each_with_index { | streamer, index | streamer[ :priority ] = index }
-
-        render json: @streamers
-    rescue SocketError
-        render json: {}
     end
 
     def replace_main_stream
@@ -80,7 +68,25 @@ class DisplayController < ApplicationController
         redirect_to '/' + @streamers.map { | streamer | streamer[ 'name' ] }.join( '&' )
     end
 
+
+
     private
+
+    ##
+    # Checks the status of all streamers and updates priorities. The Javascript in the view will update the page layout
+    # according to the changing priorities.
+	def update_streams
+		@streamers = JSON.parse session[ :streamers ]
+		status = poll_twitch_for_streams
+		update_stream_online_status status unless status[ 'streams' ].empty?
+
+		# Finally, re-order the streamers by online status and priority, then update priorities on all streams.
+		@streamers.sort_by! { | streamer | [ streamer[ 'status' ] == 'online' ? 0 : 1, streamer[ 'priority' ] ] }
+		@streamers.each_with_index { | streamer, index | streamer[ 'priority' ] = index }
+		session[ :streamers ] = @streamers.to_json
+	rescue SocketError
+		logger.warn 'Could not poll Twitch APIs due to connection error'
+	end
 
     ##
     # Get the status of all streamers currently in +@streamers+.
@@ -89,7 +95,7 @@ class DisplayController < ApplicationController
         # Use Twitch API to determine which streamers are online and which are
         # offline. Order the array of streamers based on online/offline status
         # first, then by priority as passed by the user.
-        streamer_names  = @streamers.map { | streamer | streamer[ :name ] }.join ','
+        streamer_names  = @streamers.map { | streamer | streamer[ 'name' ] }.join ','
         JSON.parse make_request "https://api.twitch.tv/kraken/streams?channel=#{ streamer_names }"
     end
 
@@ -99,8 +105,8 @@ class DisplayController < ApplicationController
     def update_stream_online_status json
         @streamers.each do | streamer |
             # The channel name will only be present if it's online.
-            streamer[ :status ] = :online if json[ 'streams' ].select do | stream |
-                stream[ 'channel' ][ 'name' ] == streamer[ :name ]
+            streamer[ 'status' ] = 'online' if json[ 'streams' ].select do | stream |
+                stream[ 'channel' ][ 'name' ] == streamer[ 'name' ]
             end.present?
         end
     end
