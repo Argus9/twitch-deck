@@ -50,11 +50,10 @@
         var chat_height = $( '#main-stream-player').height();
         $( '#chat' ).css( { 'height': chat_height + 'px' } );
 
-        // Resize on-deck streams as well
-        var on_deck_width = $( '.on-deck-stream' )[ 0 ].width();
-        $.each( $( '.on-deck-stream' ), function( obj ) {
-            obj.css( { 'height': ( 9 * on_deck_width / 16 ) + 'px' } )
-        });
+        // Resize on-deck streams as well.
+        var on_deck_width = $( '.on-deck-stream' ).width();
+        console.log( 'width:' + on_deck_width );
+        $( '.on-deck-stream' ).css( { 'height': ( 9 * on_deck_width / 16 ) + 'px' } );
     }
 
     // Whenever the window resizes, re-adjust the height of the main player div.
