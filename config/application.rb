@@ -10,6 +10,7 @@ module Workspace
 	class Application < Rails::Application
 		class TwitchDeckLogger < Logger
 			def format_message severity, timestamp, _, msg
+				# noinspection RubyResolve
 				"<#{ timestamp }> [#{ severity }] #{ msg }\n".send( case severity
 					                                                   when 'DEBUG'
 						                                                   # noinspection RubyResolve
@@ -22,7 +23,7 @@ module Workspace
 						                                                   :red
 					                                                   else
 						                                                   :white
-				                                                   end ).send :on_black
+				                                                   end ).on_black
 			end
 		end
 
