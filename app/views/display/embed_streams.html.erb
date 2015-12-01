@@ -25,7 +25,7 @@
         <div class="row">
             <div class="col-md-12" id="stream-queue" style="float: left;">
                 <% @streamers[ 1..-1 ].each do | streamer | %>
-                    <object type="application/x-shockwave-flash" data="https://www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="19%">
+                    <object class="on-deck-stream" type="application/x-shockwave-flash" data="https://www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" width="19%">
                         <param name="allowScriptAccess" value="always" />
                         <param name="allowFullScreen" value="true" />
                         <param name="flashvars" value="channel=<%= streamer[ :name ] %>&auto_play=true&start_volume=0"/>
@@ -45,8 +45,16 @@
     var resize_main_player = function() {
         var main_player_width = $( '#main-stream-player' ).width();
         $( '#main-stream-player' ).css( { 'height': ( 9 * main_player_width / 16 ) + 'px' } );
+
+        // Resize chat iframe height
         var chat_height = $( '#main-stream-player').height();
         $( '#chat' ).css( { 'height': chat_height + 'px' } );
+
+        // Resize on-deck streams as well
+        var on_deck_width = $( '.on-deck-stream' )[ 0 ].width();
+        $.each( $( '.on-deck-stream' ), function( obj ) {
+            obj.css( { 'height': ( 9 * on_deck_width / 16 ) + 'px' } )
+        });
     }
 
     // Whenever the window resizes, re-adjust the height of the main player div.
