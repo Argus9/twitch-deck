@@ -1,5 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
+require_relative '../lib/twitchdeck_logger'
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -8,25 +9,6 @@ Bundler.require(*Rails.groups)
 
 module Workspace
 	class Application < Rails::Application
-		class TwitchDeckLogger < Logger
-			def format_message severity, timestamp, _, msg
-				# noinspection RubyResolve
-				"<#{ timestamp }> [#{ severity }] #{ msg }\n".send( case severity
-					                                                   when 'DEBUG'
-						                                                   # noinspection RubyResolve
-						                                                   :green
-					                                                   when 'WARN'
-						                                                   # noinspection RubyResolve
-						                                                   :yellow
-					                                                   when 'ERROR'
-						                                                   # noinspection RubyResolve
-						                                                   :red
-					                                                   else
-						                                                   :white
-				                                                   end ).on_black
-			end
-		end
-
 		# Settings in config/environments/* take precedence over those specified here.
 		# Application configuration should go into files in config/initializers
 		# -- all .rb files in that directory are automatically loaded.
