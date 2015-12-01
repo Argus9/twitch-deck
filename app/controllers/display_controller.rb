@@ -13,7 +13,7 @@ class DisplayController < ApplicationController
 
 		@streamers = []
 
-		params[ :streamers ].split( '/' ).each do | name |
+		params[ :streamers ].split( '&' ).each do | name |
 			@streamers << { name: name, priority: @streamers.count, status: :offline } unless
                 @streamers.select{ | streamer | streamer[ :name ] == name }.present?
 		end
@@ -36,17 +36,17 @@ class DisplayController < ApplicationController
     ##
     # Calls +embed_streams+ with a pre-set list of streamers.
 	def demo
-        redirect_to '/day9tv/kinggothalion/professorbroman/covert_muffin/totalbiscuit/man_vs_game/trumpetmcool'
+        redirect_to %w(/day9tv kinggothalion professorbroman covert_muffin totalbiscuit man_vs_game trumpetmcool ).join '&'
     end
 
     ##
-    # Queries the Twitch API to see if the main player's channel is online.
-    # @return [Boolean] `true` if the stream is online, `false` if it's not.
+    # Queries the Twitch API to see if the main player's channel is online. If true, render nothing. Otherwise, render
+    # javascript to reload the page.
     def is_main_stream_online
         @streamers = JSON.parse session[ :streamers ]
-        response = JSON.parse make_request "https://api.twitch.tv/kraken/streams/#{ @streamers.first[ :name ] }"
+        response = JSON.parse make_request "https://api.twitch.tv/kraken/streams/#{ @streamers.first[ 'name' ] }"
         if response[ 'stream' ].present?
-            render :nothing
+            render nothing: true
         else
             render js: 'location.reload()'
         end
@@ -72,14 +72,12 @@ class DisplayController < ApplicationController
 
     def replace_main_stream
         @streamers = JSON.parse session[ :streamers ]
-        new_url_string = '/'
 
         @streamers.delete_if { | streamer | streamer[ 'name' ] == params[ :streamer ] }
         @streamers.unshift( { 'name' => params[ :streamer ] } )
         session[ :streamers ] = @streamers.to_json
 
-        @streamers.each { | streamer | new_url_string << "#{ streamer[ 'name' ] }/"}
-        redirect_to new_url_string
+        redirect_to '/' + @streamers.map { | streamer | streamer[ 'name' ] }.join( '&' )
     end
 
     private
