@@ -22,7 +22,7 @@
         <div class="row">
             <div class="col-md-12" id="stream-queue" style="float: left;">
                 <% @streamers[ 1..-1 ].each do | streamer | %>
-                    <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer[ 'name' ] %>&auto_play=true&muted=true">
+                    <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer[ 'name' ] %>&auto_play=true&muted=true" width="19%">
                     </iframe>
                 <% end %>
             </div>
