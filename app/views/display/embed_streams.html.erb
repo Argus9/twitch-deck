@@ -1,64 +1,71 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12" id="stream-switch-tabs">
-            <span>Switch to...</span>
-            <% @streamers.each do | streamer | %>
-                <a class="button" href="<%= url_for controller: :display, action: :replace_main_stream, streamer: streamer[ 'name' ] %>"> <%= streamer[ 'name' ] %></a>
-            <% end %>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12" id="main-stream">
-            <iframe id="main-stream-player" src="http://player.twitch.tv/?channel=<%= @streamers.first[ 'name' ] %>&auto_play=true&muted=false" width="70%">
-            </iframe>
-            <span>
-                <iframe id="chat" frameborder="0" scrolling="no" src="https://twitch.tv/<%= @streamers.first[ 'name' ] %>/chat?popout=" width="30%" style="position: absolute;">
-                </iframe>
-            </span>
-        </div>
-    </div>
-    <% if @streamers.count > 1 %>
-        <!-- Stream queue -->
-        <div class="row">
-            <div class="col-md-12" id="stream-queue" style="float: left;">
-                <% @streamers[ 1..-1 ].each do | streamer | %>
-                    <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer[ 'name' ] %>&auto_play=true&muted=true" width="19%">
-                    </iframe>
-                <% end %>
+<html>
+    <head>
+        <title>TwitchDeck</title>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12" id="stream-switch-tabs">
+                    <span>Switch to...</span>
+                    <% @streamers.each do | streamer | %>
+                        <a class="button" href="<%= url_for controller: :display, action: :replace_main_stream, streamer: streamer[ 'name' ] %>"> <%= streamer[ 'name' ] %></a>
+                    <% end %>
+                </div>
             </div>
+            <div class="row">
+                <div class="col-md-12" id="main-stream">
+                    <iframe id="main-stream-player" src="http://player.twitch.tv/?channel=<%= @streamers.first[ 'name' ] %>&auto_play=true&muted=false" width="70%">
+                    </iframe>
+                    <span>
+                        <iframe id="chat" frameborder="0" scrolling="no" src="https://twitch.tv/<%= @streamers.first[ 'name' ] %>/chat?popout=" width="30%" style="position: absolute;">
+                        </iframe>
+                    </span>
+                </div>
+            </div>
+            <% if @streamers.count > 1 %>
+                <!-- Stream queue -->
+                <div class="row">
+                    <div class="col-md-12" id="stream-queue" style="float: left;">
+                        <% @streamers[ 1..-1 ].each do | streamer | %>
+                            <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer[ 'name' ] %>&auto_play=true&muted=true" width="19%">
+                            </iframe>
+                        <% end %>
+                    </div>
+                </div>
+            <% end %>
+
+            <%= render 'partials/beta_tag' %>
         </div>
-    <% end %>
 
-    <%= render 'partials/beta_tag' %>
-</div>
+        <script>
+            /*
+             * Resizes the video player so the height is 9/16th of the width (16:9 aspect ratio).
+             */
+            var resize_main_player = function() {
+                var main_player_width = $( '#main-stream-player' ).width();
+                $( '#main-stream-player' ).height( 9 * main_player_width / 16 );
 
-<script>
-    /*
-     * Resizes the video player so the height is 9/16th of the width (16:9 aspect ratio).
-     */
-    var resize_main_player = function() {
-        var main_player_width = $( '#main-stream-player' ).width();
-        $( '#main-stream-player' ).height( 9 * main_player_width / 16 );
+                // Resize chat iframe height
+                $( '#chat' ).height( $( '#main-stream-player').height() );
 
-        // Resize chat iframe height
-        $( '#chat' ).height( $( '#main-stream-player').height() );
+                // Resize on-deck streams as well.
+                var on_deck_width = $( '.on-deck-stream' ).width();
+                $( '.on-deck-stream' ).height( 9 * on_deck_width / 16 );
+            }
 
-        // Resize on-deck streams as well.
-        var on_deck_width = $( '.on-deck-stream' ).width();
-        $( '.on-deck-stream' ).height( 9 * on_deck_width / 16 );
-    }
+            // Whenever the window resizes, re-adjust the height of the main player div.
+            $( window ).resize( function() {
+                resize_main_player();
+            } );
 
-    // Whenever the window resizes, re-adjust the height of the main player div.
-    $( window ).resize( function() {
-        resize_main_player();
-    } );
+            // Set up an interval to update stream layouts on the page every 10 seconds.
+            setInterval( function() {
+                // Check if main stream is online
+                $.get( 'are_streams_online', function( data ) {} );
+            }, 10000);
 
-    // Set up an interval to update stream layouts on the page every 10 seconds.
-    setInterval( function() {
-        // Check if main stream is online
-        $.get( 'are_streams_online', function( data ) {} );
-    }, 10000);
-
-    // Do the initial video player re-size.
-    resize_main_player();
-</script>
+            // Do the initial video player re-size.
+            resize_main_player();
+        </script>
+    </body>
+</html>
