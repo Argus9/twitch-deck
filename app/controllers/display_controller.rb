@@ -79,7 +79,8 @@ class DisplayController < ApplicationController
         session[ 'streamers' ] = @streamers.to_json
 
         redirect_to '/' + @streamers.map { | streamer | streamer[ 'name' ] }.join( '&' )
-	    # TODO: Find some way to use js-side "replace_streamers" function, like we do above.
+	    # TODO: Find some way to use js-side "replace_streamers" function, like we do above. Will likely need to update
+	    # TODO: protect_from_forgery in the ApplicationController with `except: :replace_main_stream`
     rescue SocketError
 		# noop
     end
