@@ -13,7 +13,7 @@ class DisplayController < ApplicationController
 
 		@streamers = []
 
-		params[ 'streamers' ].split( '&' ).each do | name |
+		params[ 'streamers' ].downcase.split( '&' ).each do | name |
 			@streamers << { 'name' => name, 'priority' => @streamers.count, 'status' => 'offline' } unless
                 @streamers.select{ | streamer | streamer[ 'name' ] == name }.present?
 		end
