@@ -21,13 +21,11 @@ class DisplayController < ApplicationController
 		status = poll_twitch_for_streams
         update_stream_online_status status unless status[ 'streams' ].empty? # All streams are offline
 
-		# Once we know which streams are online, sort them based on online status, preserving the order given by the
-		# user.
-		online_streamers = @streamers.select { | streamer | streamer[ 'status' ] == 'online' }
-		offline_streamers = @streamers.select { | streamer | streamer[ 'status' ] == 'offline' }
-		@streamers = online_streamers + offline_streamers
+		# Once we know which streams are online, sort them based on online status, then by priority.
+		sort_streamers
 
-		# We are now ready to use the +@streamers+ Array to render streams in the view!
+		# We are now ready to use the +@streamers+ Array to render streams in the view! Save the @streamers to the
+		# session.
         session[ 'streamers' ] = @streamers.to_json
     rescue SocketError
         render status: 500, text: 'Unable to connect to Twitch API.'
@@ -46,16 +44,27 @@ class DisplayController < ApplicationController
 	    @streamers = JSON.parse session[ 'streamers' ]
 
 	    update_streams
+
+	    # Get all online streamers.
+	    online_streamers = @streamers.select { | streamer | streamer[ 'status' ] == 'online' }
+	    # Compare their priorities. Is the stream with the highest priority in the main player?
+	    highest_priority_online_streamer = online_streamers.min_by { | streamer | streamer[ 'priority' ] }
+
 	    main_streamer = @streamers.first
 	    sort_streamers
 
-        if @streamers.all? { | streamer | streamer[ 'status' ] == 'offline' } ||
-	        main_streamer[ 'status' ] == 'online'
-			logger.info 'Main stream is online, or all streams are offline - doing nothing'
+	    if @streamers.all? { | streamer | streamer[ 'status' ] == 'offline' }
+			logger.info 'All streamers are offline - doing nothing'
+			render nothing: true
+	    elsif main_streamer[ 'name' ] != highest_priority_online_streamer[ 'name' ]
+			logger.info 'Higher-priority streamer came online - reorder streamers'
+			render js: %(replace_streamers( '#{ @streamers.map { | streamer | streamer[ 'name' ] }.to_json }');)
+	    elsif main_streamer[ 'status' ] == 'online'
+			logger.info 'Main stream is online - doing nothing'
 	        render nothing: true
         elsif main_streamer[ 'status' ] == 'offline'
-			logger.info 'Main streamer is offline - reloading page'
-			render js: 'location.reload()'
+			logger.info 'Main streamer is offline - reorder streamers'
+			render js: %(replace_streamers( '#{ @streamers.map { | streamer | streamer[ 'name' ] }.to_json }');)
         else
 			logger.warn '`are_streams_online` default option - should not get here! May indicate a code problem'
 			render nothing: true
@@ -66,15 +75,14 @@ class DisplayController < ApplicationController
         @streamers = JSON.parse session[ 'streamers' ]
 
         @streamers.delete_if { | streamer | streamer[ 'name' ] == params[ :streamer ] }
-        @streamers.unshift( { 'name' => params[ :streamer ] } )
+        @streamers.unshift( { 'name' => params[ 'streamer' ] } )
         session[ 'streamers' ] = @streamers.to_json
 
         redirect_to '/' + @streamers.map { | streamer | streamer[ 'name' ] }.join( '&' )
+	    # TODO: Find some way to use js-side "replace_streamers" function, like we do above.
     rescue SocketError
 		# noop
     end
-
-
 
     private
 
@@ -92,7 +100,6 @@ class DisplayController < ApplicationController
     # Sorts the streamers by online status and priority, then updates priorities on all streams.
 	def sort_streamers
 		@streamers.sort_by! { | streamer | [ streamer[ 'status' ] == 'online' ? 0 : 1, streamer[ 'priority' ] ] }
-		@streamers.each_with_index { | streamer, index | streamer[ 'priority' ] = index }
 		session[ 'streamers' ] = @streamers.to_json
 	end
 
