@@ -1,5 +1,8 @@
-p {
+@import 'variables';
+
+div {
     &.top-right {
+        background-color: $abyss;
         top: 0;
         position: fixed;
         right: 0;

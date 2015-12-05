@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  get 'display/index'
-
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -60,6 +58,8 @@ Rails.application.routes.draw do
   get 'demo', controller: :display
   get 'replace_main_stream', controller: :display
   get '*streamers', to: 'display#embed_streams'
+
+  get '/', to: 'display#index'
 
   # If nothing else fits, take us to the main welcome landing.
   root 'display#index'
