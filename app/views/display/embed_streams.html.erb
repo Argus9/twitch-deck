@@ -52,6 +52,10 @@
 
         // Set the on-deck stream widths to maintain a 16:9 aspect ratio.
         $( '.on-deck-stream' ).width( $( '.on-deck-stream' ).height() * ( 16 / 9 ) );
+
+        // Make sure the switch buttons don't disappear behind the beta tag.
+        // TODO: Needs to be removed when we leave beta!
+        $( '#stream-switch-tabs' ).width( $( window ).width() - $( '.beta' ).width() );
     }
 
     /*
