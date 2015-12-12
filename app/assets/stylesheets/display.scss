@@ -41,6 +41,10 @@ div {
         text-align: center;
         white-space: nowrap;
     }
+
+    &.on-deck-stream {
+        overflow: hidden;
+    }
 }
 
 h1 {
