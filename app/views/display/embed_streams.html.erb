@@ -9,7 +9,7 @@
         <div class="col-md-12" id="stream-switch-tabs">
             <span>Switch to...</span>
             <% @streamers.each do | streamer | %>
-                <a class="button" href="<%= url_for controller: :display, action: :replace_main_stream, 'streamer' => streamer[ 'name' ] %>"> <%= streamer[ 'name' ] %></a>
+                <a class="button<%= '-inactive' if streamer[ 'status' ] == 'offline' %>" href="<%= url_for controller: :display, action: :replace_main_stream, 'streamer' => streamer[ 'name' ] %>"> <%= streamer[ 'name' ] %></a>
             <% end %>
         </div>
     </div>
@@ -27,9 +27,8 @@
         <!-- Stream queue -->
         <div class="row">
             <div class="col-md-12" id="stream-queue" style="float: left;">
-                <% @streamers[ 1..-1 ].each do | streamer | %>
-                    <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer[ 'name' ] %>&auto_play=true&muted=true" width="19%">
-                    </iframe>
+                <% @streamers[ 1..-1 ].select { | streamer | streamer[ 'status' ] == 'online' }.each do | streamer | %>
+                    <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer[ 'name' ] %>&auto_play=true&muted=true" width="19%"></iframe>
                 <% end %>
             </div>
         </div>
@@ -58,19 +57,21 @@
     /*
      * Replaces streamers according to the passed-in Array of names
      */
-    var replace_streamers = function ( names ) {
-        console.log( 'Passed streamers: ' + names );
-        var names = JSON.parse( names );
+    var replace_streamers = function ( streamers ) {
+        console.log( 'Passed streamers: ' + streamers );
+        var streamers = JSON.parse( streamers );
 
         // Replace main streamer
-        $( '#main-stream-player' ).attr( 'src', 'http://player.twitch.tv/?channel=' + names[ 0 ] + '&auto_play=true&muted=false' );
-        $( '#chat' ).attr( 'src', 'https://twitch.tv/' + names[ 0 ] + '/chat?popout=' );
-        names.shift();
+        $( '#main-stream-player' ).attr( 'src', 'http://player.twitch.tv/?channel=' + streamers[ 0 ].name + '&auto_play=true&muted=false' );
+        $( '#chat' ).attr( 'src', 'https://twitch.tv/' + streamers[ 0 ].name + '/chat?popout=' );
+        streamers.shift();
 
         // Replace on-deck streamers
         $( '#stream-queue' ).empty();
-        $.each( names, function ( name ) {
-            $( '#stream-queue' ).append( '<iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=' + name + '&auto_play=true&muted=true" width="19%"></iframe>' );
+        $.each( streamers, function ( name, status ) {
+            if( status == 'online' ) {
+                $( '#stream-queue' ).append( '<iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=' + name + '&auto_play=true&muted=true" width="19%"></iframe>' );
+            }
         } );
         update_height();
     }

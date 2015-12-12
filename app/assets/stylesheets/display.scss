@@ -12,6 +12,17 @@ a {
         border-right-color: #333333;
         border-bottom-color: #333333;
     }
+
+    &.button-inactive {
+        font-weight: bold;
+        text-decoration: none;
+        color: $abyss;
+        background-color: $dark-gray;
+        padding: 2px 6px 2px 6px;
+        border: 1px solid #cccccc;
+        border-right-color: #333333;
+        border-bottom-color: #333333;
+    }
 }
 
 body {

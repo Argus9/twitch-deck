@@ -58,13 +58,13 @@ class DisplayController < ApplicationController
 			render nothing: true
 	    elsif main_streamer[ 'name' ] != highest_priority_online_streamer[ 'name' ]
 			logger.info 'Higher-priority streamer came online - reorder streamers'
-			render js: %(replace_streamers( '#{ @streamers.map { | streamer | streamer[ 'name' ] }.to_json }');)
+			render js: %(replace_streamers( '#{ @streamers.map { | streamer | { 'name' => streamer[ 'name' ], 'status' => streamer[ 'status' ] } }.to_json }');)
 	    elsif main_streamer[ 'status' ] == 'online'
 			logger.info 'Main stream is online - doing nothing'
 	        render nothing: true
         elsif main_streamer[ 'status' ] == 'offline'
 			logger.info 'Main streamer is offline - reorder streamers'
-			render js: %(replace_streamers( '#{ @streamers.map { | streamer | streamer[ 'name' ] }.to_json }');)
+			render js: %(replace_streamers( '#{ @streamers.map { | streamer | { 'name' => streamer[ 'name' ], 'status' => streamer[ 'status' ] } }.to_json }');)
         else
 			logger.warn '`are_streams_online` default option - should not get here! May indicate a code problem'
 			render nothing: true
