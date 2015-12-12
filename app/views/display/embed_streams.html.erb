@@ -41,18 +41,18 @@
 <script>
     var streamers = [];
     /*
-     * Resizes the video player so the height is 9/16th of the width (16:9 aspect ratio).
+     * Resizes the video players so that there is no vertical scrolling needed.
      */
     var update_height = function () {
-        var main_player_width = $( '#main-stream-player' ).width();
-        $( '#main-stream-player' ).height( 9 * main_player_width / 16 );
+        var available_space_height = $( window ).height() - $( '#stream-switch-tabs' ).height() * 2;
 
-        // Resize chat iframe height
+        // Re-calculate heights and apply them.
+        $( '#main-stream-player' ).height( available_space_height * 0.80 );
         $( '#chat' ).height( $( '#main-stream-player' ).height() );
+        $( '.on-deck-stream' ).height( available_space_height * 0.19 );
 
-        // Resize on-deck streams as well.
-        var on_deck_width = $( '.on-deck-stream' ).width();
-        $( '.on-deck-stream' ).height( 9 * on_deck_width / 16 );
+        // Set the on-deck stream widths to maintain a 16:9 aspect ratio.
+        $( '.on-deck-stream' ).width( $( '.on-deck-stream' ).height() * ( 16 / 9 ) );
     }
 
     /*
