@@ -14,15 +14,11 @@ a {
     }
 
     &.button-inactive {
+        @extend .button;
         opacity: 0.5;
-        font-weight: bold;
-        text-decoration: none;
-        color: $abyss;
+        color: $dark-purple;
         background-color: $dark-gray;
-        padding: 2px 6px 2px 6px;
-        border: 1px solid #cccccc;
-        border-right-color: #333333;
-        border-bottom-color: #333333;
+        pointer-events: none;
     }
 }
 
