@@ -1,77 +1,79 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>TwitchDeck</title>
     <%= render 'partials/google_analytics_init' %>
 </head>
 <body>
-<div class="container-fluid flex-container">
-    <div class="row">
-        <div class="col-md-12" id="stream-switch-tabs">
-            <span>Switch to...</span>
-            <% @streamers.each do | streamer | %>
-                <a class="button<%= '-inactive' if streamer[ 'status' ] == 'offline' %>" href="<%= url_for controller: :display, action: :replace_main_stream, 'streamer' => streamer[ 'name' ] %>"> <%= streamer[ 'name' ] %></a>
-            <% end %>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12" id="main-stream">
-            <iframe id="main-stream-player" src="http://player.twitch.tv/?channel=<%= @streamers.first[ 'name' ] %>&auto_play=true&muted=false" width="70%">
-            </iframe>
-                    <span>
-                        <iframe id="chat" frameborder="0" scrolling="no" src="https://twitch.tv/<%= @streamers.first[ 'name' ] %>/chat?popout=" width="30%" style="position: absolute;">
-                        </iframe>
-                    </span>
-        </div>
-    </div>
-    <% if @streamers.count > 1 %>
-        <!-- Stream queue -->
-        <div class="row">
-            <div class="col-md-12" id="stream-queue" style="float: left;">
-                <% @streamers[ 1..-1 ].each do | streamer | %>
-                    <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer[ 'name' ] %>&auto_play=true&muted=true" width="19%"></iframe>
-                <% end %>
-            </div>
-        </div>
+<div id="stream-switch-tabs">
+    <span>Switch to...</span>
+    <% @streamers.each do |streamer| %>
+        <a class="button<%= '-inactive' if streamer['status'] == 'offline' %>" href="<%= url_for controller: :display, action: :replace_main_stream, 'streamer' => streamer['name'] %>"> <%= streamer['name'] %></a>
     <% end %>
-
-    <%= render 'partials/beta_tag' %>
 </div>
+<div id="main-stream">
+    <iframe id="main-stream-player" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false"></iframe>
+    <iframe id="chat" frameborder="0" scrolling="no" src="https://twitch.tv/<%= @streamers.first['name'] %>/chat?popout=" style="position: absolute;"></iframe>
+</div>
+<% if @streamers.count > 1 %>
+    <!-- Stream queue -->
+    <div id="stream-queue" style="float: left; max-width: 100%">
+        <% @streamers[1..-1].each do |streamer| %>
+            <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer['name'] %>&auto_play=true&muted=true"></iframe>
+        <% end %>
+    </div>
+<% end %>
+
+<%= render 'partials/beta_tag' %>
 
 <script>
     var streamers = [];
     /*
-     * Resizes the video players so that there is no vertical scrolling needed.
+     * Resizes page elements so that they fit a 16:9 aspect ratio.
      */
-    var update_height = function () {
-        var available_space_height = $( window ).height() - $( '#stream-switch-tabs' ).height() * 2;
+    var update_element_dimensions = function () {
+        /*
+         * DIMENSIONS:
+         *
+         * Main Stream: 80% of available height, 70% of available width.
+         * Chat: 80% of available height, 30% of available width.
+         * On-deck Streams (each): 20% of available height, 20% of available width.
+         */
 
-        // Re-calculate heights and apply them.
-        $( '#main-stream-player' ).height( available_space_height * 0.80 );
-        $( '#chat' ).height( $( '#main-stream-player' ).height() );
-        $( '.on-deck-stream' ).height( available_space_height * 0.19 );
+        // We need to portion this out ahead of time since not all elements might be fully loaded at page load.
+        var available_height = window.innerHeight - $('#stream-switch-tabs').outerHeight();
+        var available_width = window.innerWidth;
 
-        // Set the on-deck stream widths to maintain a 16:9 aspect ratio.
-        $( '.on-deck-stream' ).width( $( '.on-deck-stream' ).height() * ( 16 / 9 ) );
+        $('#main-stream-player').width(Math.floor(available_width * 0.7) + 'px');
+        $('#main-stream-player').height(Math.floor(available_height * 0.75) + 'px');
+        $('#main-stream-player').top($('#stream-switch-tabs').height());
+        $('#chat').width(Math.floor(available_width * 0.3) + 'px');
+        $('#chat').height(Math.floor(available_height * 0.75) + 'px');
+        $('#chat').top($('#stream-switch-tabs').height());
+        $('.on-deck-stream').width(Math.floor(available_width * 0.2) + 'px');
+        $('.on-deck-stream').height(Math.floor(available_height * 0.2) + 'px');
 
         // Make sure the switch buttons don't disappear behind the beta tag.
         // TODO: Needs to be removed when we leave beta!
-        $( '#stream-switch-tabs' ).width( $( window ).width() - $( '.beta' ).width() );
+        $('#stream-switch-tabs').width(available_width - $('.beta').width());
     }
 
     // Whenever the window resizes, re-adjust the height of the main player div.
-    $( window ).resize( function () {
-        update_height();
-    } );
+    $(window).resize(function () {
+        update_element_dimensions();
+    });
 
     // Set up an interval to update stream layouts on the page every 10 seconds.
-    setInterval( function () {
+    setInterval(function () {
         // Check if main stream is online
-        $.get( 'are_streams_online', function ( data ) {
-        } );
-    }, 10000 );
+        $.get('are_streams_online', function (data) {
+        });
+    }, 10000);
 
     // Do the initial video player re-size.
-    update_height();
+    $(document).ready(function () {
+        update_element_dimensions();
+    });
 </script>
 </body>
 </html>
