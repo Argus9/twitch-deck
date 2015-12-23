@@ -29,17 +29,19 @@ body {
 }
 
 div {
-    &#stream-queue {
-        display: inline-block;
-        float: left;
-        overflow-x: auto;
-        overflow-y: hidden;
-        text-align: center;
-        white-space: nowrap;
-    }
+    // TODO: Remove
+    //&#stream-queue {
+    //    display: inline-block;
+    //    float: left;
+    //    overflow-x: auto;
+    //    overflow-y: hidden;
+    //    text-align: center;
+    //    white-space: nowrap;
+    //}
 
     &.on-deck-stream {
         overflow: hidden;
+        flex-basis: 20%;
     }
 }
 
@@ -54,5 +56,28 @@ h3 {
 p {
     &.beta {
         color: $light-purple;
+    }
+}
+
+/*
+ * Flex settings
+ */
+div {
+    &.flex-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    &#main-stream {
+        order: 1;
+        flex-basis: 80%;
+    }
+
+    &#chat {
+        order: 2;
+        flex-basis: 20%;
     }
 }
