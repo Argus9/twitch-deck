@@ -8,27 +8,26 @@
     <div class="row">
         <div class="col-md-12" id="stream-switch-tabs">
             <span>Switch to...</span>
-            <% @streamers.each do | streamer | %>
-                <a class="button<%= '-inactive' if streamer[ 'status' ] == 'offline' %>" href="<%= url_for controller: :display, action: :replace_main_stream, 'streamer' => streamer[ 'name' ] %>"> <%= streamer[ 'name' ] %></a>
+            <% @streamers.each do |streamer| %>
+                <a class="stream-button button<%= '-inactive' if streamer['status'] == 'offline' %>" href="<%= url_for controller: :display, action: :replace_main_stream, 'streamer' => streamer['name'] %>"><%= streamer['name'] %></a>
             <% end %>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12" id="main-stream">
-            <iframe id="main-stream-player" src="http://player.twitch.tv/?channel=<%= @streamers.first[ 'name' ] %>&auto_play=true&muted=false" width="70%">
-            </iframe>
-                    <span>
-                        <iframe id="chat" frameborder="0" scrolling="no" src="https://twitch.tv/<%= @streamers.first[ 'name' ] %>/chat?popout=" width="30%" style="position: absolute;">
-                        </iframe>
-                    </span>
+            <iframe id="main-stream-player" class="stream" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false" width="70%"></iframe>
+            <span>
+                <iframe id="chat" frameborder="0" scrolling="no" src="https://twitch.tv/<%= @streamers.first['name'] %>/chat?popout=" width="30%" style="position: absolute;">
+                </iframe>
+            </span>
         </div>
     </div>
     <% if @streamers.count > 1 %>
         <!-- Stream queue -->
         <div class="row">
             <div class="col-md-12" id="stream-queue" style="float: left;">
-                <% @streamers[ 1..-1 ].each do | streamer | %>
-                    <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer[ 'name' ] %>&auto_play=true&muted=true" width="19%"></iframe>
+                <% @streamers[1..-1].each do |streamer| %>
+                    <iframe class="stream on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer['name'] %>&auto_play=true&muted=true" width="19%"></iframe>
                 <% end %>
             </div>
         </div>
@@ -38,7 +37,86 @@
 </div>
 
 <script>
-    var streamers = [];
+    var streamers = JSON.parse( '<%= @streamers.to_json.html_safe %>' );
+
+    /*
+     * Run every 10 seconds to update streams on the page, based on their online status.
+     */
+    var get_stream_status = function () {
+        var original_streamers = streamers.slice();
+
+        /*
+         * Callback that follows a successful AJAX call to Twitch's API.
+         */
+        var callback_function = function ( callback_data ) {
+            $.each( streamers, function ( _, streamer ) {
+                streamer[ 'status' ] = 'offline';
+                var matching_streamer = $.grep( callback_data[ 'streams' ], function ( streamer_under_search ) {
+                    return streamer_under_search[ 'channel' ][ 'name' ] === streamer[ 'name' ];
+                } );
+                if ( matching_streamer.length > 0 ) {
+                    streamer[ 'status' ] = 'online';
+                }
+            } );
+
+            // Re-organize streamer order based on online status, then by priority.
+            streamers.sort( function ( left_obj, right_obj ) {
+                if ( left_obj[ 'status' ] === 'online' && right_obj[ 'status' ] === 'offline' ) {
+                    return -1;
+                } else if ( left_obj[ 'status' ] === 'offline' && right_obj[ 'status' ] === 'online' ) {
+                    return 1;
+                } else {
+                    return left_obj[ 'priority' ] < right_obj[ 'priority' ] ? -1 : 1;
+                }
+            } );
+
+            // If main streamer is still online, ONLY re-organize on-deck streams.
+            var streamers_to_parse = streamers.slice();
+            if ( streamers[ 0 ][ 'name' ] !== original_streamers[ 0 ][ 'name' ] ) {
+                document.getElementById( 'main-stream-player' ).src = 'http://player.twitch.tv/?channel=' + streamers[ 0 ][ 'name' ] + '&auto_play=true&muted=false';
+                document.getElementById( 'chat' ).src = 'https://twitch.tv/' + streamers[ 0 ][ 'name' ] + '/chat?popout=';
+            }
+            streamers_to_parse.shift();
+
+            // Re-organize on-deck streams if they have changed.
+            $.each( streamers_to_parse, function ( position, streamer ) {
+                if ( streamer[ 'name' ] !== streamers[ position + 1 ][ 'name' ] ) {
+                    var iframe_url = 'http://player.twitch.tv/?channel=' + streamer[ 'name' ] + '&auto_play=true&muted=true';
+                    $( 'div#stream-queue' ).children()[ position ].src( iframe_url )
+                }
+            } );
+
+            // Finally, reset the list of "switch to" buttons to match the current stream order and status.
+            if ( $( streamers ).not( original_streamers ).length > 0 || $( original_streamers ).not( streamers ).length > 0 ) {
+                $.each( $( '.stream-button' ), function ( position, button ) {
+                    // Check name.
+                    if ( button.text !== streamers[ position ][ 'name' ] ) {
+                        // If different, change name, src, and possibly style.
+                        button.text = streamers[ position ][ 'name' ];
+                        button.href = 'http://' + location.host + '/replace_main_stream?streamer=' + streamers[ position ][ 'name' ];
+                        if ( streamers[ position ][ 'status' ] === 'offline' ) {
+                            button.addClass( 'button-inactive' );
+                        } else {
+                            button.removeClass( 'button-inactive' );
+                        }
+                    }
+                } );
+            }
+        };
+
+        // Update all streams' status.
+        var streamer_names = $.map( streamers, function ( streamer, _ ) {
+            return streamer[ 'name' ];
+        } ).join( ',' );
+
+        $.ajax( {
+            url: 'https://api.twitch.tv/kraken/streams?channel=' + streamer_names,
+            async: false
+        } ).success( function ( data ) {
+            callback_function( data )
+        } );
+    };
+
     /*
      * Resizes the video players so that there is no vertical scrolling needed.
      */
@@ -57,7 +135,7 @@
         // Make sure the switch buttons don't disappear behind the beta tag.
         // TODO: Needs to be removed when we leave beta!
         $( '#stream-switch-tabs' ).width( $( window ).width() - $( '.beta' ).width() );
-    }
+    };
 
     // Whenever the window resizes, re-adjust the height of the main player div.
     $( window ).resize( function () {
@@ -67,12 +145,16 @@
     // Set up an interval to update stream layouts on the page every 10 seconds.
     setInterval( function () {
         // Check if main stream is online
-        $.get( 'are_streams_online', function ( data ) {
-        } );
+        get_stream_status();
     }, 10000 );
 
     // Do the initial video player re-size.
     update_height();
+
+    // Set all iframe overflows to hidden, since they don't seem to respond to CSS style.
+    $.each( $( 'iframe.stream' ), function ( _, iframe ) {
+        iframe.style.overflow = 'hidden';
+    } );
 </script>
 </body>
 </html>
