@@ -29,10 +29,18 @@ body {
 }
 
 div {
+
+    &#main-stream {
+        position: fixed;
+        left: 0;
+    }
+
     &#stream-queue {
         display: inline-block;
-        float: left;
-        overflow-x: auto;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        overflow-x: scroll;
         overflow-y: hidden;
         text-align: center;
         white-space: nowrap;
@@ -50,6 +58,13 @@ h1 {
 
 h3 {
     color: $light-purple;
+}
+
+iframe {
+    &#chat {
+        position: fixed;
+        right: 0;
+    }
 }
 
 p {
