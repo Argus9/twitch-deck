@@ -11,6 +11,14 @@ a {
         border: 1px solid #cccccc;
         border-right-color: #333333;
         border-bottom-color: #333333;
+}
+
+    &.button-inactive {
+        @extend .button;
+        opacity: 0.5;
+        color: $dark-purple;
+        background-color: $dark-gray;
+        pointer-events: none;
     }
 }
 
@@ -21,13 +29,26 @@ body {
 }
 
 div {
+
+    &#main-stream {
+        position: fixed;
+        left: 0;
+    }
+
     &#stream-queue {
         display: inline-block;
-        float: left;
-        overflow-x: auto;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        overflow-x: scroll;
         overflow-y: hidden;
         text-align: center;
         white-space: nowrap;
+    }
+
+    &.on-deck-stream {
+        overflow: hidden;
+        flex-basis: 20%;
     }
 }
 
@@ -39,8 +60,35 @@ h3 {
     color: $light-purple;
 }
 
+iframe {
+    &#chat {
+        position: fixed;
+        right: 0;
+    }
+}
+
 p {
     &.beta {
         color: $light-purple;
+    }
+}
+
+span {
+    &.button {
+        font-weight: bold;
+        text-decoration: none;
+        background-color: $dark-purple;
+        padding: 2px 6px 2px 6px;
+        border: 1px solid #cccccc;
+        border-right-color: #333333;
+        border-bottom-color: #333333;
+    }
+
+    &.button-inactive {
+        @extend .button;
+        opacity: 0.5;
+        color: $dark-purple;
+        background-color: $dark-gray;
+        pointer-events: none;
     }
 }
