@@ -43,8 +43,6 @@
      * Run every 10 seconds to update streams on the page, based on their online status.
      */
     var get_stream_status = function () {
-        var original_streamers = streamers.slice();
-
         /*
          * Callback that follows a successful AJAX call to Twitch's API.
          */
@@ -70,39 +68,45 @@
                 }
             } );
 
+            var streams_changed = false;
             // If main streamer is still online, ONLY re-organize on-deck streams.
-            var streamers_to_parse = streamers.slice();
-            if ( streamers[ 0 ][ 'name' ] !== original_streamers[ 0 ][ 'name' ] ) {
-                document.getElementById( 'main-stream-player' ).src = 'http://player.twitch.tv/?channel=' + streamers[ 0 ][ 'name' ] + '&auto_play=true&muted=false';
+            if ( $( 'iframe#main-stream-player' )[ 0 ].src !== get_player_url( streamers[ 0 ][ 'name' ], false ) ) {
+                document.getElementById( 'main-stream-player' ).src = get_player_url( streamers[ 0 ][ 'name' ], false );
                 document.getElementById( 'chat' ).src = 'https://twitch.tv/' + streamers[ 0 ][ 'name' ] + '/chat?popout=';
+                streams_changed = true;
             }
-            streamers_to_parse.shift();
 
             // Re-organize on-deck streams if they have changed.
-            $.each( streamers_to_parse, function ( position, streamer ) {
-                if ( streamer[ 'name' ] !== streamers[ position + 1 ][ 'name' ] ) {
-                    var iframe_url = 'http://player.twitch.tv/?channel=' + streamer[ 'name' ] + '&auto_play=true&muted=true';
-                    $( 'div#stream-queue' ).children()[ position ].src( iframe_url )
+            var iframes = $( '.on-deck-stream' );
+            $.each( streamers.slice( 1 ), function ( position, streamer ) {
+                if ( iframes[ position ].src !== get_player_url( streamer[ 'name' ], true ) ) {
+                    iframes[ position ].src = get_player_url( streamer[ 'name' ], true );
+                    streams_changed = true;
                 }
             } );
 
             // Finally, reset the list of "switch to" buttons to match the current stream order and status.
-            if ( $( streamers ).not( original_streamers ).length > 0 || $( original_streamers ).not( streamers ).length > 0 ) {
+            if ( streams_changed ) {
                 $.each( $( '.stream-button' ), function ( position, button ) {
-                    // Check name.
-                    if ( button.text !== streamers[ position ][ 'name' ] ) {
-                        // If different, change name, src, and possibly style.
-                        button.text = streamers[ position ][ 'name' ];
-                        button.href = 'http://' + location.host + '/replace_main_stream?streamer=' + streamers[ position ][ 'name' ];
-                        if ( streamers[ position ][ 'status' ] === 'offline' ) {
-                            button.addClass( 'button-inactive' );
-                        } else {
-                            button.removeClass( 'button-inactive' );
-                        }
+                    button.text = streamers[ position ][ 'name' ];
+                    button.href = 'http://' + location.host + '/replace_main_stream?streamer=' + streamers[ position ][ 'name' ];
+                    if ( streamers[ position ][ 'status' ] === 'offline' ) {
+                        $( button ).addClass( 'button-inactive' );
+                        $( button ).removeClass( 'button' );
+                    } else {
+                        $( button ).removeClass( 'button-inactive' );
+                        $( button ).addClass( 'button' );
                     }
                 } );
             }
         };
+
+        /*
+         * Returns a Twitch player URL, filling in the given values of the streamer name and muted flag.
+         */
+        var get_player_url = function ( name, muted ) {
+            return 'http://player.twitch.tv/?channel=' + name + '&auto_play=true&muted=' + muted;
+        }
 
         // Update all streams' status.
         var streamer_names = $.map( streamers, function ( streamer, _ ) {
@@ -150,11 +154,6 @@
 
     // Do the initial video player re-size.
     update_height();
-
-    // Set all iframe overflows to hidden, since they don't seem to respond to CSS style.
-    $.each( $( 'iframe.stream' ), function ( _, iframe ) {
-        iframe.style.overflow = 'hidden';
-    } );
 </script>
 </body>
 </html>
