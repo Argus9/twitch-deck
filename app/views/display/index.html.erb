@@ -12,7 +12,7 @@
 
             <h3>How does it work?</h3>
             <p>After entering your preferred priority of streamers, TwitchDeck will put the first online streamer in the main player, in the center of the screen, with the audio set to max. Next, TwitchDeck will place any remaining online streams, in order, in the subway bar under the main player with the volume turned off. Finally, offline streams will be placed behind them.</p>
-            <p>Note that currently, TwitchDeck checks whether the main stream is online or not by sending out an HTTP GET request to Twitch's APIs every 10 seconds. Each request is only a few KBs in size, but consider this if you're using TwitchDeck on a metered connection.</p>
+            <p>Note that currently, TwitchDeck checks whether the main stream is online or not by sending out an HTTP GET request to Twitch's APIs every 15 seconds.</p>
 
             <h3>How do I use it?</h3>
             <p>Enter the names of the streamers you'd like to watch, in order of priority. For instance: <b>twitch-deck.herokuapp.com/day9tv&covert_muffin&kinggothalion</b> will display <a href="http://www.twitch.tv/day9tv">Day[9]</a>'s stream in the main player, with <a href="http://www.twitch.tv/covert_muffin">Covert_Muffin</a>'s and <a href="http://www.twitch.tv/kinggothalion">KingGothalion</a>'s streams below it. TwitchDeck will order the streams on-page first by whether they're online or offline, then by the priority you specify.</p>
