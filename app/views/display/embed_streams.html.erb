@@ -5,9 +5,9 @@
 </head>
 <body>
 <div class="flex-box-col">
-    <div id="stream-switch-tabs" class="flex-box-row">
+    <div id="stream-switch-tabs" class="flex-box-row" style="justify-content: space-between;">
         <div style="text-align: center; padding: 0 5px 0 5px;">Switch to...</div>
-        <div id="streamer-buttons">
+        <div id="streamer-buttons" style="flex: 1;">
             <% @streamers.each do |streamer| %>
                 <a class="stream-button button<%= '-inactive' if streamer['status'] == 'offline' %>" href="<%= url_for controller: :display, action: :replace_main_stream, 'streamer' => streamer['name'] %>"><%= streamer['name'] %></a>
             <% end %>
