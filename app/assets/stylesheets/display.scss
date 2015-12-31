@@ -7,11 +7,11 @@ a {
         font-weight: bold;
         text-decoration: none;
         background-color: $dark-purple;
-        padding: 2px 6px 2px 6px;
+        padding: 0 6px 0 6px;
         border: 1px solid #cccccc;
         border-right-color: #333333;
         border-bottom-color: #333333;
-}
+    }
 
     &.button-inactive {
         @extend .button;
@@ -28,27 +28,15 @@ body {
     font-family: arial;
 }
 
+body, html {
+    height: 100%;
+    width: 100%;
+}
+
 div {
-
-    &#main-stream {
-        position: fixed;
-        left: 0;
-    }
-
     &#stream-queue {
-        display: inline-block;
-        position: fixed;
-        bottom: 0;
-        left: 0;
         overflow-x: scroll;
         overflow-y: hidden;
-        text-align: center;
-        white-space: nowrap;
-    }
-
-    &.on-deck-stream {
-        overflow: hidden;
-        flex-basis: 20%;
     }
 }
 
@@ -61,9 +49,16 @@ h3 {
 }
 
 iframe {
+    &#main-stream-player {
+        flex: 3 1 auto;
+    }
+
     &#chat {
-        position: fixed;
-        right: 0;
+        flex: 0 0 auto;
+    }
+
+    &.on-deck-stream {
+        flex: 0 0 20%;
     }
 }
 
