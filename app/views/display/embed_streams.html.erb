@@ -4,29 +4,29 @@
     <%= render 'partials/google_analytics_init' %>
 </head>
 <body>
-<div class="flexbox-column">
-    <div class="col-md-12" id="stream-switch-tabs" style="display: flex; flex-shrink: 0; flex-grow: 0;">
-        <span>Switch to...
+<div class="flex-box-col">
+    <div id="stream-switch-tabs" class="flex-box-row">
+        <div style="text-align: center; padding: 0 5px 0 5px;">Switch to...</div>
+        <div id="streamer-buttons">
             <% @streamers.each do |streamer| %>
-            <a class="stream-button button<%= '-inactive' if streamer['status'] == 'offline' %>" href="<%= url_for controller: :display, action: :replace_main_stream, 'streamer' => streamer['name'] %>"><%= streamer['name'] %></a>
-        <% end %>
-            </span>
+                <a class="stream-button button<%= '-inactive' if streamer['status'] == 'offline' %>" href="<%= url_for controller: :display, action: :replace_main_stream, 'streamer' => streamer['name'] %>"><%= streamer['name'] %></a>
+            <% end %>
+        </div>
+        <%= render 'partials/beta_tag' %>
     </div>
-    <div class="flexbox-row" id="main-stream" width="100%" style="flex: 5;">
+    <div class="flex-box-row flex-box-content" id="main-stream">
         <iframe id="main-stream-player" class="stream" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false"></iframe>
         <iframe id="chat" frameborder="0" scrolling="no" src="https://twitch.tv/<%= @streamers.first['name'] %>/chat?popout="></iframe>
     </div>
     <% if @streamers.count > 1 %>
         <!-- Stream queue -->
-        <div class="col-md-12" id="stream-queue" style="flex: 1;">
+        <div class="flex-box-row" id="stream-queue">
             <% @streamers[1..-1].each do |streamer| %>
-                <iframe class="stream on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer['name'] %>&auto_play=true&muted=true" width="19%"></iframe>
+                <iframe class="stream on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer['name'] %>&auto_play=true&muted=true"></iframe>
             <% end %>
         </div>
     <% end %>
 </div>
-
-<%= render 'partials/beta_tag' %>
 
 <script>
     var streamers = JSON.parse( '<%= @streamers.to_json.html_safe %>' );
@@ -52,11 +52,11 @@
             // Re-organize streamer order based on online status, then by priority.
             streamers.sort( function ( left_obj, right_obj ) {
                 if ( left_obj[ 'status' ] === 'online' && right_obj[ 'status' ] === 'offline' ) {
-                    return -1;
+                    return - 1;
                 } else if ( left_obj[ 'status' ] === 'offline' && right_obj[ 'status' ] === 'online' ) {
                     return 1;
                 } else {
-                    return left_obj[ 'priority' ] < right_obj[ 'priority' ] ? -1 : 1;
+                    return left_obj[ 'priority' ] < right_obj[ 'priority' ] ? - 1 : 1;
                 }
             } );
 
@@ -113,41 +113,11 @@
         } );
     };
 
-    /*
-     * Resizes the video players so that there is no vertical scrolling needed.
-     */
-    var resize_ui_elements = function () {
-        var horizontal_scrollbar_height = 17;
-        var available_space_height = $( window ).innerHeight() - horizontal_scrollbar_height - $( '#stream-switch-tabs' ).height();
-
-        // Make sure the switch buttons don't disappear behind the privacy policy tag.
-        $( '#stream-switch-tabs' ).width( $( window ).width() - $( '.beta' ).width() );
-
-        // Re-calculate heights and apply them.
-        $('#main-stream' ).height('100%');
-
-        $( '#main-stream' ).height( available_space_height * 0.80 );
-        $( '.on-deck-stream' ).height( available_space_height * 0.20 );
-
-        // Set the on-deck stream widths to maintain a 16:9 aspect ratio.
-        $( '.on-deck-stream' ).width( $( '.on-deck-stream' ).height() * ( 16 / 9 ) );
-    };
-
-    // Whenever the window resizes, re-adjust the height of the main player div.
-//    $( window ).resize( function () {
-//        resize_ui_elements();
-//    } );
-
     // Set up an interval to update stream layouts on the page every 15 seconds.
     setInterval( function () {
         // Check if main stream is online
         get_stream_status();
     }, 15000 );
-
-    // Do the initial video player re-size once the page is fully loaded.
-//    resize_ui_elements();
-//    $( '#main-stream' ).width( "100%" );
-//    $( '#main-stream' ).top( $( '#stream-switch-tabs' ).height() );
 </script>
 </body>
 </html>
