@@ -11,6 +11,11 @@ a {
         border: 1px solid #cccccc;
         border-right-color: #333333;
         border-bottom-color: #333333;
+
+        &:hover {
+            color: white;
+            background-color: $light-purple;
+        }
     }
 
     &.button-inactive {
@@ -18,6 +23,13 @@ a {
         opacity: 0.5;
         color: $dark-purple;
         background-color: $dark-gray;
+        pointer-events: none;
+    }
+
+    &.button-active {
+        @extend .button;
+        color: white;
+        background-color: $light-purple;
         pointer-events: none;
     }
 }
@@ -28,10 +40,10 @@ body {
     font-family: arial;
 }
 
-body, html {
-    height: 100%;
-    width: 100%;
-}
+//body, html {
+//    height: 100%;
+//    width: 100%;
+//}
 
 div {
     &#stream-queue {
@@ -46,20 +58,6 @@ h1 {
 
 h3 {
     color: $light-purple;
-}
-
-iframe {
-    &#main-stream-player {
-        flex: 3 1 auto;
-    }
-
-    &#chat {
-        flex: 0 0 auto;
-    }
-
-    &.on-deck-stream {
-        flex: 0 0 20%;
-    }
 }
 
 p {
