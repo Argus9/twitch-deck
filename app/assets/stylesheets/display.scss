@@ -156,3 +156,18 @@ iframe {
 .beta {
     color: $light-purple;
 }
+
+::-webkit-scrollbar {
+    color: $purple;
+    background-color: $purple;
+}
+
+::-webkit-scrollbar-track {
+    color: $dark-purple;
+    background-color: $dark-purple;
+}
+
+::-webkit-scrollbar-thumb {
+    color: $light-purple;
+    background-color: $light-purple;
+}
