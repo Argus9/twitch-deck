@@ -59,6 +59,16 @@ h3 {
 
 iframe {
     border: 1px solid $light-purple;
+
+    &#main-stream-player {
+        border-left: 2px solid $light-purple;
+        border-top: 2px solid $light-purple;
+    }
+
+    &#chat {
+        border-top: 2px solid $light-purple;
+        border-right: 2px solid $light-purple;
+    }
 }
 
 #main-container {
@@ -118,7 +128,6 @@ iframe {
         &:nth-child(3) {
             flex: 0 0 248px;
             flex-wrap: nowrap;
-            padding-bottom: 15px;
 
             > iframe {
                 flex: 0 0 410px;
@@ -130,6 +139,18 @@ iframe {
 #stream-queue {
     overflow-x: auto;
     overflow-y: hidden;
+
+    > iframe {
+        border-bottom: 2px solid $light-purple;
+
+        &:nth-child(1) {
+            border-left: 2px solid $light-purple;
+        }
+
+        &:nth-last-child(1) {
+            border-right: 2px solid $light-purple;
+        }
+    }
 }
 
 .beta {
