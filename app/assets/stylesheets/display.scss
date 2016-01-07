@@ -2,6 +2,10 @@
 
 a {
     color: $light-purple;
+}
+
+span {
+    color: $light-purple;
 
     &.button {
         font-weight: bold;
@@ -11,6 +15,12 @@ a {
         border: 1px solid #cccccc;
         border-right-color: #333333;
         border-bottom-color: #333333;
+
+        &:hover {
+            color: white;
+            background-color: $light-purple;
+            cursor: pointer;
+        }
     }
 
     &.button-inactive {
@@ -18,6 +28,13 @@ a {
         opacity: 0.5;
         color: $dark-purple;
         background-color: $dark-gray;
+        pointer-events: none;
+    }
+
+    &.button-active {
+        @extend .button;
+        color: white;
+        background-color: $light-purple;
         pointer-events: none;
     }
 }
@@ -30,14 +47,6 @@ body {
 
 body, html {
     height: 100%;
-    width: 100%;
-}
-
-div {
-    &#stream-queue {
-        overflow-x: auto;
-        overflow-y: hidden;
-    }
 }
 
 h1 {
@@ -49,41 +58,101 @@ h3 {
 }
 
 iframe {
+    border: 1px solid $light-purple;
+
     &#main-stream-player {
-        flex: 3 1 auto;
+        border-left: 2px solid $light-purple;
+        border-top: 2px solid $light-purple;
     }
 
     &#chat {
-        flex: 0 0 auto;
-    }
-
-    &.on-deck-stream {
-        flex: 0 0 20%;
+        border-top: 2px solid $light-purple;
+        border-right: 2px solid $light-purple;
     }
 }
 
-p {
-    &.beta {
-        color: $light-purple;
+#main-container {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    > div {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-left: 0;
+        margin-right: 0;
+
+        // "Switch to" div
+        &:nth-child(1) {
+            flex: 0 0 auto;
+
+            > div {
+                // "Switch to..." text
+                &:nth-child(1) {
+                    flex: 0 0 auto;
+                    padding: 0 5px 0 5px;
+                }
+
+                // Streamer buttons
+                &:nth-child(2) {
+                    flex: 1;
+                }
+
+                // Menu
+                &:nth-child(3) {
+                    flex: 0 0 auto;
+                    padding: 0 5px 0 5px;
+                }
+            }
+        }
+
+        // Main div
+        &:nth-child(2) {
+            flex: 1;
+
+            > iframe {
+                // Main stream player
+                &:nth-child(1) {
+                    flex: 6 0 274px;
+                }
+
+                // Chat panel
+                &:nth-child(2) {
+                    flex: 1 0 340px;
+                }
+            }
+        }
+
+        // On-deck streams div
+        &:nth-child(3) {
+            flex: 0 0 248px;
+            flex-wrap: nowrap;
+
+            > iframe {
+                flex: 0 0 410px;
+            }
+        }
     }
 }
 
-span {
-    &.button {
-        font-weight: bold;
-        text-decoration: none;
-        background-color: $dark-purple;
-        padding: 2px 6px 2px 6px;
-        border: 1px solid #cccccc;
-        border-right-color: #333333;
-        border-bottom-color: #333333;
-    }
+#stream-queue {
+    overflow-x: auto;
+    overflow-y: hidden;
 
-    &.button-inactive {
-        @extend .button;
-        opacity: 0.5;
-        color: $dark-purple;
-        background-color: $dark-gray;
-        pointer-events: none;
+    > iframe {
+        border-bottom: 2px solid $light-purple;
+
+        &:nth-child(1) {
+            border-left: 2px solid $light-purple;
+        }
+
+        &:nth-last-child(1) {
+            border-right: 2px solid $light-purple;
+        }
     }
+}
+
+.beta {
+    color: $light-purple;
 }
