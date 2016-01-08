@@ -12,7 +12,7 @@
                 <span class="stream-button button<%= '-inactive' if streamer['status'] === 'offline' %><%= '-active' if position === 0 && streamer['status'] === 'online' %>"><%= streamer['name'] %></span>
             <% end %>
         </div>
-        <%= render 'partials/beta_tag' %>
+        <%= render 'partials/menu' %>
     </div>
     <div id="main-stream">
         <iframe id="main-stream-player" class="stream" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false"></iframe>
@@ -152,6 +152,18 @@
                 streamer[ 'priority' ] = position;
             } );
             reticulate_player_splines();
+        } );
+
+        $( '#theater_mode_toggle' ).click( function () {
+            if ( $( '#theater_mode_toggle' ).hasClass( 'theater_mode_active' ) ) {
+                $( '#stream-queue' ).removeClass( 'theater' );
+                $( '#chat' ).removeClass( 'theater' );
+                $( '#theater_mode_toggle' ).removeClass( 'theater_mode_active' );
+            } else {
+                $( '#stream-queue' ).addClass( 'theater' );
+                $( '#chat' ).addClass( 'theater' );
+                $( '#theater_mode_toggle' ).addClass( 'theater_mode_active' );
+            }
         } );
 
         // Set up an interval to update stream layouts on the page every 15 seconds.
