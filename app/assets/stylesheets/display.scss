@@ -120,6 +120,10 @@ iframe {
                 // Chat panel
                 &:nth-child(2) {
                     flex: 1 0 340px;
+
+                    &.theater {
+                        flex: 0 0 340px;
+                    }
                 }
             }
         }
@@ -128,6 +132,11 @@ iframe {
         &:nth-child(3) {
             flex: 0 0 253px;
             flex-wrap: nowrap;
+
+            &.theater {
+                flex-basis: 0px;
+                overflow-x: hidden;
+            }
 
             > iframe {
                 flex: 0 0 393px;
