@@ -133,7 +133,7 @@ iframe {
                 &:nth-child(2) {
                     flex: 1 0 340px;
 
-                    &.theater &:not(.hide_chat) {
+                    &.theater:not(.hide_chat) {
                         flex: 0 0 340px;
                     }
 
