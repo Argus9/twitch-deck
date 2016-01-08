@@ -157,10 +157,12 @@
         $( '#theater_mode_toggle' ).click( function () {
             if ( $( '#theater_mode_toggle' ).hasClass( 'theater_mode_active' ) ) {
                 $( '#stream-queue' ).removeClass( 'theater' );
+                $( '#main-stream-player' ).removeClass( 'theater' );
                 $( '#chat' ).removeClass( 'theater' );
                 $( '#theater_mode_toggle' ).removeClass( 'theater_mode_active' );
             } else {
                 $( '#stream-queue' ).addClass( 'theater' );
+                $( '#main-stream-player' ).addClass( 'theater' );
                 $( '#chat' ).addClass( 'theater' );
                 $( '#theater_mode_toggle' ).addClass( 'theater_mode_active' );
             }
@@ -169,9 +171,11 @@
         $( '#hide_chat_toggle' ).click( function () {
             if ( $( '#hide_chat_toggle' ).hasClass( 'hide_chat_mode_active' ) ) {
                 $( '#chat' ).removeClass( 'hide_chat' );
+                $( '#main-stream-player' ).removeClass( 'hide_chat' );
                 $( '#hide_chat_toggle' ).removeClass( 'hide_chat_mode_active' );
             } else {
                 $( '#chat' ).addClass( 'hide_chat' );
+                $( '#main-stream-player' ).addClass( 'hide_chat' );
                 $( '#hide_chat_toggle' ).addClass( 'hide_chat_mode_active' );
             }
         } );
