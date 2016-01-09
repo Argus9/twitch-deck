@@ -63,11 +63,23 @@ iframe {
     &#main-stream-player {
         border-left: 2px solid $light-purple;
         border-top: 2px solid $light-purple;
+
+        &.hide_chat {
+            border-right: 2px solid $light-purple;
+        }
+
+        &.theater {
+            border-bottom: 2px solid $light-purple;
+        }
     }
 
     &#chat {
         border-top: 2px solid $light-purple;
         border-right: 2px solid $light-purple;
+
+        &.theater {
+            border-bottom: 2px solid $light-purple;
+        }
     }
 }
 
@@ -121,8 +133,13 @@ iframe {
                 &:nth-child(2) {
                     flex: 1 0 340px;
 
-                    &.theater {
+                    &.theater:not(.hide_chat) {
                         flex: 0 0 340px;
+                    }
+
+                    &.hide_chat {
+                        flex: 0 0 0px;
+                        border: hidden;
                     }
                 }
             }
@@ -136,6 +153,7 @@ iframe {
             &.theater {
                 flex-basis: 0px;
                 overflow-x: hidden;
+                border-right: 1px solid $light-purple;
             }
 
             > iframe {
