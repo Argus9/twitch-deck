@@ -3,7 +3,7 @@
     <title>TwitchDeck</title>
     <%= render 'partials/google_analytics_init' %>
 </head>
-<body>
+<body class="noscroll">
 <div id="main-container">
     <div id="stream-switch-tabs">
         <div id="switch-label">Switch to...</div>
@@ -185,6 +185,12 @@
             // Check if main stream is online
             get_stream_status();
         }, 15000 );
+
+        // Sets up a heartbeat to report back to Google Analytics every 4.5 minutes to keep the "Real Time" metric
+        // alive longer than the 5-minute timeout.
+        setInterval( function () {
+            _gaq.push( [ '_trackEvent', 'Video', 'Playing', 'User is watching streams.' ] )
+        }, 270000 );
     } );
 </script>
 </body>
