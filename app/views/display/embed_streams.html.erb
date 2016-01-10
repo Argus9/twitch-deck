@@ -189,7 +189,7 @@
         // Sets up a heartbeat to report back to Google Analytics every 4.5 minutes to keep the "Real Time" metric
         // alive longer than the 5-minute timeout.
         setInterval( function () {
-            _gaq.push( [ '_trackEvent', 'Video', 'Playing', 'User is watching streams.' ] )
+            ga( 'send', 'active_viewer' );
         }, 270000 );
     } );
 </script>
