@@ -3,7 +3,7 @@
     <title>TwitchDeck</title>
     <%= render 'partials/google_analytics_init' %>
 </head>
-<body>
+<body class="noscroll">
 <div id="main-container">
     <div id="stream-switch-tabs">
         <div id="switch-label">Switch to...</div>
@@ -186,6 +186,7 @@
             get_stream_status();
         }, 15000 );
 
+        // Sets up a heartbeat to report active users beyond the normal 5 minute timeout.
         setInterval(function(){
             ga('send', {
                 hitType: 'event',

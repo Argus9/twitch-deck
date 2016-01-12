@@ -5,16 +5,14 @@
         <%= render 'partials/google_analytics_init' %>
     </head>
     <body>
-        <div class="container-fluid">
-            <%= render 'partials/menu' %>
+        <div style="margin: 0 10% 0 10%;">
             <h1>Welcome to the TwitchDeck Beta!</h1>
             <h3>What is TwitchDeck?</h3>
-            <p>A web application that lets you watch multiple Twitch streams on the same page, at the same time. Inspired by the fantastic <a href="http://www.multitwitch.tv">MultiTwitch</a>, TwitchDeck displays a "primary" streamer in a larger player, with your other streamers displayed below in smaller players, with volume turned down by default.</p>
+            <p>A web application that lets you watch multiple Twitch streams on the same page, at the same time. TwitchDeck displays a "primary" streamer in a larger player, with your other streamers displayed below in smaller players, with volume turned down by default.</p>
             <p>For a demo of the app in action, click <%= link_to 'here', demo_path %>.</p>
 
             <h3>How does it work?</h3>
             <p>After entering your preferred priority of streamers, TwitchDeck will put the first online streamer in the main player, in the center of the screen, with the audio set to max. Next, TwitchDeck will place any remaining online streams, in order, in the subway bar under the main player with the volume turned off. Finally, offline streams will be placed behind them.</p>
-            <p>Note that currently, TwitchDeck checks whether the main stream is online or not by sending out an HTTP GET request to Twitch's APIs every 15 seconds.</p>
 
             <h3>How do I use it?</h3>
             <p>Enter the names of the streamers you'd like to watch, in order of priority. For instance: <b>twitch-deck.herokuapp.com/day9tv&covert_muffin&kinggothalion</b> will display <a href="http://www.twitch.tv/day9tv">Day[9]</a>'s stream in the main player, with <a href="http://www.twitch.tv/covert_muffin">Covert_Muffin</a>'s and <a href="http://www.twitch.tv/kinggothalion">KingGothalion</a>'s streams below it. TwitchDeck will order the streams on-page first by whether they're online or offline, then by the priority you specify.</p>

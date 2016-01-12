@@ -47,6 +47,10 @@ body {
 
 body, html {
     height: 100%;
+
+    &.noscroll {
+        overflow-y: hidden;
+    }
 }
 
 h1 {
