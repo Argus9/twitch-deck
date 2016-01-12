@@ -185,6 +185,15 @@
             // Check if main stream is online
             get_stream_status();
         }, 15000 );
+
+        setInterval(function(){
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'Videos',
+                eventAction: 'play',
+                eventLabel: 'Heartbeat'
+            });
+        }, 270000);
     } );
 </script>
 </body>
