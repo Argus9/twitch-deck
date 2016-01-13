@@ -142,8 +142,7 @@ iframe {
                     }
 
                     &.hide_chat {
-                        flex: 0 0 0px;
-                        border: hidden;
+                        display: none;
                     }
                 }
             }
@@ -155,13 +154,15 @@ iframe {
             flex-wrap: nowrap;
 
             &.theater {
-                flex-basis: 0px;
-                overflow-x: hidden;
-                border-right: 1px solid $light-purple;
+                display: none;
             }
 
             > iframe {
                 flex: 0 0 393px;
+
+                &.theater {
+                    display: none;
+                }
             }
         }
     }
