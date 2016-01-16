@@ -53,6 +53,16 @@ body, html {
     }
 }
 
+div#chat-holder {
+    border: 1px solid $light-purple;
+    border-top: 2px solid $light-purple;
+    border-right: 2px solid $light-purple;
+
+    > iframe.hidden {
+        display: none;
+    }
+}
+
 h1 {
     color: $light-purple;
 }
@@ -78,12 +88,25 @@ iframe {
     }
 
     &#chat {
-        border-top: 2px solid $light-purple;
-        border-right: 2px solid $light-purple;
+        border: none;
 
         &.theater {
             border-bottom: 2px solid $light-purple;
         }
+    }
+}
+
+select {
+    color: white;
+    background-color: $light-purple;
+}
+
+select option {
+    color: $light-purple;
+    background-color: $dark-purple;
+
+    &:hover {
+        @extend select
     }
 }
 
@@ -127,15 +150,17 @@ iframe {
         &:nth-child(2) {
             flex: 1;
 
-            > iframe {
+            > * {
                 // Main stream player
                 &:nth-child(1) {
                     flex: 6 0 274px;
                 }
 
-                // Chat panel
+                // Chat panel div
                 &:nth-child(2) {
                     flex: 1 0 340px;
+                    display: flex;
+                    flex-direction: column;
 
                     &.theater:not(.hide_chat) {
                         flex: 0 0 340px;
@@ -143,6 +168,18 @@ iframe {
 
                     &.hide_chat {
                         display: none;
+                    }
+
+                    > {
+                        // Chat selector
+                        //select {
+                        //    flex: 0 0 auto;
+                        //}
+
+                        // Chat iframe
+                        iframe {
+                            flex: 1 0 100%;
+                        }
                     }
                 }
             }
