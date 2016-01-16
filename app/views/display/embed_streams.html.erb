@@ -16,7 +16,14 @@
     </div>
     <div id="main-stream">
         <iframe id="main-stream-player" class="stream" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false"></iframe>
-        <iframe id="chat" scrolling="no" src="https://twitch.tv/<%= @streamers.first['name'] %>/chat?popout="></iframe>
+        <div id="chat-holder">
+            <select id="chat-changer">
+                <% @streamers.each do |streamer| %>
+                    <option value="<%= streamer['name'] %>"><%= streamer['name'] %></option>
+                <% end %>
+            </select>
+            <iframe id="chat" scrolling="no" src="https://twitch.tv/<%= @streamers.first['name'] %>/chat?popout="></iframe>
+        </div>
     </div>
     <div id="stream-queue">
         <% if @streamers.count > 1 %>
@@ -105,6 +112,15 @@
                 }
             } );
 
+            // Update the drop-down order and selected item to match the new order of streamers.
+            if ( streams_changed ) {
+                var chat_select = $( '#chat-changer' );
+                chat_select.empty();
+                $.each(streamers, function(_, streamer){
+                    chat_select.append( '<option value="' + streamer['name'] +'">' + streamer['name'] +'</option>' );
+                });
+            }
+
             // Finally, reset the list of "switch to" buttons to match the current stream order and status.
             if ( streams_changed ) {
                 $.each( $( '.stream-button' ), function ( position, button ) {
@@ -151,6 +167,7 @@
             $.each( streamers, function ( position, streamer ) {
                 streamer[ 'priority' ] = position;
             } );
+
             reticulate_player_splines();
         } );
 
@@ -158,29 +175,29 @@
             if ( $( '#theater_mode_toggle' ).hasClass( 'theater_mode_active' ) ) {
                 $( '#stream-queue' ).removeClass( 'theater' );
                 $( '#main-stream-player' ).removeClass( 'theater' );
-                $( '#chat' ).removeClass( 'theater' );
+                $( '#chat-holder' ).removeClass( 'theater' );
                 $( '#theater_mode_toggle' ).removeClass( 'theater_mode_active' );
             } else {
                 $( '#stream-queue' ).addClass( 'theater' );
                 $( '#main-stream-player' ).addClass( 'theater' );
-                $( '#chat' ).addClass( 'theater' );
+                $( '#chat-holder' ).addClass( 'theater' );
                 $( '#theater_mode_toggle' ).addClass( 'theater_mode_active' );
             }
         } );
 
         $( '#hide_chat_toggle' ).click( function () {
             if ( $( '#hide_chat_toggle' ).hasClass( 'hide_chat_mode_active' ) ) {
-                $( '#chat' ).removeClass( 'hide_chat' );
+                $( '#chat-holder' ).removeClass( 'hide_chat' );
                 $( '#main-stream-player' ).removeClass( 'hide_chat' );
                 $( '#hide_chat_toggle' ).removeClass( 'hide_chat_mode_active' );
             } else {
-                $( '#chat' ).addClass( 'hide_chat' );
+                $( '#chat-holder' ).addClass( 'hide_chat' );
                 $( '#main-stream-player' ).addClass( 'hide_chat' );
                 $( '#hide_chat_toggle' ).addClass( 'hide_chat_mode_active' );
             }
         } );
 
-        var resize_ondeck_streams = function(){
+        var resize_ondeck_streams = function () {
             $( '.on-deck-stream' ).css( 'flex-basis', ($( window ).innerWidth() * 0.25) + 'px' );
             $( '#stream-queue' ).css( 'flex-basis', parseInt( $( '.on-deck-stream' ).css( 'flex-basis' ).replace( 'px', '' ) * ( 10 / 16 ) ) + 'px' );
         }
@@ -188,6 +205,11 @@
         // Whenever the window resizes, re-size on-deck streams to maintain aspect ratio.
         $( window ).resize( function () {
             resize_ondeck_streams()
+        } );
+
+        // Swap a different chat window whenever the drop-down box changes.
+        $( '#chat-changer' ).change( function () {
+            $( '#chat' )[ 0 ].src = 'https://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat?popout=';
         } );
 
         // Set up an interval to update stream layouts on the page every 15 seconds.
