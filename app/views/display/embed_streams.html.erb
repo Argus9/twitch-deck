@@ -52,11 +52,11 @@
                 // Re-organize streamer order based on online status, then by priority.
                 streamers.sort( function ( left_obj, right_obj ) {
                     if ( left_obj[ 'status' ] === 'online' && right_obj[ 'status' ] === 'offline' ) {
-                        return - 1;
+                        return -1;
                     } else if ( left_obj[ 'status' ] === 'offline' && right_obj[ 'status' ] === 'online' ) {
                         return 1;
                     } else {
-                        return left_obj[ 'priority' ] < right_obj[ 'priority' ] ? - 1 : 1;
+                        return left_obj[ 'priority' ] < right_obj[ 'priority' ] ? -1 : 1;
                     }
                 } );
 
@@ -97,7 +97,7 @@
             var iframes = $( '.on-deck-stream' );
             $.each( streamers.slice( 1 ), function ( position, streamer ) {
                 if ( iframes[ position ].src !== get_player_url( streamer[ 'name' ], true ) ) {
-                    if ( ! streams_changed ) {
+                    if ( !streams_changed ) {
                         console.log( "Re-ordering on-deck streamers." );
                     }
                     iframes[ position ].src = get_player_url( streamer[ 'name' ], true );
@@ -180,6 +180,16 @@
             }
         } );
 
+        var resize_ondeck_streams = function(){
+            $( '.on-deck-stream' ).css( 'flex-basis', ($( window ).innerWidth() * 0.25) + 'px' );
+            $( '#stream-queue' ).css( 'flex-basis', parseInt( $( '.on-deck-stream' ).css( 'flex-basis' ).replace( 'px', '' ) * ( 10 / 16 ) ) + 'px' );
+        }
+
+        // Whenever the window resizes, re-size on-deck streams to maintain aspect ratio.
+        $( window ).resize( function () {
+            resize_ondeck_streams()
+        } );
+
         // Set up an interval to update stream layouts on the page every 15 seconds.
         setInterval( function () {
             // Check if main stream is online
@@ -187,14 +197,17 @@
         }, 15000 );
 
         // Sets up a heartbeat to report active users beyond the normal 5 minute timeout.
-        setInterval(function(){
-            ga('send', {
+        setInterval( function () {
+            ga( 'send', {
                 hitType: 'event',
                 eventCategory: 'Videos',
                 eventAction: 'play',
                 eventLabel: 'Heartbeat'
-            });
-        }, 270000);
+            } );
+        }, 270000 );
+
+        // Resize the on-deck streams at startup to maintain aspect ratio.
+        resize_ondeck_streams();
     } );
 </script>
 </body>
