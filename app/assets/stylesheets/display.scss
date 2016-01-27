@@ -1,5 +1,8 @@
 @import 'variables';
 
+// ====== //
+// Normal //
+// ====== //
 a {
     color: $light-purple;
 }
@@ -20,6 +23,14 @@ span {
             color: white;
             background-color: $light-purple;
             cursor: pointer;
+        }
+
+        &:active {
+            // Invert colors - gives the illusion of a depressed button
+            border-right-color: #cccccc;
+            border-bottom-color: #cccccc;
+            border-left-color: #333333;
+            border-top-color: #333333;
         }
     }
 
@@ -53,47 +64,12 @@ body, html {
     }
 }
 
-div#chat-holder {
-    border: 1px solid $light-purple;
-    border-top: 2px solid $light-purple;
-    border-right: 2px solid $light-purple;
-
-    > iframe.hidden {
-        display: none;
-    }
-}
-
 h1 {
     color: $light-purple;
 }
 
 h3 {
     color: $light-purple;
-}
-
-iframe {
-    border: 1px solid $light-purple;
-
-    &#main-stream-player {
-        border-left: 2px solid $light-purple;
-        border-top: 2px solid $light-purple;
-
-        &.hide_chat {
-            border-right: 2px solid $light-purple;
-        }
-
-        &.theater {
-            border-bottom: 2px solid $light-purple;
-        }
-    }
-
-    &#chat {
-        border: none;
-
-        &.theater {
-            border-bottom: 2px solid $light-purple;
-        }
-    }
 }
 
 select {
@@ -110,120 +86,127 @@ select option {
     }
 }
 
-#main-container {
-    min-height: 100%;
+#chat-container {
+    flex-basis: 340px;
+    flex-grow: 1;
+    flex-shrink: 0;
+
     display: flex;
     flex-direction: column;
 
-    > div {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        margin-left: 0;
-        margin-right: 0;
+    border: 0px;
+    border-left: 2px solid $light-purple;
 
-        // "Switch to" div
-        &:nth-child(1) {
-            flex: 0 0 auto;
+    > iframe {
+        flex-basis: 100%;
+        flex-grow: 1;
+        flex-shrink: 0;
 
-            > div {
-                // "Switch to..." text
-                &:nth-child(1) {
-                    flex: 0 0 auto;
-                    padding: 0 5px 0 5px;
-                }
-
-                // Streamer buttons
-                &:nth-child(2) {
-                    flex: 1;
-                }
-
-                // Menu
-                &:nth-child(3) {
-                    flex: 0 0 auto;
-                    padding: 0 5px 0 5px;
-                }
-            }
-        }
-
-        // Main div
-        &:nth-child(2) {
-            flex: 1;
-
-            > * {
-                // Main stream player
-                &:nth-child(1) {
-                    flex: 6 0 274px;
-                }
-
-                // Chat panel div
-                &:nth-child(2) {
-                    flex: 1 0 340px;
-                    display: flex;
-                    flex-direction: column;
-
-                    &.theater:not(.hide_chat) {
-                        flex: 0 0 340px;
-                    }
-
-                    &.hide_chat {
-                        display: none;
-                    }
-
-                    > {
-                        // Chat selector
-                        //select {
-                        //    flex: 0 0 auto;
-                        //}
-
-                        // Chat iframe
-                        iframe {
-                            flex: 1 0 100%;
-                        }
-                    }
-                }
-            }
-        }
-
-        // On-deck streams div
-        &:nth-child(3) {
-            flex: 0 0 253px;
-            flex-wrap: nowrap;
-
-            &.theater {
-                display: none;
-            }
-
-            > iframe {
-                flex: 0 0 393px;
-
-                &.theater {
-                    display: none;
-                }
-            }
-        }
+        border: 0px;
     }
 }
 
+#main-container {
+    min-height: 100%;
+    display: flex;
+    display: -ms-flexbox;
+    flex-direction: column;
+}
+
+#main-stream {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 0;
+
+    border: 2px solid $light-purple;
+}
+
+#main-stream-player {
+    flex-basis: 274px;
+    flex-grow: 6;
+    flex-shrink: 0;
+
+    border: 0px;
+}
+
+
+
 #stream-queue {
+    border: 2px solid $light-purple;
+    border-top: 0px;
+    flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
 
     > iframe {
-        border-bottom: 2px solid $light-purple;
+        border: 0px;
+        border-left: 1px solid $light-purple;
+        border-right: 1px solid $light-purple;
 
         &:nth-child(1) {
-            border-left: 2px solid $light-purple;
+            border-left: 0px;
         }
 
         &:nth-last-child(1) {
-            border-right: 2px solid $light-purple;
+            border-right: 0px;
         }
     }
 }
 
+#stream-switch-tabs {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-left: 0px;
+    margin-right: 0px;
+
+    > div {
+        // "Switch to..." text
+        &:nth-child(1) {
+            flex-basis: auto;
+            flex-grow: 0;
+            flex-shrink: 0;
+            padding: 0 5px 0 5px;
+        }
+
+        // Streamer buttons
+        &:nth-child(2) {
+            flex-basis: auto;
+            flex-grow: 1;
+            flex-shrink: 1;
+            flex-wrap: wrap;
+        }
+
+        // Menu
+        &:nth-child(3) {
+            flex-basis: auto;
+            flex-grow: 0;
+            flex-shrink: 0;
+            padding: 0 5px 0 5px;
+        }
+    }
+}
+
+
+
 .beta {
     color: $light-purple;
+}
+
+// Flexbox stuff
+.flex_row {
+    display: flex;
+    flex-direction: row;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.flex_wrap {
+    flex-wrap: wrap;
+}
+
+.on-deck-stream {
+    flex: 0 0 auto;
 }
 
 ::-webkit-scrollbar {
@@ -240,4 +223,48 @@ select option {
     color: $light-purple;
     background-color: $light-purple;
     border-radius: 100px;
+}
+
+// ==================================================================== //
+// Theater mode - Main stream and chat only. All other streamers hidden //
+// ==================================================================== //
+.theater {
+    &#chat-container {
+        &:not(.hide_chat) {
+            flex-basis: 340px;
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+    }
+
+    &#stream-queue {
+        display: none;
+    }
+
+}
+// ========= //
+// Hide Chat //
+// ========= //
+.hide_chat {
+    &#chat-container {
+        display: none;
+    }
+}
+// ====================================== //
+// Two Streamers - 50/50 horizontal split //
+// ====================================== //
+.split_two {
+
+}
+// ========================================== //
+// Three Streamers - 50/25/25 split, two rows //
+// ========================================== //
+.split_three {
+
+}
+// ================================================== //
+// Four Streamers - 25/25/25/25 split, four quadrants //
+// ================================================== //
+.split_four {
+
 }
