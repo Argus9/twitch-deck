@@ -15,7 +15,13 @@
         <%= render 'partials/menu' %>
     </div>
     <div id="main-stream" class="flex_row">
-        <iframe id="main-stream-player" class="stream" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false"></iframe>
+        <div id="main-stream-container">
+            <iframe id="main-stream-player" class="stream" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false"></iframe>
+            <% case @streamers.count %>
+            <% when 2 %>
+                <iframe class="right-stream" src="http://player.twitch.tv/?channel=<%= @streamers[1]['name'] %>&auto_play=true&muted=false"></iframe>
+            <% end %>
+        </div>
         <div id="chat-container">
             <select id="chat-changer">
                 <% @streamers.each do |streamer| %>
@@ -211,8 +217,34 @@
     } );
 
     var resize_ondeck_streams = function () {
-        $( '.on-deck-stream' ).width( $( window ).innerWidth() * 0.20 + 'px' );
-        $( '.on-deck-stream' ).height( $( '.on-deck-stream' ).width() * (9 / 16) );
+        var window_width = $( window ).innerWidth();
+
+        // Depending on window resolution, resize the on-deck streams so a certain amount are visible.
+        var width_divisor;
+        if (window_width > 2240){
+            // 8 streams in view
+            width_divisor = .125;
+        } else if (window_width <= 2240 && window_width > 1600) {
+            // 5 streams in view
+            width_divisor = .20;
+        } else if (window_width <= 1600 && window_width > 1000) {
+            // 4 streams in view
+            width_divisor = .25;
+        } else {
+            // 2 streams in view
+            width_divisor = .50;
+        }
+
+        var width = ($( window ).innerWidth() * width_divisor) - 2;
+        var height = width * 9 / 16;
+        $( '.on-deck-stream' ).width( width + 'px' );
+        $( '.on-deck-stream' ).height( height + 'px' );
+
+        // Trigger a style recalculation
+        document.body.style.zoom = 1.0000001;
+        setTimeout( function () {
+            document.body.style.zoom = 1;
+        }, 50 ); //allow some time to flush the css buffer.
     }
 
     // Whenever the window resizes, re-size on-deck streams to maintain aspect ratio.
@@ -242,9 +274,7 @@
     }, 270000 );
 
     // Resize the on-deck streams at startup to maintain aspect ratio.
-    $( document ).ready( function () {
-        resize_ondeck_streams();
-    } );
+    resize_ondeck_streams();
 </script>
 </body>
 </html>
