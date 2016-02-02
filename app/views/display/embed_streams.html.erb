@@ -246,12 +246,8 @@
         $( '.on-deck-stream' ).height( height + 'px' );
 
         // Trigger a style recalculation
-        var stream_queue = $( '#stream-queue' );
-        if ( stream_queue.hasClass( 'prelative' ) ) {
-            stream_queue.removeClass( 'prelative' );
-        } else {
-            stream_queue.addClass( 'prelative' );
-        }
+        $('body').css('display', 'table').height();
+        $('body').css('display', 'block');
     }
 
     // Swap a different chat window whenever the drop-down box changes.
