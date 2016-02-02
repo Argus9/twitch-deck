@@ -33,7 +33,7 @@
                     <option value="<%= streamer['name'] %>"><%= streamer['name'] %></option>
                 <% end %>
             </select>
-            <iframe id="chat_embed" scrolling="no" src="<%= ENV['OMIT_CHAT'] == 'true' && @streamers.count > (ENV['OMIT_CHAT_THRESHOLD'] || 4) ? '' : "https://twitch.tv/#{ @streamers.first['name'] }/chat" %>"></iframe>
+            <iframe id="chat_embed" scrolling="no" src="<%= ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i ? '' : "https://twitch.tv/#{ @streamers.first['name'] }/chat" %>"></iframe>
         </div>
     </div>
     <div id="stream-queue" class="flex_row">
@@ -256,7 +256,7 @@
 
     // Swap a different chat window whenever the drop-down box changes.
     $( '#chat-changer' ).change( function () {
-        <% if ENV['OMIT_CHAT'] == true && @streamers.count > (ENV['OMIT_CHAT_THRESHOLD'] || 4) %>
+        <% if ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i %>
         $( '#chat_embed' )[ 0 ].src = 'https://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat';
         <% else %>
         alert( "Chat is currently omitted due to a bug in Twitch's API. To chat, open a new tab and visit http://www.twitch.tv/" + $( '#chat-changer option:selected' ).text() + '/chat' );
@@ -314,7 +314,7 @@
         }
     }
 
-    <% if ENV['OMIT_CHAT'] == true && @streamers.count > (ENV['OMIT_CHAT_THRESHOLD'] || 4) %>
+    <% if ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i %>
         alert( "Chat is currently omitted due to a bug in Twitch's API. To chat, open a new tab and visit http://www.twitch.tv/" + streamers[ 0 ][ 'name' ] + '/chat' );
     <% end %>
 </script>
