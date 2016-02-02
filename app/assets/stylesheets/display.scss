@@ -125,18 +125,95 @@ select option {
 }
 
 #main-stream-container {
-    flex-basis: 274px;
-    flex-grow: 6;
-    flex-shrink: 0;
+    flex: 6 0 274px;
 
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 
     border: 0px;
+
+    > iframe {
+        flex: 0 0 100%;
+        border: 0px;
+    }
+
+    // ====================================== //
+    // Two Streamers - 50/50 vertical split //
+    // ====================================== //
+    &.split_two {
+        > iframe {
+            flex: 0 0 50%;
+            border: 0px;
+
+            &:nth-child(1) {
+                border-right: 1px solid $light-purple;
+            }
+
+            &:nth-last-child(1) {
+                border-left: 1px solid $light-purple;
+            }
+        }
+    }
+    // ========================================== //
+    // Three Streamers - 50/25/25 split, two rows //
+    // ========================================== //
+    &.split_three {
+        > iframe {
+            border: 0px;
+            flex: 0 0 50%;
+
+            &:nth-child(1) {
+                flex: 0 0 100%;
+                border-bottom: 1px solid $light-purple;
+            }
+
+            &:nth-child(2) {
+                border-top: 1px solid $light-purple;
+                border-right: 1px solid $light-purple;
+            }
+
+            &:nth-last-child(1) {
+                border-top: 1px solid $light-purple;
+                border-left: 1px solid $light-purple;
+            }
+        }
+    }
+    // ================================================== //
+    // Four Streamers - 25/25/25/25 split, four quadrants //
+    // ================================================== //
+    &.split_four {
+        > iframe {
+            flex: 0 0 50%;
+            border: 0px;
+
+            &:nth-child(1) {
+                border-right: 1px solid $light-purple;
+                border-bottom: 1px solid $light-purple;
+            }
+
+            &:nth-child(2) {
+                border-left: 1px solid $light-purple;
+                border-bottom: 1px solid $light-purple;
+            }
+
+            &:nth-child(3) {
+                border-right: 1px solid $light-purple;
+                border-top: 1px solid $light-purple;
+            }
+
+            &:nth-child(4) {
+                border-left: 1px solid $light-purple;
+                border-top: 1px solid $light-purple;
+            }
+        }
+    }
 }
 
 #main-stream-player {
-    width: 100%;
-    flex: 0 0 auto;
+    &:not(.split_two) &:not(.split_three) &:not(.split_four) {
+        flex: 0 0 100%;
+    }
     border: 0px;
 }
 
@@ -180,15 +257,11 @@ select option {
 
         // Menu
         &:nth-child(3) {
-            flex-basis: auto;
-            flex-grow: 0;
-            flex-shrink: 0;
+            flex: 1 1 auto;
             padding: 0 5px 0 5px;
         }
     }
 }
-
-
 
 .beta {
     color: $light-purple;
@@ -248,7 +321,18 @@ select option {
         display: none;
     }
 
+    &#main-stream-container {
+        > iframe {
+            flex: 0 0 100%;
+
+            &:not(:nth-child(1)) {
+                display: none;
+            }
+        }
+    }
+
 }
+
 // ========= //
 // Hide Chat //
 // ========= //
@@ -256,22 +340,4 @@ select option {
     &#chat-container {
         display: none;
     }
-}
-// ====================================== //
-// Two Streamers - 50/50 horizontal split //
-// ====================================== //
-.split_two {
-
-}
-// ========================================== //
-// Three Streamers - 50/25/25 split, two rows //
-// ========================================== //
-.split_three {
-
-}
-// ================================================== //
-// Four Streamers - 25/25/25/25 split, four quadrants //
-// ================================================== //
-.split_four {
-
 }
