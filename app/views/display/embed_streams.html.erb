@@ -267,11 +267,9 @@
 
     // Only resize streams if Split View isn't in effect.
     if ( streamers.length > 4 ) {
-        var resize_throttle;
         // Whenever the window resizes, re-size on-deck streams to maintain aspect ratio.
         $( window ).resize( function () {
-            clearTimeout( resize_throttle );
-            resize_throttle = setTimeout( resize_ondeck_streams(), 250 );
+            resize_ondeck_streams();
         } );
 
         // Resize the on-deck streams at startup to maintain aspect ratio.
