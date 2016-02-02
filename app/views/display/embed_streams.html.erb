@@ -33,7 +33,7 @@
                     <option value="<%= streamer['name'] %>"><%= streamer['name'] %></option>
                 <% end %>
             </select>
-            <iframe id="chat_embed" scrolling="no" src="<%= ENV['OMIT_CHAT'] == 'true' ? '' : "https://twitch.tv/#{ @streamers.first['name'] }/chat" %>"></iframe>
+            <iframe id="chat_embed" scrolling="no" src="<%= ENV['OMIT_CHAT'] == 'true' && @streamers.count > (ENV['OMIT_CHAT_THRESHOLD'] || 4) ? '' : "https://twitch.tv/#{ @streamers.first['name'] }/chat" %>"></iframe>
         </div>
     </div>
     <div id="stream-queue" class="flex_row">
@@ -270,8 +270,8 @@
         var resize_throttle;
         // Whenever the window resizes, re-size on-deck streams to maintain aspect ratio.
         $( window ).resize( function () {
-            clearTimeout(resize_throttle);
-            resize_throttle = setTimeout(resize_ondeck_streams(), 250);
+            clearTimeout( resize_throttle );
+            resize_throttle = setTimeout( resize_ondeck_streams(), 250 );
         } );
 
         // Resize the on-deck streams at startup to maintain aspect ratio.
