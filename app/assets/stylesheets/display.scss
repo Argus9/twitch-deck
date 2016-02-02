@@ -257,7 +257,7 @@ select option {
 
         // Menu
         &:nth-child(3) {
-            flex: 1 1 auto;
+            flex: 0 0 auto;
             padding: 0 5px 0 5px;
         }
     }
@@ -286,6 +286,10 @@ select option {
     &:hover {
         cursor: pointer;
     }
+}
+
+.prelative {
+    position: relative;
 }
 
 ::-webkit-scrollbar {

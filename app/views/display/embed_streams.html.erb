@@ -16,15 +16,15 @@
     </div>
     <div id="main-stream" class="flex_row">
         <div id="main-stream-container">
-            <iframe id="main-stream-player" style="order: 0;" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false"></iframe>
+            <iframe id="main-stream-player" style="order: 0;" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false&html5"></iframe>
             <% if @streamers.count.between? 2, 4 %>
-                <iframe class="on-deck-stream" style="order: 1;" src="http://player.twitch.tv/?channel=<%= @streamers[1]['name'] %>&auto_play=true&muted=true"></iframe>
+                <iframe class="on-deck-stream" style="order: 1;" src="http://player.twitch.tv/?channel=<%= @streamers[1]['name'] %>&auto_play=true&muted=true&html5"></iframe>
             <% end %>
             <% if @streamers.count.between? 3, 4 %>
-                <iframe class="on-deck-stream" style="order: 2;" src="http://player.twitch.tv/?channel=<%= @streamers[2]['name'] %>&auto_play=true&muted=true"></iframe>
+                <iframe class="on-deck-stream" style="order: 2;" src="http://player.twitch.tv/?channel=<%= @streamers[2]['name'] %>&auto_play=true&muted=true&html5"></iframe>
             <% end %>
             <% if @streamers.count == 4 %>
-                <iframe class="on-deck-stream" style="order: 3;" src="http://player.twitch.tv/?channel=<%= @streamers[3]['name'] %>&auto_play=true&muted=true"></iframe>
+                <iframe class="on-deck-stream" style="order: 3;" src="http://player.twitch.tv/?channel=<%= @streamers[3]['name'] %>&auto_play=true&muted=true&html5"></iframe>
             <% end %>
         </div>
         <div id="chat-container">
@@ -33,13 +33,13 @@
                     <option value="<%= streamer['name'] %>"><%= streamer['name'] %></option>
                 <% end %>
             </select>
-            <iframe id="chat" scrolling="no" src="https://twitch.tv/<%= @streamers.first['name'] %>/chat?popout="></iframe>
+            <iframe id="chat_embed" scrolling="no" src="<%= ENV['OMIT_CHAT'] == 'true' ? '' : "https://twitch.tv/#{ @streamers.first['name'] }/chat" %>"></iframe>
         </div>
     </div>
     <div id="stream-queue" class="flex_row">
         <% if @streamers.count > 4 %>
             <% @streamers[1..-1].each_with_index do |streamer, index| %>
-                <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer['name'] %>&auto_play=true&muted=true" style="order: <%= index %>;"></iframe>
+                <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer['name'] %>&auto_play=true&muted=true&html5" style="order: <%= index %>;"></iframe>
             <% end %>
             </div>
         <% end %>
@@ -97,7 +97,7 @@
      * Returns a Twitch player URL, filling in the given values of the streamer name and muted flag.
      */
     var get_player_url = function ( name, muted ) {
-        return 'http://player.twitch.tv/?channel=' + name + '&auto_play=true&muted=' + muted;
+        return 'http://player.twitch.tv/?channel=' + name + '&auto_play=true&muted=' + muted + '&html5';
     };
 
     var reticulate_player_splines = function () {
@@ -106,7 +106,7 @@
         if ( $( 'iframe#main-stream-player' )[ 0 ].src !== get_player_url( streamers[ 0 ][ 'name' ], false ) ) {
             console.log( "Main streamer went offline. Loading a new main streamer." );
             document.getElementById( 'main-stream-player' ).src = get_player_url( streamers[ 0 ][ 'name' ], false );
-            document.getElementById( 'chat' ).src = 'https://twitch.tv/' + streamers[ 0 ][ 'name' ] + '/chat?popout=';
+            document.getElementById( 'chat_embed' ).src = 'https://twitch.tv/' + streamers[ 0 ][ 'name' ] + '/chat';
             streams_changed = true;
         }
 
@@ -246,15 +246,17 @@
         $( '.on-deck-stream' ).height( height + 'px' );
 
         // Trigger a style recalculation
-        document.body.style.zoom = 1.0000001;
-        setTimeout( function () {
-            document.body.style.zoom = 1;
-        }, 50 ); //allow some time to flush the css buffer.
+        var stream_queue = $( '#stream-queue' );
+        if ( stream_queue.hasClass( 'prelative' ) ) {
+            stream_queue.removeClass( 'prelative' );
+        } else {
+            stream_queue.addClass( 'prelative' );
+        }
     }
 
     // Swap a different chat window whenever the drop-down box changes.
     $( '#chat-changer' ).change( function () {
-        $( '#chat' )[ 0 ].src = 'https://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat?popout=';
+        $( '#chat_embed' )[ 0 ].src = 'https://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat';
     } );
 
     // Set up an interval to update stream layouts on the page every 5 seconds.
@@ -265,9 +267,11 @@
 
     // Only resize streams if Split View isn't in effect.
     if ( streamers.length > 4 ) {
+        var resize_throttle;
         // Whenever the window resizes, re-size on-deck streams to maintain aspect ratio.
         $( window ).resize( function () {
-            resize_ondeck_streams();
+            clearTimeout(resize_throttle);
+            resize_throttle = setTimeout(resize_ondeck_streams(), 250);
         } );
 
         // Resize the on-deck streams at startup to maintain aspect ratio.
