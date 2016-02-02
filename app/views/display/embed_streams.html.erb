@@ -5,7 +5,7 @@
 </head>
 <body class="noscroll">
 <div id="main-container">
-    <div id="stream-switch-tabs">
+    <div id="stream-switch-tabs" class="flex_row">
         <div id="switch-label">Switch to...</div>
         <div id="streamer-buttons">
             <% @streamers.each_with_index do |streamer, position| %>
@@ -14,237 +14,301 @@
         </div>
         <%= render 'partials/menu' %>
     </div>
-    <div id="main-stream">
-        <iframe id="main-stream-player" class="stream" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false"></iframe>
-        <div id="chat-holder">
+    <div id="main-stream" class="flex_row">
+        <div id="main-stream-container">
+            <iframe id="main-stream-player" style="order: 0;" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false&html5"></iframe>
+            <% if @streamers.count.between? 2, 4 %>
+                <iframe class="on-deck-stream" style="order: 1;" src="http://player.twitch.tv/?channel=<%= @streamers[1]['name'] %>&auto_play=true&muted=true&html5"></iframe>
+            <% end %>
+            <% if @streamers.count.between? 3, 4 %>
+                <iframe class="on-deck-stream" style="order: 2;" src="http://player.twitch.tv/?channel=<%= @streamers[2]['name'] %>&auto_play=true&muted=true&html5"></iframe>
+            <% end %>
+            <% if @streamers.count == 4 %>
+                <iframe class="on-deck-stream" style="order: 3;" src="http://player.twitch.tv/?channel=<%= @streamers[3]['name'] %>&auto_play=true&muted=true&html5"></iframe>
+            <% end %>
+        </div>
+        <div id="chat-container">
             <select id="chat-changer">
                 <% @streamers.each do |streamer| %>
                     <option value="<%= streamer['name'] %>"><%= streamer['name'] %></option>
                 <% end %>
             </select>
-            <iframe id="chat" scrolling="no" src="https://twitch.tv/<%= @streamers.first['name'] %>/chat?popout="></iframe>
+            <iframe id="chat_embed" scrolling="no" src="<%= ENV['OMIT_CHAT'] == 'true' ? '' : "https://twitch.tv/#{ @streamers.first['name'] }/chat" %>"></iframe>
         </div>
     </div>
-    <div id="stream-queue">
-        <% if @streamers.count > 1 %>
+    <div id="stream-queue" class="flex_row">
+        <% if @streamers.count > 4 %>
             <% @streamers[1..-1].each_with_index do |streamer, index| %>
-                <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer['name'] %>&auto_play=true&muted=true" style="order: <%= index %>;"></iframe>
+                <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer['name'] %>&auto_play=true&muted=true&html5" style="order: <%= index %>;"></iframe>
             <% end %>
             </div>
         <% end %>
         </div>
 
 <script>
-    $( document ).ready( function () {
-        var streamers = JSON.parse( '<%= @streamers.to_json.html_safe %>' );
+    var streamers = JSON.parse( '<%= @streamers.to_json.html_safe %>' );
 
+    /*
+     * Update streams on the page, based on their online status.
+     */
+    var get_stream_status = function () {
         /*
-         * Update streams on the page, based on their online status.
+         * Callback that follows a successful AJAX call to Twitch's API.
          */
-        var get_stream_status = function () {
-            /*
-             * Callback that follows a successful AJAX call to Twitch's API.
-             */
-            var callback_function = function ( callback_data ) {
-                $.each( streamers, function ( _, streamer ) {
-                    streamer[ 'status' ] = 'offline';
-                    var matching_streamer = $.grep( callback_data[ 'streams' ], function ( streamer_under_search ) {
-                        return streamer_under_search[ 'channel' ][ 'name' ] === streamer[ 'name' ];
-                    } );
-                    if ( matching_streamer.length > 0 ) {
-                        streamer[ 'status' ] = 'online';
-                    }
+        var callback_function = function ( callback_data ) {
+            $.each( streamers, function ( _, streamer ) {
+                streamer[ 'status' ] = 'offline';
+                var matching_streamer = $.grep( callback_data[ 'streams' ], function ( streamer_under_search ) {
+                    return streamer_under_search[ 'channel' ][ 'name' ] === streamer[ 'name' ];
                 } );
-
-                // Re-organize streamer order based on online status, then by priority.
-                streamers.sort( function ( left_obj, right_obj ) {
-                    if ( left_obj[ 'status' ] === 'online' && right_obj[ 'status' ] === 'offline' ) {
-                        return -1;
-                    } else if ( left_obj[ 'status' ] === 'offline' && right_obj[ 'status' ] === 'online' ) {
-                        return 1;
-                    } else {
-                        return left_obj[ 'priority' ] < right_obj[ 'priority' ] ? -1 : 1;
-                    }
-                } );
-
-                reticulate_player_splines();
-            };
-
-            // Update all streams' status.
-            var streamer_names = $.map( streamers, function ( streamer, _ ) {
-                return streamer[ 'name' ];
-            } ).join( ',' );
-
-            $.ajax( {
-                url: 'https://api.twitch.tv/kraken/streams?channel=' + streamer_names,
-                async: true
-            } ).success( function ( data ) {
-                callback_function( data )
-            } );
-        };
-
-        /*
-         * Returns a Twitch player URL, filling in the given values of the streamer name and muted flag.
-         */
-        var get_player_url = function ( name, muted ) {
-            return 'http://player.twitch.tv/?channel=' + name + '&auto_play=true&muted=' + muted;
-        };
-
-        var reticulate_player_splines = function () {
-            var streams_changed = false;
-            // If main streamer is still online, ONLY re-organize on-deck streams.
-            if ( $( 'iframe#main-stream-player' )[ 0 ].src !== get_player_url( streamers[ 0 ][ 'name' ], false ) ) {
-                console.log( "Main streamer went offline. Loading a new main streamer." );
-                document.getElementById( 'main-stream-player' ).src = get_player_url( streamers[ 0 ][ 'name' ], false );
-                document.getElementById( 'chat' ).src = 'https://twitch.tv/' + streamers[ 0 ][ 'name' ] + '/chat?popout=';
-                streams_changed = true;
-            }
-
-            // Re-organize on-deck streams if they have changed.
-            // If the main streamer has changed, we need to do it the old-fashioned way and change all iframe srcs.
-            // If not, just change the order on each iframe for a smooth change without stuttering.
-            var iframes = $( '.on-deck-stream' );
-            if ( streams_changed ) {
-                $.each( streamers.slice( 1 ), function ( position, streamer ) {
-                    if ( iframes[ position ].src !== get_player_url( streamer[ 'name' ], true ) ) {
-                        if ( !streams_changed ) {
-                            console.log( "Re-ordering on-deck streamers." );
-                        }
-                        iframes[ position ].src = get_player_url( streamer[ 'name' ], true );
-                        streams_changed = true;
-                    }
-                } );
-            } else {
-                $.each( streamers.slice( 1 ), function ( position, streamer ) {
-                    var streamer_iframe = $.grep( iframes, function ( iframe ) {
-                        return iframe.src.indexOf( 'channel=' + streamer[ 'name' ] ) != -1;
-                    } )[ 0 ];
-                    if ( $( streamer_iframe ).css( "order" ) != position ) {
-                        $( streamer_iframe ).css( "order", position );
-                        streams_changed = true;
-                    }
-                } );
-            }
-
-            // Update the drop-down order and selected item to match the new order of streamers.
-            if ( streams_changed ) {
-                var chat_select = $( '#chat-changer' );
-                chat_select.empty();
-                $.each( streamers, function ( _, streamer ) {
-                    chat_select.append( '<option value="' + streamer[ 'name' ] + '">' + streamer[ 'name' ] + '</option>' );
-                } );
-            }
-
-            // Finally, reset the list of "switch to" buttons to match the current stream order and status.
-            if ( streams_changed ) {
-                $.each( $( '.stream-button' ), function ( position, button ) {
-                    $( button ).text( streamers[ position ][ 'name' ] );
-                    if ( streamers[ position ][ 'status' ] === 'offline' ) {
-                        $( button ).addClass( 'button-inactive' );
-                        $( button ).removeClass( 'button' );
-                        $( button ).removeClass( 'button-active' );
-                    } else {
-                        if ( position === 0 && streamers[ position ][ 'status' ] === 'online' ) {
-                            $( button ).removeClass( 'button-inactive' );
-                            $( button ).removeClass( 'button' );
-                            $( button ).addClass( 'button-active' )
-                        } else {
-                            $( button ).removeClass( 'button-inactive' );
-                            $( button ).removeClass( 'button-active' );
-                            $( button ).addClass( 'button' );
-                        }
-                    }
-                } );
-            }
-        }
-
-        /*
-         * Called when a "switch to" button is clicked, which forces the streamer into the main player while shifting
-         * all streamers on-deck down by one.
-         */
-        $( '.stream-button' ).click( function () {
-            var streamer_name = $( this ).text();
-
-            // Find the streamer whose name matches the one on the button.
-            var matching_streamer;
-            $.each( streamers, function ( position, streamer ) {
-                if ( streamer[ 'name' ] === streamer_name ) {
-                    matching_streamer = { position: position, streamer: streamer };
-                    return false;
+                if ( matching_streamer.length > 0 ) {
+                    streamer[ 'status' ] = 'online';
                 }
             } );
 
-            streamers.splice( matching_streamer[ 'position' ], 1 );
-            streamers.unshift( matching_streamer[ 'streamer' ] );
-
-            // Re-do all priorities for each streamer.
-            $.each( streamers, function ( position, streamer ) {
-                streamer[ 'priority' ] = position;
+            // Re-organize streamer order based on online status, then by priority.
+            streamers.sort( function ( left_obj, right_obj ) {
+                if ( left_obj[ 'status' ] === 'online' && right_obj[ 'status' ] === 'offline' ) {
+                    return -1;
+                } else if ( left_obj[ 'status' ] === 'offline' && right_obj[ 'status' ] === 'online' ) {
+                    return 1;
+                } else {
+                    return left_obj[ 'priority' ] < right_obj[ 'priority' ] ? -1 : 1;
+                }
             } );
 
             reticulate_player_splines();
-        } );
+        };
 
-        $( '#theater_mode_toggle' ).click( function () {
-            if ( $( '#theater_mode_toggle' ).hasClass( 'theater_mode_active' ) ) {
-                $( '#stream-queue' ).removeClass( 'theater' );
-                $( '#main-stream-player' ).removeClass( 'theater' );
-                $( '#chat-holder' ).removeClass( 'theater' );
-                $( '#theater_mode_toggle' ).removeClass( 'theater_mode_active' );
-            } else {
-                $( '#stream-queue' ).addClass( 'theater' );
-                $( '#main-stream-player' ).addClass( 'theater' );
-                $( '#chat-holder' ).addClass( 'theater' );
-                $( '#theater_mode_toggle' ).addClass( 'theater_mode_active' );
-            }
-        } );
+        // Update all streams' status.
+        var streamer_names = $.map( streamers, function ( streamer, _ ) {
+            return streamer[ 'name' ];
+        } ).join( ',' );
 
-        $( '#hide_chat_toggle' ).click( function () {
-            if ( $( '#hide_chat_toggle' ).hasClass( 'hide_chat_mode_active' ) ) {
-                $( '#chat-holder' ).removeClass( 'hide_chat' );
-                $( '#main-stream-player' ).removeClass( 'hide_chat' );
-                $( '#hide_chat_toggle' ).removeClass( 'hide_chat_mode_active' );
-            } else {
-                $( '#chat-holder' ).addClass( 'hide_chat' );
-                $( '#main-stream-player' ).addClass( 'hide_chat' );
-                $( '#hide_chat_toggle' ).addClass( 'hide_chat_mode_active' );
-            }
+        $.ajax( {
+            url: 'https://api.twitch.tv/kraken/streams?channel=' + streamer_names,
+            async: true
+        } ).success( function ( data ) {
+            callback_function( data )
         } );
+    };
 
-        var resize_ondeck_streams = function () {
-            $( '.on-deck-stream' ).css( 'flex-basis', ($( window ).innerWidth() * 0.25) + 'px' );
-            $( '#stream-queue' ).css( 'flex-basis', parseInt( $( '.on-deck-stream' ).css( 'flex-basis' ).replace( 'px', '' ) * ( 10 / 16 ) ) + 'px' );
+    /*
+     * Returns a Twitch player URL, filling in the given values of the streamer name and muted flag.
+     */
+    var get_player_url = function ( name, muted ) {
+        return 'http://player.twitch.tv/?channel=' + name + '&auto_play=true&muted=' + muted + '&html5';
+    };
+
+    var reticulate_player_splines = function () {
+        var streams_changed = false;
+        // If main streamer is still online, ONLY re-organize on-deck streams.
+        if ( $( 'iframe#main-stream-player' )[ 0 ].src !== get_player_url( streamers[ 0 ][ 'name' ], false ) ) {
+            console.log( "Main streamer went offline. Loading a new main streamer." );
+            document.getElementById( 'main-stream-player' ).src = get_player_url( streamers[ 0 ][ 'name' ], false );
+            document.getElementById( 'chat_embed' ).src = 'https://twitch.tv/' + streamers[ 0 ][ 'name' ] + '/chat';
+            streams_changed = true;
         }
 
+        // Re-organize on-deck streams if they have changed.
+        // If the main streamer has changed, we need to do it the old-fashioned way and change all iframe srcs.
+        // If not, just change the order on each iframe for a smooth change without stuttering.
+        var iframes = $( '.on-deck-stream' );
+        if ( streams_changed ) {
+            $.each( streamers.slice( 1 ), function ( position, streamer ) {
+                if ( iframes[ position ].src !== get_player_url( streamer[ 'name' ], true ) ) {
+                    if ( !streams_changed ) {
+                        console.log( "Re-ordering on-deck streamers." );
+                    }
+                    iframes[ position ].src = get_player_url( streamer[ 'name' ], true );
+                    streams_changed = true;
+                }
+            } );
+        } else {
+            $.each( streamers.slice( 1 ), function ( position, streamer ) {
+                var streamer_iframe = $.grep( iframes, function ( iframe ) {
+                    return iframe.src.indexOf( 'channel=' + streamer[ 'name' ] ) != -1;
+                } )[ 0 ];
+                if ( $( streamer_iframe ).css( "order" ) != position ) {
+                    $( streamer_iframe ).css( "order", position );
+                    streams_changed = true;
+                }
+            } );
+        }
+
+        // Update the drop-down order and selected item to match the new order of streamers.
+        if ( streams_changed ) {
+            var chat_select = $( '#chat-changer' );
+            chat_select.empty();
+            $.each( streamers, function ( _, streamer ) {
+                chat_select.append( '<option value="' + streamer[ 'name' ] + '">' + streamer[ 'name' ] + '</option>' );
+            } );
+        }
+
+        // Finally, reset the list of "switch to" buttons to match the current stream order and status.
+        if ( streams_changed ) {
+            $.each( $( '.stream-button' ), function ( position, button ) {
+                $( button ).text( streamers[ position ][ 'name' ] );
+                if ( streamers[ position ][ 'status' ] === 'offline' ) {
+                    $( button ).addClass( 'button-inactive' );
+                    $( button ).removeClass( 'button' );
+                    $( button ).removeClass( 'button-active' );
+                } else {
+                    if ( position === 0 && streamers[ position ][ 'status' ] === 'online' ) {
+                        $( button ).removeClass( 'button-inactive' );
+                        $( button ).removeClass( 'button' );
+                        $( button ).addClass( 'button-active' )
+                    } else {
+                        $( button ).removeClass( 'button-inactive' );
+                        $( button ).removeClass( 'button-active' );
+                        $( button ).addClass( 'button' );
+                    }
+                }
+            } );
+        }
+    }
+
+    /*
+     * Called when a "switch to" button is clicked, which forces the streamer into the main player while shifting
+     * all streamers on-deck down by one.
+     */
+    $( '.stream-button' ).click( function () {
+        var streamer_name = $( this ).text();
+
+        // Find the streamer whose name matches the one on the button.
+        var matching_streamer;
+        $.each( streamers, function ( position, streamer ) {
+            if ( streamer[ 'name' ] === streamer_name ) {
+                matching_streamer = { position: position, streamer: streamer };
+                return false;
+            }
+        } );
+
+        streamers.splice( matching_streamer[ 'position' ], 1 );
+        streamers.unshift( matching_streamer[ 'streamer' ] );
+
+        // Re-do all priorities for each streamer.
+        $.each( streamers, function ( position, streamer ) {
+            streamer[ 'priority' ] = position;
+        } );
+
+        reticulate_player_splines();
+    } );
+
+    $( '#theater_mode_toggle' ).click( function () {
+        if ( $( '#theater_mode_toggle' ).hasClass( 'theater_mode_active' ) ) {
+            $( '#theater_mode_toggle' ).removeClass( 'theater_mode_active' );
+            $( '#stream-queue' ).removeClass( 'theater' );
+            $( '#main-stream-container' ).removeClass( 'theater' );
+            $( '#chat-container' ).removeClass( 'theater' );
+        } else {
+            $( '#theater_mode_toggle' ).addClass( 'theater_mode_active' );
+            $( '#stream-queue' ).addClass( 'theater' );
+            $( '#main-stream-container' ).addClass( 'theater' );
+            $( '#chat-container' ).addClass( 'theater' );
+        }
+    } );
+
+    $( '#hide_chat_toggle' ).click( function () {
+        if ( $( '#hide_chat_toggle' ).hasClass( 'hide_chat_mode_active' ) ) {
+            $( '#chat-container' ).removeClass( 'hide_chat' );
+            $( '#main-stream-player' ).removeClass( 'hide_chat' );
+            $( '#hide_chat_toggle' ).removeClass( 'hide_chat_mode_active' );
+        } else {
+            $( '#chat-container' ).addClass( 'hide_chat' );
+            $( '#main-stream-player' ).addClass( 'hide_chat' );
+            $( '#hide_chat_toggle' ).addClass( 'hide_chat_mode_active' );
+        }
+    } );
+
+    var resize_ondeck_streams = function () {
+        var window_width = $( window ).innerWidth();
+
+        // Depending on window resolution, resize the on-deck streams so a certain amount are visible.
+        var width_divisor;
+        if ( window_width > 2240 ) {
+            // 8 streams in view
+            width_divisor = .125;
+        } else if ( window_width <= 2240 && window_width > 1600 ) {
+            // 5 streams in view
+            width_divisor = .20;
+        } else if ( window_width <= 1600 && window_width > 1000 ) {
+            // 4 streams in view
+            width_divisor = .25;
+        } else {
+            // 2 streams in view
+            width_divisor = .50;
+        }
+
+        var width = ($( window ).innerWidth() * width_divisor) - 2;
+        var height = width * 9 / 16;
+        $( '.on-deck-stream' ).width( width + 'px' );
+        $( '.on-deck-stream' ).height( height + 'px' );
+
+        // Trigger a style recalculation
+        var stream_queue = $( '#stream-queue' );
+        if ( stream_queue.hasClass( 'prelative' ) ) {
+            stream_queue.removeClass( 'prelative' );
+        } else {
+            stream_queue.addClass( 'prelative' );
+        }
+    }
+
+    // Swap a different chat window whenever the drop-down box changes.
+    $( '#chat-changer' ).change( function () {
+        $( '#chat_embed' )[ 0 ].src = 'https://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat';
+    } );
+
+    // Set up an interval to update stream layouts on the page every 5 seconds.
+    setInterval( function () {
+        // Check if main stream is online
+        get_stream_status();
+    }, 5000 );
+
+    // Only resize streams if Split View isn't in effect.
+    if ( streamers.length > 4 ) {
+        var resize_throttle;
         // Whenever the window resizes, re-size on-deck streams to maintain aspect ratio.
         $( window ).resize( function () {
-            resize_ondeck_streams()
+            clearTimeout(resize_throttle);
+            resize_throttle = setTimeout(resize_ondeck_streams(), 250);
         } );
-
-        // Swap a different chat window whenever the drop-down box changes.
-        $( '#chat-changer' ).change( function () {
-            $( '#chat' )[ 0 ].src = 'https://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat?popout=';
-        } );
-
-        // Set up an interval to update stream layouts on the page every 15 seconds.
-        setInterval( function () {
-            // Check if main stream is online
-            get_stream_status();
-        }, 15000 );
-
-        // Sets up a heartbeat to report active users beyond the normal 5 minute timeout.
-        setInterval( function () {
-            ga( 'send', {
-                hitType: 'event',
-                eventCategory: 'Videos',
-                eventAction: 'play',
-                eventLabel: 'Heartbeat'
-            } );
-        }, 270000 );
 
         // Resize the on-deck streams at startup to maintain aspect ratio.
         resize_ondeck_streams();
-    } );
+    }
+
+    // Sets up a heartbeat to report active users beyond the normal 5 minute timeout.
+    setInterval( function () {
+        ga( 'send', {
+            hitType: 'event',
+            eventCategory: 'Videos',
+            eventAction: 'play',
+            eventLabel: 'Heartbeat'
+        } );
+    }, 270000 );
+
+    // Depending on the number of streamers selected, change the layout for optimal viewing.
+    switch ( streamers.length ) {
+        case 2:
+            $( '#main-stream-container' ).addClass( 'split_two' );
+            break;
+        case 3:
+            $( '#main-stream-container' ).addClass( 'split_three' );
+            break;
+        case 4:
+            $( '#main-stream-container' ).addClass( 'split_four' );
+            break;
+    }
+
+    // Disable elements that are not applicable when there are 4 or fewer streamers on-screen.
+    if ( streamers.length <= 4 ) {
+        $( '#stream-queue' ).css( 'display', 'none' );
+
+        if ( streamers.length == 1 ) {
+            $( '#chat-changer' ).css( 'display', 'none' );
+        }
+    }
 </script>
 </body>
 </html>

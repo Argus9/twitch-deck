@@ -1,5 +1,8 @@
 @import 'variables';
 
+// ====== //
+// Normal //
+// ====== //
 a {
     color: $light-purple;
 }
@@ -20,6 +23,14 @@ span {
             color: white;
             background-color: $light-purple;
             cursor: pointer;
+        }
+
+        &:active {
+            // Invert colors - gives the illusion of a depressed button
+            border-right-color: #cccccc;
+            border-bottom-color: #cccccc;
+            border-left-color: #333333;
+            border-top-color: #333333;
         }
     }
 
@@ -46,20 +57,12 @@ body {
 }
 
 body, html {
+    min-height: 100%;
     height: 100%;
+    max-height: 100%;
 
     &.noscroll {
         overflow-y: hidden;
-    }
-}
-
-div#chat-holder {
-    border: 1px solid $light-purple;
-    border-top: 2px solid $light-purple;
-    border-right: 2px solid $light-purple;
-
-    > iframe.hidden {
-        display: none;
     }
 }
 
@@ -69,31 +72,6 @@ h1 {
 
 h3 {
     color: $light-purple;
-}
-
-iframe {
-    border: 1px solid $light-purple;
-
-    &#main-stream-player {
-        border-left: 2px solid $light-purple;
-        border-top: 2px solid $light-purple;
-
-        &.hide_chat {
-            border-right: 2px solid $light-purple;
-        }
-
-        &.theater {
-            border-bottom: 2px solid $light-purple;
-        }
-    }
-
-    &#chat {
-        border: none;
-
-        &.theater {
-            border-bottom: 2px solid $light-purple;
-        }
-    }
 }
 
 select {
@@ -110,114 +88,177 @@ select option {
     }
 }
 
-#main-container {
-    min-height: 100%;
+#chat-container {
+    flex-basis: 340px;
+    flex-grow: 1;
+    flex-shrink: 0;
+
     display: flex;
     flex-direction: column;
 
-    > div {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        margin-left: 0;
-        margin-right: 0;
+    border: 0px;
+    border-left: 2px solid $light-purple;
 
-        // "Switch to" div
-        &:nth-child(1) {
-            flex: 0 0 auto;
+    > select {
+        flex: 0 0 auto;
+    }
 
-            > div {
-                // "Switch to..." text
-                &:nth-child(1) {
-                    flex: 0 0 auto;
-                    padding: 0 5px 0 5px;
-                }
+    > iframe {
+        flex-basis: 100%;
+        flex-grow: 1;
+        flex-shrink: 0;
 
-                // Streamer buttons
-                &:nth-child(2) {
-                    flex: 1;
-                }
+        border: 0px;
+    }
+}
 
-                // Menu
-                &:nth-child(3) {
-                    flex: 0 0 auto;
-                    padding: 0 5px 0 5px;
-                }
+#main-container {
+    min-height: 100%;
+    display: flex;
+    display: -ms-flexbox;
+    flex-direction: column;
+}
+
+#main-stream {
+    flex: 1 1 auto;
+    border: 2px solid $light-purple;
+}
+
+#main-stream-container {
+    flex: 6 0 274px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    border: 0px;
+
+    > iframe {
+        flex: 0 0 100%;
+        border: 0px;
+    }
+
+    // ====================================== //
+    // Two Streamers - 50/50 vertical split //
+    // ====================================== //
+    &.split_two {
+        > iframe {
+            flex: 0 0 50%;
+            border: 0px;
+
+            &:nth-child(1) {
+                border-right: 1px solid $light-purple;
+            }
+
+            &:nth-child(2) {
+                border-left: 1px solid $light-purple;
             }
         }
+    }
+    // ========================================== //
+    // Three Streamers - 50/25/25 split, two rows //
+    // ========================================== //
+    &.split_three {
+        > iframe {
+            border: 0px;
+            flex: 0 0 50%;
 
-        // Main div
-        &:nth-child(2) {
-            flex: 1;
+            &:nth-child(1) {
+                flex: 0 0 100%;
+                border-bottom: 1px solid $light-purple;
+            }
 
-            > * {
-                // Main stream player
-                &:nth-child(1) {
-                    flex: 6 0 274px;
-                }
+            &:nth-child(2) {
+                border-top: 1px solid $light-purple;
+                border-right: 1px solid $light-purple;
+            }
 
-                // Chat panel div
-                &:nth-child(2) {
-                    flex: 1 0 340px;
-                    display: flex;
-                    flex-direction: column;
-
-                    &.theater:not(.hide_chat) {
-                        flex: 0 0 340px;
-                    }
-
-                    &.hide_chat {
-                        display: none;
-                    }
-
-                    > {
-                        // Chat selector
-                        //select {
-                        //    flex: 0 0 auto;
-                        //}
-
-                        // Chat iframe
-                        iframe {
-                            flex: 1 0 100%;
-                        }
-                    }
-                }
+            &:nth-child(3) {
+                border-top: 1px solid $light-purple;
+                border-left: 1px solid $light-purple;
             }
         }
+    }
+    // ================================================== //
+    // Four Streamers - 25/25/25/25 split, four quadrants //
+    // ================================================== //
+    &.split_four {
+        > iframe {
+            flex: 0 0 50%;
+            border: 0px;
 
-        // On-deck streams div
-        &:nth-child(3) {
-            flex: 0 0 253px;
-            flex-wrap: nowrap;
-
-            &.theater {
-                display: none;
+            &:nth-child(1) {
+                border-right: 1px solid $light-purple;
+                border-bottom: 1px solid $light-purple;
             }
 
-            > iframe {
-                flex: 0 0 393px;
+            &:nth-child(2) {
+                border-left: 1px solid $light-purple;
+                border-bottom: 1px solid $light-purple;
+            }
 
-                &.theater {
-                    display: none;
-                }
+            &:nth-child(3) {
+                border-right: 1px solid $light-purple;
+                border-top: 1px solid $light-purple;
+            }
+
+            &:nth-child(4) {
+                border-left: 1px solid $light-purple;
+                border-top: 1px solid $light-purple;
             }
         }
     }
 }
 
+#main-stream-player {
+    &:not(.split_two) &:not(.split_three) &:not(.split_four) {
+        flex: 0 0 100%;
+    }
+    border: 0px;
+}
+
 #stream-queue {
+    flex: 0 0 auto;
+    border: 2px solid $light-purple;
+    border-top: 0px;
+    flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
 
     > iframe {
-        border-bottom: 2px solid $light-purple;
+        border: 0px;
+        border-right: 2px solid $light-purple;
+    }
+}
 
+#stream-switch-tabs {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-left: 0px;
+    margin-right: 0px;
+
+    > div {
+        // "Switch to..." text
         &:nth-child(1) {
-            border-left: 2px solid $light-purple;
+            flex-basis: auto;
+            flex-grow: 0;
+            flex-shrink: 0;
+            padding: 0 5px 0 5px;
         }
 
-        &:nth-last-child(1) {
-            border-right: 2px solid $light-purple;
+        // Streamer buttons
+        &:nth-child(2) {
+            flex-basis: auto;
+            flex-grow: 1;
+            flex-shrink: 1;
+            flex-wrap: wrap;
+        }
+
+        // Menu
+        &:nth-child(3) {
+            flex: 0 0 auto;
+            padding: 0 5px 0 5px;
         }
     }
 }
@@ -226,9 +267,35 @@ select option {
     color: $light-purple;
 }
 
+.flex_row {
+    display: flex;
+    flex-direction: row;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.flex_wrap {
+    flex-wrap: wrap;
+}
+
+.on-deck-stream {
+    flex: 0 0 auto;
+}
+
+.pointer {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.prelative {
+    position: relative;
+}
+
 ::-webkit-scrollbar {
     color: $purple;
     background-color: $purple;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -240,4 +307,41 @@ select option {
     color: $light-purple;
     background-color: $light-purple;
     border-radius: 100px;
+}
+
+// ==================================================================== //
+// Theater mode - Main stream and chat only. All other streamers hidden //
+// ==================================================================== //
+.theater {
+    &#chat-container {
+        &:not(.hide_chat) {
+            flex-basis: 340px;
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+    }
+
+    &#stream-queue {
+        display: none;
+    }
+
+    &#main-stream-container {
+        > iframe {
+            flex: 0 0 100%;
+
+            &:not(:nth-child(1)) {
+                display: none;
+            }
+        }
+    }
+
+}
+
+// ========= //
+// Hide Chat //
+// ========= //
+.hide_chat {
+    &#chat-container {
+        display: none;
+    }
 }
