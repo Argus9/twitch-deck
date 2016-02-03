@@ -36,6 +36,10 @@
                 <% end %>
             </select>
             <iframe id="chat_embed" scrolling="no" src="<%= ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i ? '' : "https://twitch.tv/#{ @streamers.first['name'] }/chat" %>"></iframe>
+            <% if ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i %>
+                <a id="backup_chat_link" href="http://www.twitch.tv/<%= @streamers.first['name'] %>/chat" target="_blank" style="text-align: left; vertical-align: top;">Open
+                    Chat</a>
+            <% end %>
         </div>
     </div>
     <div id="stream-queue" class="flex_row">
@@ -110,6 +114,8 @@
             document.getElementById( 'main-stream-player' ).src = get_player_url( streamers[ 0 ][ 'name' ], false );
             <% unless ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i %>
             document.getElementById( 'chat_embed' ).src = 'https://twitch.tv/' + streamers[ 0 ][ 'name' ] + '/chat';
+            <% else %>
+            document.getElementById( 'backup_chat_link' ).href = 'http://www.twitch.tv/' + streamers[ 0 ][ 'name' ] + '/chat'
             <% end %>
             streams_changed = true;
         }
@@ -259,7 +265,7 @@
         <% unless ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i %>
         $( '#chat_embed' )[ 0 ].src = 'https://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat';
         <% else %>
-        alert( "Chat is currently omitted due to a bug in Twitch's API. To chat, open a new tab and visit http://www.twitch.tv/" + $( '#chat-changer option:selected' ).text() + '/chat' );
+        $( '#backup_chat_link' )[ 0 ].attr( 'href', 'http://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat' );
         <% end %>
     } );
 
@@ -313,7 +319,7 @@
     }
 
     <% if ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i %>
-    alert( "Chat is currently omitted due to a bug in Twitch's API. To chat, open a new tab and visit http://www.twitch.tv/" + streamers[ 0 ][ 'name' ] + '/chat' );
+    alert( "Chat is currently omitted due to a bug in Twitch's API. To chat, click the 'Open Chat' link in the right panel to open it in a new tab." );
     <% end %>
 
     // Construct the Twitter share url and text, and assign it to the share button.
