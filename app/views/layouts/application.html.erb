@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+
+    <!-- Facebook Tags -->
+    <meta property="og:title" content="TwitchDeck - the Smarter Stream Player"/>
+    <meta property="og:description" content="Watch multiple Twitch.tv streamers at once. Let TwitchDeck make sure there's always something to watch, and manage the volume. Just sit back and enjoy, free and right in your browser."/>
+    <meta property="og:url" content="http://twitch-deck.herokuapp.com/"/>
+    <meta property=”og:type” content=”website”/>
+
+    <!-- Google+ Tags -->
+    <meta itemprop="name" content="TwitchDeck - The Smarter Stream Player"/>
+    <meta itemprop="description" content="Watch multiple Twitch.tv streamers at once. Let TwitchDeck make sure there's always something to watch, and manage the volume. Just sit back and enjoy, free and right in your browser."/>
 </head>
 <body>
 
