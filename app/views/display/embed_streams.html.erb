@@ -1,7 +1,16 @@
-<html>
+<html itemscope itemtype="http://schema.org/Website">
 <head>
     <title>TwitchDeck</title>
     <%= render 'partials/google_analytics_init' %>
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Facebook Tags -->
+    <meta property="og:title" content="TwitchDeck - the Smarter Stream Player" />
+    <meta property="og:description" content="Watch multiple Twitch.tv streamers at once. Let TwitchDeck make sure there's always something to watch, and manage the volume. Just sit back and enjoy, free and right in your browser." />
+
+    <!-- Google+ Tags -->
+    <meta itemprop="name" content="TwitchDeck - The Smarter Stream Player" />
+    <meta itemprop="description" content="Watch multiple Twitch.tv streamers at once. Let TwitchDeck make sure there's always something to watch, and manage the volume. Just sit back and enjoy, free and right in your browser." />
 </head>
 <body class="noscroll">
 <div id="main-container">
@@ -254,7 +263,7 @@
 
     // Swap a different chat window whenever the drop-down box changes.
     $( '#chat-changer' ).change( function () {
-        <% if ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i %>
+        <% unless ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i %>
         $( '#chat_embed' )[ 0 ].src = 'https://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat';
         <% else %>
         alert( "Chat is currently omitted due to a bug in Twitch's API. To chat, open a new tab and visit http://www.twitch.tv/" + $( '#chat-changer option:selected' ).text() + '/chat' );
@@ -313,6 +322,31 @@
     <% if ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i %>
     alert( "Chat is currently omitted due to a bug in Twitch's API. To chat, open a new tab and visit http://www.twitch.tv/" + streamers[ 0 ][ 'name' ] + '/chat' );
     <% end %>
+
+    // Construct the Twitter share url and text, and assign it to the share button.
+    var twitter_text;
+    switch ( streamers.length ) {
+        case 1:
+            twitter_text = "I'm watching " + streamers[ 0 ][ 'name' ] + " on #TwitchDeck!";
+            break;
+        case 2:
+            twitter_text = "I'm watching " + streamers[ 0 ][ 'name' ] + " and " + streamers[ 1 ][ 'name' ] + " on #TwitchDeck!";
+            break;
+        default:
+            twitter_text = "I'm watching " + streamers[ 0 ][ 'name' ] + ", " + streamers[ 1 ][ 'name' ] + ", and more on #TwitchDeck!";
+            break;
+    }
+
+    var twitter_href = $( '#twitter_share' ).attr( 'href' ) + "url=" + encodeURIComponent( window.location.href ) + "&text=" + encodeURIComponent( twitter_text );
+    $( '#twitter_share' ).attr( 'href', twitter_href );
+
+    // Construct the Facebook share url.
+    var facebook_href = $( '#facebook_share' ).attr( 'href' ) + window.location.href;
+    $( '#facebook_share' ).attr( 'href', facebook_href );
+
+    // Construct the Google+ share url
+    var google_plus_href = $( '#google_plus_share' ).attr( 'href' ) + window.location.href;
+    $( '#google_plus_share' ).attr( 'href', google_plus_href );
 </script>
 </body>
 </html>
