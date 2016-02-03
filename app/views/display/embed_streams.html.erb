@@ -5,12 +5,12 @@
     <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
     <!-- Facebook Tags -->
-    <meta property="og:title" content="TwitchDeck - the Smarter Stream Player" />
-    <meta property="og:description" content="Watch multiple Twitch.tv streamers at once. Let TwitchDeck make sure there's always something to watch, and manage the volume. Just sit back and enjoy, free and right in your browser." />
+    <meta property="og:title" content="TwitchDeck - the Smarter Stream Player"/>
+    <meta property="og:description" content="Watch multiple Twitch.tv streamers at once. Let TwitchDeck make sure there's always something to watch, and manage the volume. Just sit back and enjoy, free and right in your browser."/>
 
     <!-- Google+ Tags -->
-    <meta itemprop="name" content="TwitchDeck - The Smarter Stream Player" />
-    <meta itemprop="description" content="Watch multiple Twitch.tv streamers at once. Let TwitchDeck make sure there's always something to watch, and manage the volume. Just sit back and enjoy, free and right in your browser." />
+    <meta itemprop="name" content="TwitchDeck - The Smarter Stream Player"/>
+    <meta itemprop="description" content="Watch multiple Twitch.tv streamers at once. Let TwitchDeck make sure there's always something to watch, and manage the volume. Just sit back and enjoy, free and right in your browser."/>
 </head>
 <body class="noscroll">
 <div id="main-container">
@@ -341,11 +341,11 @@
     $( '#twitter_share' ).attr( 'href', twitter_href );
 
     // Construct the Facebook share url.
-    var facebook_href = $( '#facebook_share' ).attr( 'href' ) + window.location.href;
+    var facebook_href = $( '#facebook_share' ).attr( 'href' ) + encodeURIComponent( window.location.href );
     $( '#facebook_share' ).attr( 'href', facebook_href );
 
     // Construct the Google+ share url
-    var google_plus_href = $( '#google_plus_share' ).attr( 'href' ) + window.location.href;
+    var google_plus_href = $( '#google_plus_share' ).attr( 'href' ) + encodeURIComponent( window.location.href );
     $( '#google_plus_share' ).attr( 'href', google_plus_href );
 </script>
 </body>
