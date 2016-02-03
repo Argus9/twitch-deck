@@ -5,6 +5,14 @@
 // ====== //
 a {
     color: $light-purple;
+
+    &:visited {
+        color: $light-purple;
+    }
+
+    &:hover {
+        color: white;
+    }
 }
 
 span {
