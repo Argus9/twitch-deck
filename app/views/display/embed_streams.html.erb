@@ -265,7 +265,7 @@
         <% unless ENV['OMIT_CHAT'] == 'true' && @streamers.count > ENV['OMIT_CHAT_THRESHOLD'].to_i %>
         $( '#chat_embed' )[ 0 ].src = 'https://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat';
         <% else %>
-        $( '#backup_chat_link' )[ 0 ].attr( 'href', 'http://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat' );
+        $( '#backup_chat_link' ).attr( 'href', 'http://twitch.tv/' + $( '#chat-changer option:selected' ).text() + '/chat' );
         <% end %>
     } );
 
