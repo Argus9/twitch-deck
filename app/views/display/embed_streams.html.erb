@@ -361,6 +361,26 @@
             break;
     }
     $( '#pinterest_share' ).attr( 'href', pinterest_href );
+
+    // Construct the email share url
+    var email_href = 'mailto:?subject=' + encodeURIComponent( "Check out who I'm watching on TwitchDeck!" ) + '&body=';
+    var email_body = "I'm watching ";
+    switch ( streamers.length ) {
+        case 1:
+            email_body += streamers[ 0 ][ 'name' ];
+            break;
+        case 2:
+            email_body += streamers[ 0 ][ 'name' ] + ' and ' + streamers[ 1 ][ 'name' ];
+            break;
+        case 3:
+            email_body += streamers[ 0 ][ 'name' ] + ', ' + streamers[ 1 ][ 'name' ] + ', and ' + streamers[ 2 ][ 'name' ];
+            break;
+        default:
+            email_body += streamers[ 0 ][ 'name' ] + ', ' + streamers[ 1 ][ 'name' ] + ', and more';
+    }
+    email_body += " on TwitchDeck! Check it out: " + window.location.href;
+    email_href += encodeURIComponent( email_body );
+    $( '#email_share' ).attr( 'href', email_href );
 </script>
 </body>
 </html>
