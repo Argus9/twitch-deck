@@ -1,5 +1,8 @@
+@import 'variables';
+
 .menu {
     text-align: right;
+    font-size: $text-large;
 }
 
 #theater_mode_toggle.theater_mode_active {
