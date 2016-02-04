@@ -346,6 +346,21 @@
     // Construct the Google+ share url
     var google_plus_href = $( '#google_plus_share' ).attr( 'href' ) + encodeURIComponent( window.location.href );
     $( '#google_plus_share' ).attr( 'href', google_plus_href );
+
+    // Construct the Pinterest share url
+    var pinterest_href = $( '#pinterest_share' ).attr( 'href' ) + 'url=' + encodeURIComponent( window.location.href ) + "&description=I'm watching ";
+    switch ( streamers.length ) {
+        case 1:
+            pinterest_href += streamers[ 0 ][ 'name' ] + ' on TwitchDeck!';
+            break;
+        case 2:
+            pinterest_href += streamers[ 0 ][ 'name' ] + ' and ' + streamers[ 1 ][ 'name' ] + ' on TwitchDeck!';
+            break;
+        default:
+            pinterest_href += streamers[ 0 ][ 'name' ] + ', ' + streamers[ 1 ][ 'name' ] + ', and more on TwitchDeck!';
+            break;
+    }
+    $( '#pinterest_share' ).attr( 'href', pinterest_href );
 </script>
 </body>
 </html>
