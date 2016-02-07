@@ -55,6 +55,11 @@
         $( '#chat-frame' ).load( function () {
             twitchDeck.display.startTimers();
         } );
+
+        if ( twitchDeck.display.streamers.length > 4 ) {
+            // Resize the on-deck streams at startup to maintain aspect ratio.
+            twitchDeck.display.resizeOnDeckStreams();
+        }
     } );
 </script>
 </body>
