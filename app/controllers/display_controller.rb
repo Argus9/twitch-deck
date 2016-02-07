@@ -47,18 +47,6 @@ class DisplayController < ApplicationController
 		redirect_to %w(/day9tv kinggothalion professorbroman covert_muffin totalbiscuit man_vs_game trumpetmcool ).join '&'
 	end
 
-	def replace_main_stream
-		@streamers = JSON.parse session['streamers']
-
-		@streamers.delete_if { |streamer| streamer['name'] == params[:streamer] }
-		@streamers.unshift({ 'name' => params['streamer'] })
-		session['streamers'] = @streamers.to_json
-
-		redirect_to '/' + @streamers.map { |streamer| streamer['name'] }.join('&')
-	rescue SocketError
-		# noop
-	end
-
 	private
 
 	##

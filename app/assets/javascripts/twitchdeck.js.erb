@@ -1,0 +1,370 @@
+(function ( window ) {
+    if ( typeof twitchDeck === 'undefined' ) {
+        var twitchDeck = {};
+
+        twitchDeck.display = {
+            // Variables
+            streamers: {},
+            omitChat: "<%= ENV['OMIT_CHAT'] %>",
+            omitChatThreshold: <%= ENV['OMIT_CHAT_THRESHOLD'].to_i %>,
+
+            // Functions
+            initialize: function ( streamerJson ) {
+                twitchDeck.display.streamers = JSON.parse( streamerJson );
+
+                // Called when a "switch to" button is clicked, which forces the streamer into the main player while
+                // shifting all streamers on-deck down by one.
+                $( '.stream-button' ).click( function () {
+                    var streamerName = $( this ).text();
+
+                    // Find the streamer whose name matches the one on the button.
+                    var matchingStreamer = {};
+                    $.each( twitchDeck.display.streamers, function ( position, streamer ) {
+                        if ( streamer.name === streamerName ) {
+                            matchingStreamer = { position: position, streamer: streamer };
+                            return false;
+                        }
+                    } );
+
+                    twitchDeck.display.streamers.splice( matchingStreamer[ 'position' ], 1 );
+                    twitchDeck.display.streamers.unshift( matchingStreamer[ 'streamer' ] );
+
+                    // Re-do all priorities for each streamer.
+                    $.each( twitchDeck.display.streamers, function ( position, streamer ) {
+                        streamer.priority = position;
+                    } );
+
+                    twitchDeck.display.reticulatePlayerSplines();
+                } );
+
+                // Called when the "Theater Mode" button is pressed.
+                $( '#theater_mode_toggle' ).click( function () {
+                    if ( $( '#theater_mode_toggle' ).hasClass( 'theater_mode_active' ) ) {
+                        $( '#theater_mode_toggle' ).removeClass( 'theater_mode_active' );
+                        $( '#stream-queue' ).removeClass( 'theater' );
+                        $( '#main-stream-container' ).removeClass( 'theater' );
+                        $( '#chat-container' ).removeClass( 'theater' );
+                    } else {
+                        $( '#theater_mode_toggle' ).addClass( 'theater_mode_active' );
+                        $( '#stream-queue' ).addClass( 'theater' );
+                        $( '#main-stream-container' ).addClass( 'theater' );
+                        $( '#chat-container' ).addClass( 'theater' );
+                    }
+                } );
+
+                // Called when the "Hide Chat" button is pressed.
+                $( '#hide_chat_toggle' ).click( function () {
+                    if ( $( '#hide_chat_toggle' ).hasClass( 'hide_chat_mode_active' ) ) {
+                        $( '#chat-container' ).removeClass( 'hide_chat' );
+                        $( '#main-stream-player' ).removeClass( 'hide_chat' );
+                        $( '#hide_chat_toggle' ).removeClass( 'hide_chat_mode_active' );
+                    } else {
+                        $( '#chat-container' ).addClass( 'hide_chat' );
+                        $( '#main-stream-player' ).addClass( 'hide_chat' );
+                        $( '#hide_chat_toggle' ).addClass( 'hide_chat_mode_active' );
+                    }
+                } );
+
+                // Swap a different chat window whenever the drop-down box changes.
+                $( '#chat-changer' ).change( function () {
+                    if ( twitchDeck.display.omitChat == 'true' && twitchDeck.display.streamers.length > twitchDeck.display.omitChatThreshold ) {
+                        $( '#backup_chat_link' ).attr( 'href', 'http://twitch.tv/' +
+                            $( '#chat-changer option:selected' ).text() + '/chat' );
+                    } else {
+                        $( '#chat-frame' )[ 0 ].src = 'https://twitch.tv/' +
+                            $( '#chat-changer option:selected' ).text() + '/chat';
+                    }
+                } );
+
+                // Depending on the number of streamers selected, change the layout for optimal viewing.
+                switch ( twitchDeck.display.streamers.length ) {
+                    case 2:
+                        $( '#main-stream-container' ).addClass( 'split_two' );
+                        break;
+                    case 3:
+                        $( '#main-stream-container' ).addClass( 'split_three' );
+                        break;
+                    case 4:
+                        $( '#main-stream-container' ).addClass( 'split_four' );
+                        break;
+                }
+
+                // Disable elements that are not applicable when there are 4 or fewer streamers on-screen.
+                if ( twitchDeck.display.streamers.length <= 4 ) {
+                    $( '#stream-queue' ).css( 'display', 'none' );
+
+                    if ( twitchDeck.display.streamers.length == 1 ) {
+                        $( '#chat-changer' ).css( 'display', 'none' );
+                    }
+                }
+
+                if ( twitchDeck.display.omitChat == 'true' && twitchDeck.display.streamers.length > twitchDeck.display.omitChatThreshold ) {
+                    alert( "Chat is currently omitted due to a bug in Twitch's API. To chat, click the 'Open Chat' " +
+                        "link in the right panel to open it in a new tab." );
+                }
+
+                // Construct the Twitter share url and text, and assign it to the share button.
+                var twitter_text;
+                switch ( twitchDeck.display.streamers.length ) {
+                    case 1:
+                        twitter_text = "I'm watching " + twitchDeck.display.streamers[ 0 ].name + " on #TwitchDeck!";
+                        break;
+                    case 2:
+                        twitter_text = "I'm watching " + twitchDeck.display.streamers[ 0 ].name + " and " +
+                            twitchDeck.display.streamers[ 1 ].name + " on #TwitchDeck!";
+                        break;
+                    default:
+                        twitter_text = "I'm watching " + twitchDeck.display.streamers[ 0 ].name + ", " +
+                            twitchDeck.display.streamers[ 1 ].name + ", and more on #TwitchDeck!";
+                        break;
+                }
+
+                var twitter_href = $( '#twitter_share' ).attr( 'href' ) + "url=" +
+                    encodeURIComponent( window.location.href ) + "&text=" + encodeURIComponent( twitter_text );
+                $( '#twitter_share' ).attr( 'href', twitter_href );
+
+                // Construct the Facebook share url.
+                var facebook_href = $( '#facebook_share' ).attr( 'href' ) + encodeURIComponent( window.location.href );
+                $( '#facebook_share' ).attr( 'href', facebook_href );
+
+                // Construct the Google+ share url
+                var google_plus_href = $( '#google_plus_share' ).attr( 'href' ) +
+                    encodeURIComponent( window.location.href );
+                $( '#google_plus_share' ).attr( 'href', google_plus_href );
+
+                // Construct the Pinterest share url
+                var pinterest_href = $( '#pinterest_share' ).attr( 'href' ) + 'url=' +
+                    encodeURIComponent( window.location.href ) + "&description=I'm watching ";
+                switch ( twitchDeck.display.streamers.length ) {
+                    case 1:
+                        pinterest_href += twitchDeck.display.streamers[ 0 ].name + ' on TwitchDeck!';
+                        break;
+                    case 2:
+                        pinterest_href += twitchDeck.display.streamers[ 0 ].name + ' and ' + twitchDeck.display.streamers[ 1 ].name +
+                            ' on TwitchDeck!';
+                        break;
+                    default:
+                        pinterest_href += twitchDeck.display.streamers[ 0 ].name + ', ' + twitchDeck.display.streamers[ 1 ].name +
+                            ', and more on TwitchDeck!';
+                        break;
+                }
+                $( '#pinterest_share' ).attr( 'href', pinterest_href );
+
+                // Construct the email share url
+                var email_href = 'mailto:?subject=' +
+                    encodeURIComponent( "Check out who I'm watching on TwitchDeck!" ) + '&body=';
+                var email_body = "I'm watching ";
+                switch ( twitchDeck.display.streamers.length ) {
+                    case 1:
+                        email_body += twitchDeck.display.streamers[ 0 ].name;
+                        break;
+                    case 2:
+                        email_body += twitchDeck.display.streamers[ 0 ].name + ' and ' + twitchDeck.display.streamers[ 1 ].name;
+                        break;
+                    case 3:
+                        email_body += twitchDeck.display.streamers[ 0 ].name + ', ' + twitchDeck.display.streamers[ 1 ].name + ', and ' +
+                            twitchDeck.display.streamers[ 2 ].name;
+                        break;
+                    default:
+                        email_body += twitchDeck.display.streamers[ 0 ].name + ', ' + twitchDeck.display.streamers[ 1 ].name + ', and more';
+                }
+                email_body += " on TwitchDeck! Check it out: " + window.location.href;
+                email_href += encodeURIComponent( email_body );
+                $( '#email_share' ).attr( 'href', email_href );
+            },
+
+            /*
+             * Update streams on the page, based on their online status.
+             */
+            getStreamStatus: function () {
+                $.ajax( {
+                    url: 'https://api.twitch.tv/kraken/streams?channel=' + $.map( twitchDeck.display.streamers, function ( streamer ) {
+                        return streamer.name;
+                    } ).join( ',' ),
+                    async: true
+                } ).success( function ( data ) {
+                    $.each( twitchDeck.display.streamers, function ( _, streamer ) {
+                        streamer.status = 'offline';
+                        var matchingStreamer = $.grep( data[ 'streams' ], function ( streamerUnderSearch ) {
+                            return streamerUnderSearch[ 'channel' ].name === streamer.name;
+                        } );
+                        if ( matchingStreamer.length > 0 ) {
+                            streamer.status = 'online';
+                        }
+                    } );
+
+                    // Re-organize streamer order based on online status, then by priority.
+                    twitchDeck.display.streamers.sort( function ( leftObj, rightObj ) {
+                        if ( leftObj.status === 'online' && rightObj.status === 'offline' ) {
+                            return - 1;
+                        } else if ( leftObj.status === 'offline' && rightObj.status === 'online' ) {
+                            return 1;
+                        } else {
+                            return leftObj.priority < rightObj.priority ? - 1 : 1;
+                        }
+                    } );
+
+                    twitchDeck.display.reticulatePlayerSplines();
+                } );
+            },
+
+            /*
+             * Returns a Twitch player URL, filling in the given values of the streamer name and muted flag.
+             */
+            getPlayerUrl: function ( name, muted ) {
+                return 'http://player.twitch.tv/?channel=' + name + '&auto_play=true&muted=' + muted + '';
+            },
+
+            /*
+             * Goes through the full streamer setup and makes updates where necessary.
+             */
+            reticulatePlayerSplines: function () {
+                var streamsChanged = false;
+                // If main streamer is still online, ONLY re-organize on-deck streams.
+                if ( $( 'iframe#main-stream-player' )[ 0 ].src !==
+                    twitchDeck.display.getPlayerUrl( twitchDeck.display.streamers[ 0 ].name, false ) ) {
+                    console.log( "Main streamer went offline. Loading a new main streamer." );
+                    $( '#main-stream-player' ).attr( 'src', twitchDeck.display.getPlayerUrl( twitchDeck.display.streamers[ 0 ].name, false ) );
+                    if ( twitchDeck.display.omitChat == 'true' && twitchDeck.display.streamers.length > twitchDeck.display.omitChatThreshold ) {
+                        $( '#backup_chat_link' ).attr( 'href', 'http://www.twitch.tv/' +
+                            twitchDeck.display.streamers[ 0 ].name + '/chat' );
+                    } else {
+                        $( '#chat-frame' ).attr( 'src', 'https://twitch.tv/' + twitchDeck.display.streamers[ 0 ].name + '/chat' );
+                    }
+                    streamsChanged = true;
+                }
+
+                // Re-organize on-deck streams if they have changed.
+                // If the main streamer has changed, we need to do it the old-fashioned way and change all iframe srcs.
+                // If not, just change the order on each iframe for a smooth change without stuttering.
+                var iframes = $( '.on-deck-stream' );
+                if ( streamsChanged ) {
+                    $.each( twitchDeck.display.streamers.slice( 1 ), function ( position, streamer ) {
+                        if ( iframes[ position ].src !== twitchDeck.display.getPlayerUrl( streamer.name, true ) ) {
+                            if ( ! streamsChanged ) {
+                                console.log( "Re-ordering on-deck streamers." );
+                            }
+                            iframes[ position ].src = twitchDeck.display.getPlayerUrl( streamer.name, true );
+                            streamsChanged = true;
+                        }
+                    } );
+                } else {
+                    $.each( twitchDeck.display.streamers.slice( 1 ), function ( position, streamer ) {
+                        var streamerIframe = $.grep( iframes, function ( iframe ) {
+                            return iframe.src.indexOf( 'channel=' + streamer.name ) !== - 1;
+                        } )[ 0 ];
+                        if ( $( streamerIframe ).css( "order" ) != position ) {
+                            $( streamerIframe ).css( "order", position );
+                            streamsChanged = true;
+                        }
+                    } );
+                }
+
+                // Update the drop-down order and selected item to match the new order of streamers.
+                if ( streamsChanged ) {
+                    var chatSelect = $( '#chat-changer' );
+                    chatSelect.empty();
+                    $.each( twitchDeck.display.streamers, function ( _, streamer ) {
+                        chatSelect.append( '<option value="' + streamer.name + '">' + streamer.name + '</option>' );
+                    } );
+                }
+
+                // Finally, reset the list of "switch to" buttons to match the current stream order and status.
+                if ( streamsChanged ) {
+                    $.each( $( '.stream-button' ), function ( position, button ) {
+                        $( button ).text( twitchDeck.display.streamers[ position ].name );
+                        if ( twitchDeck.display.streamers[ position ].status === 'offline' ) {
+                            $( button ).addClass( 'button-inactive' );
+                            $( button ).removeClass( 'button' );
+                            $( button ).removeClass( 'button-active' );
+                        } else {
+                            if ( position === 0 && twitchDeck.display.streamers[ position ].status === 'online' ) {
+                                $( button ).removeClass( 'button-inactive' );
+                                $( button ).removeClass( 'button' );
+                                $( button ).addClass( 'button-active' )
+                            } else {
+                                $( button ).removeClass( 'button-inactive' );
+                                $( button ).removeClass( 'button-active' );
+                                $( button ).addClass( 'button' );
+                            }
+                        }
+                    } );
+                }
+            },
+            /*
+             * Resizes the on-deck streams to fit the window.
+             */
+            resizeOnDeckStreams: function () {
+                var windowWidth = $( window ).innerWidth();
+
+                // Depending on window resolution, resize the on-deck streams so a certain amount are visible.
+                // Defaults to 4 streamers at once.
+                var widthDivisor;
+                if ( windowWidth > 2240 ) {
+                    // 8 streams in view
+                    widthDivisor = .125;
+                } else if ( windowWidth <= 2240 && windowWidth > 1600 ) {
+                    // 5 streams in view
+                    widthDivisor = .20;
+                } else if ( windowWidth <= 1600 && windowWidth > 1000 ) {
+                    // 4 streams in view
+                    widthDivisor = .25;
+                } else {
+                    // 2 streams in view
+                    widthDivisor = .50;
+                }
+
+                var width = ($( window ).innerWidth() * widthDivisor) - 2;
+                var height = width * 9 / 16;
+                $( '.on-deck-stream' ).width( width + 'px' );
+                $( '.on-deck-stream' ).height( height + 'px' );
+
+                // Trigger a style recalculation
+                $( 'body' ).css( 'display', 'table' ).height();
+                $( 'body' ).css( 'display', 'block' );
+            },
+            /*
+             * Loads the chat iframe.
+             */
+            loadChat: function () {
+                console.log( "Loading chat." );
+                $( '#chat-container' ).append( '<iframe id="chat-frame" class="chat-embed" scrolling="no" src="' + (twitchDeck.display.omitChat == 'true' && twitchDeck.display.streamers.length > twitchDeck.display.omitChatThreshold ? "" : "https://twitch.tv/" + twitchDeck.display.streamers[ 0 ].name + "/chat") + '"></iframe>' );
+                if ( twitchDeck.display.omitChat == 'true' && twitchDeck.display.streamers.length > twitchDeck.display.omitChatThreshold ) {
+                    $( '#chat-container' ).append( '<a id="backup_chat_link" href="http://www.twitch.tv/' + twitchDeck.display.streamers[ 0 ].name + '/chat" target="_blank" style="text-align: left; vertical-align: top;">Open Chat</a>' );
+                }
+            },
+            startTimers: function () {
+                console.log( "Startimg timers." );
+                // Set up an interval to update stream layouts on the page every 15 seconds.
+                setInterval( function () {
+                    // Check if main stream is online
+                    twitchDeck.display.getStreamStatus();
+                }, 15000 );
+
+                // Only resize streams if Split View isn't in effect.
+                if ( twitchDeck.display.streamers.length > 4 ) {
+                    // Whenever the window resizes, re-size on-deck streams to maintain aspect ratio.
+                    $( window ).resize( function () {
+                        twitchDeck.display.resizeOnDeckStreams();
+                    } );
+
+                    // Resize the on-deck streams at startup to maintain aspect ratio.
+                    twitchDeck.display.resizeOnDeckStreams();
+                }
+
+                // Sets up a heartbeat to report active users beyond the normal 5 minute timeout.
+                setInterval( function () {
+                    ga( 'send', {
+                        hitType: 'event',
+                        eventCategory: 'Videos',
+                        eventAction: 'play',
+                        eventLabel: 'Heartbeat'
+                    } );
+                }, 270000 );
+            }
+        }
+    } else {
+        console.log( "TwitchDeck has already been defined." );
+    }
+    window.twitchDeck = twitchDeck;
+})( window );
