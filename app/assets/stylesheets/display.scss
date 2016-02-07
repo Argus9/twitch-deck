@@ -21,6 +21,7 @@ span {
     color: $light-purple;
 
     &.button {
+        font-size: $text-large;
         font-weight: bold;
         text-decoration: none;
         background-color: $dark-purple;
@@ -149,19 +150,19 @@ select option {
     }
 
     // ====================================== //
-    // Two Streamers - 50/50 vertical split //
+    // Two Streamers - 50/50 horizontal split //
     // ====================================== //
     &.split_two {
         > iframe {
-            flex: 0 0 50%;
+            flex: 0 0 100%;
             border: 0px;
 
             &:nth-child(1) {
-                border-right: 1px solid $light-purple;
+                border-bottom: 1px solid $light-purple;
             }
 
             &:nth-child(2) {
-                border-left: 1px solid $light-purple;
+                border-top: 1px solid $light-purple;
             }
         }
     }
@@ -237,7 +238,10 @@ select option {
 
     > iframe {
         border: 0px;
-        border-right: 2px solid $light-purple;
+
+        &:not(:nth-last-child(1)) {
+            border-right: 2px solid $light-purple;
+        }
     }
 }
 
@@ -273,6 +277,10 @@ select option {
     }
 }
 
+#switch-label {
+    font-size: $text-large;
+}
+
 .beta {
     color: $light-purple;
 }
@@ -289,6 +297,7 @@ select option {
 }
 
 .on-deck-stream {
+
     flex: 0 0 auto;
 }
 
