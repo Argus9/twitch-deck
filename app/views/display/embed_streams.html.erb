@@ -48,13 +48,10 @@
 
 <script>
     $( document ).ready( function () {
+        console.log( "Document is ready. Initializing Javascript." );
         twitchDeck.display.initialize( '<%= @streamers.to_json.html_safe %>' );
-        $( '#main-stream-player' ).load( function () {
-            twitchDeck.display.loadChat();
-        } );
-        $( '#chat-frame' ).load( function () {
-            twitchDeck.display.startTimers();
-        } );
+        twitchDeck.display.loadChat();
+        twitchDeck.display.startTimers();
 
         if ( twitchDeck.display.streamers.length > 4 ) {
             // Resize the on-deck streams at startup to maintain aspect ratio.
