@@ -64,5 +64,5 @@ Rails.application.routes.draw do
 	get '/', to: 'display#index'
 
 	# If nothing else fits, take us to the main welcome landing.
-	root 'display#help'
+	root 'display#index'
 end

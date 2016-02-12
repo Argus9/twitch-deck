@@ -2,9 +2,11 @@ require 'net/http'
 
 class DisplayController < ApplicationController
 	def index
-		response = JSON.parse make_request 'https://api.twitch.tv/kraken/streams?limit=7&stream_type=live'
+		response = JSON.parse make_request 'https://api.twitch.tv/kraken/streams?stream_type=live'
 		@example_link_href = 'http://' + (ENV['CANONICAL_HOST'] || 'localhost:3000') + '/player/' +
-			response['streams'].map do |stream|
+			response['streams'].select do |stream|
+				stream['channel']['language'] == I18n.locale.to_s
+			end[0...7].map do |stream|
 				stream['channel']['name']
 			end.join('&')
 	end

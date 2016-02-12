@@ -1,9 +1,11 @@
 <div id="landing_container">
-    <p style="text-align: center; vertical-align: middle;">Welcome to TwitchDeck!</p>
-    <p style="text-align: center; vertical-align: middle;">Ready to get started?</p>
-    <p style="text-align: center; vertical-align: middle;">In your URL bar above, type
-        in <%= ENV['CANONICAL_HOST'] || 'localhost:3000' %>/player/ followed by
-        <strong>the streamers you want to watch, separated by '&' characters</strong>.</p>
-    <p style="text-align: center; vertical-align: middle;">For example:
-        <a href="<%= @example_link_href %>"><%= @example_link_href %></a></p>
+    <div class="centered-modal">
+        <p style="text-align: center; vertical-align: middle;">Welcome to TwitchDeck!</p>
+        <p style="text-align: center; vertical-align: middle;">Ready to get started?</p>
+        <p style="text-align: center; vertical-align: middle;">In your URL bar above, type
+            in <%= ENV['CANONICAL_HOST'] || 'localhost:3000' %>/player/ followed by
+            <strong>the streamers you want to watch, separated by '&' characters</strong>.</p>
+        <p style="text-align: center; vertical-align: middle;">For example:
+            <a href="<%= @example_link_href %>"><%= @example_link_href %></a></p>
+    </div>
 </div>

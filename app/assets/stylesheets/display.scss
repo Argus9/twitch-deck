@@ -301,6 +301,17 @@ select option {
     margin-right: 0;
 }
 
+.centered-modal {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
 .flex_wrap {
     flex-wrap: wrap;
 }
