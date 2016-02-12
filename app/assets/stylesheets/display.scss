@@ -126,10 +126,16 @@ select option {
     }
 }
 
-#landing_container {
-    font-size: $text-large;
-    text-align: center;
-    vertical-align: middle;
+#landing-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    width: 100%;
+    min-height: 100%;
+    margin: auto;
+    top: 0;
+    left: 0;
 }
 
 #main-container {
@@ -290,41 +296,8 @@ select option {
     font-size: $text-large;
 }
 
-.Aligner {
-    display: flex;
-    align-items: center;
-    min-height: 24em;
-    justify-content: center;
-}
-
-.Aligner-item {
-    flex: 1;
-}
-
-.Aligner-item--top {
-    align-self: flex-start;
-}
-
-.Aligner-item--bottom {
-    align-self: flex-end;
-}
-
-.Aligner-item--fixed {
-    flex: none;
-    max-width: 50%;
-}
-
 .beta {
     color: $light-purple;
-}
-
-.box {
-    font-size: $text-large;
-    text-align: center;
-    padding: 10px;
-    color: $light-purple;
-    background-color: $dark-purple;
-    border: 10px solid $purple;
 }
 
 .flex_row {
@@ -336,6 +309,23 @@ select option {
 
 .flex_wrap {
     flex-wrap: wrap;
+}
+
+.landing-box {
+    font-size: $text-large;
+    text-align: center;
+    padding: 10px;
+    color: $light-purple;
+    background-color: $dark-purple;
+    border: 10px solid $purple;
+    flex: 0 0 auto;
+    width: 50%;
+    margin: auto;
+    overflow-wrap: break-word;
+}
+
+.landing-buffer {
+    flex: 1 0 auto;
 }
 
 .on-deck-stream {

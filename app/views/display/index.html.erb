@@ -1,14 +1,14 @@
 <body>
-<div>
-    <div class="Aligner">
-        <div class="Aligner-item Aligner-item--fixed box">
-            Welcome to TwitchDeck!<br>
-            Ready to get started?<br>
-            In your URL bar above, type in <%= ENV['CANONICAL_HOST'] || 'localhost:3000' %>/player/ followed by
-            <strong>the streamers you want to watch, separated by '&' characters</strong>.<br>
-            Here's an example:<br>
-            <a href="<%= @example_link_href %>"><%= @example_link_href %></a>
-        </div>
+<div id="landing-container">
+    <div class="landing-buffer"></div>
+    <div class="landing-box">
+        Welcome to TwitchDeck!<br>
+        Ready to get started?<br>
+        In your URL bar above, type in <%= ENV['CANONICAL_HOST'] || 'localhost:3000' %>/player/ followed by
+        <strong>the streamers you want to watch, separated by '&' characters</strong>.<br>
+        Here's an example:<br>
+        <a id="demo-link" href="<%= @example_link_href %>"><%= @example_link_href %></a>
     </div>
+    <div class="landing-buffer"></div>
 </div>
 </body>
