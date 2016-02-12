@@ -290,8 +290,41 @@ select option {
     font-size: $text-large;
 }
 
+.Aligner {
+    display: flex;
+    align-items: center;
+    min-height: 24em;
+    justify-content: center;
+}
+
+.Aligner-item {
+    flex: 1;
+}
+
+.Aligner-item--top {
+    align-self: flex-start;
+}
+
+.Aligner-item--bottom {
+    align-self: flex-end;
+}
+
+.Aligner-item--fixed {
+    flex: none;
+    max-width: 50%;
+}
+
 .beta {
     color: $light-purple;
+}
+
+.box {
+    font-size: $text-large;
+    text-align: center;
+    padding: 10px;
+    color: $light-purple;
+    background-color: $dark-purple;
+    border: 10px solid $purple;
 }
 
 .flex_row {
@@ -299,17 +332,6 @@ select option {
     flex-direction: row;
     margin-left: 0;
     margin-right: 0;
-}
-
-.centered-modal {
-    position: absolute;
-    width: 50%;
-    height: 50%;
-    margin: auto;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
 }
 
 .flex_wrap {
