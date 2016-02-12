@@ -1,8 +1,8 @@
 require 'test_helper'
 
 class DisplayControllerTest < ActionController::TestCase
-  test "should get index" do
-    get :index
+  test "should get help" do
+    get :help
     assert_response :success
   end
 

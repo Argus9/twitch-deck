@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TwitchDeck - Welcome!</title>
+    <%= render 'partials/google_analytics_init' %>
+</head>
+<body>
+<div style="margin: 0 10% 0 10%;">
+    <h1>Welcome to the TwitchDeck Beta!</h1>
+    <h3>What is TwitchDeck?</h3>
+    <p>A web application that lets you watch multiple Twitch streams on the same page, at the same time. TwitchDeck
+        displays a "primary" streamer in a larger player, with your other streamers displayed below in smaller players,
+        with volume turned down by default.</p>
+
+    <h3>How does it work?</h3>
+    <p>After entering your preferred priority of streamers, TwitchDeck will put the first online streamer in the main
+        player, in the center of the screen, with the audio set to max. Next, TwitchDeck will place any remaining online
+        streams, in order, in the subway bar under the main player with the volume turned off. Finally, offline streams
+        will be placed behind them.</p>
+
+    <h3>How do I use it?</h3>
+    <p>Enter the names of the streamers you'd like to watch, in order of priority. For instance:
+        <b><%= ENV['CANONICAL_HOST'] || 'localhost:3000' %>
+            /player/day9tv&covert_muffin&kinggothalion&professorbroman&riotgames</b> will display
+        <a href="http://www.twitch.tv/day9tv">Day[9]</a>'s stream in the main player, the others in smaller streams
+        below it. TwitchDeck will order the
+        streams on-page first by whether they're online or offline, then by the priority you specify.</p>
+    <p>In this example, once Day[9]'s stream goes offline, TwitchDeck will check the other streams, and if either
+        are online, it will take the main stream over and move Day[9]'s stream to the deck.</p>
+
+    <h3>Do I have to pay to use TwitchDeck?</h3>
+    <p>No! TwitchDeck is, and will always remain, free. I created TwitchDeck to give the Twitch community and myself a
+        useful and fun tool to watch multiple streamers, and provide a better viewing experience through its automation
+        features. If you'd like to support TwitchDeck, please tell your friends and other Twitch users about it. The
+        sharing links in the player page are a great way to do this!</p>
+
+    <h3>Where can I get updates, request features, or report a problem?</h3>
+    <p>Check out the TwitchDeck subreddit at <%= link_to 'r/twitchdeck', 'http://www.reddit.com/r/twitchdeck' %></p>
+
+    <h1>Terms of Service</h1>
+    <p><b>Last updated November 29, 2015.</b></p>
+    <p>TwitchDeck is provided free-of-charge for general use, does not collect any personal information or login
+        credentials, and is subject to all of the terms of service of Twitch's embedded video players and chat.</p>
+
+    <h1 id="privacy-policy">Privacy Policy</h1>
+    <p><b>Last updated December 4, 2015.</b></p>
+    <p>TwitchDeck makes use of the widely-used Google Analytics product to aggregate web site usage data, and as such,
+        is subjected to all of Google's terms and conditions of use, including the use of cookies.</p>
+    <p>Google Analytics does not collect personal information about site visitors, as noted in their
+        documentation <%= link_to 'here', 'https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage' %>
+        . Specifically:</p>
+    <blockquote cite="https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage">Important:
+        Google Analytics does not store any personal information about your website users. Read the Google Analytics
+        privacy document for more details.
+    </blockquote>
+</div>
+</body>
+</html>
