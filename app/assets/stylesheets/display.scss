@@ -3,13 +3,9 @@
 // ====== //
 // Normal //
 // ====== //
-a {
+a, a:link, a:visited, a:active {
     color: $light-purple;
     text-decoration: none;
-
-    &:visited {
-        color: $light-purple;
-    }
 
     &:hover {
         color: white;
