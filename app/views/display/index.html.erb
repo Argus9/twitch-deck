@@ -1,12 +1,21 @@
+<head>
+    <style>
+        body, h1, h3, span, a:link, a:visited, a:hover, a:active {
+            color: white;
+        }
+    </style>
+</head>
 <body>
 <div id="landing-container">
     <div class="landing-buffer"></div>
     <div class="landing-box">
-        Welcome to TwitchDeck!<br>
-        Ready to get started?<br>
-        In your URL bar above, type in <strong><%= ENV['CANONICAL_HOST'] || 'localhost:3000' %>/player/</strong>
-        followed by <strong>the streamers you want to watch, separated by '&' characters</strong>.<br>
-        Here's an example:<br>
+        <h1>Welcome to TwitchDeck!</h1>
+        <h3>Ready to get started?</h3>
+        In your URL bar above, type in
+        <span style="text-decoration: underline;"><%= ENV['CANONICAL_HOST'] || 'localhost:3000' %>/player/</span>
+        followed by
+        <span style="text-decoration: underline;">the streamers you want to watch, separated by '&' characters</span>.
+        <h3>Here's an example:</h3>
         <a id="demo-link" href="<%= @example_link_href %>"><%= @example_link_href %></a>
     </div>
     <div class="landing-buffer"></div>
