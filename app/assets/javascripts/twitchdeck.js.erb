@@ -98,11 +98,6 @@
                     }
                 }
 
-                if ( twitchDeck.display.omitChat == 'true' && twitchDeck.display.streamers.length > twitchDeck.display.omitChatThreshold ) {
-                    alert( "Chat is currently omitted due to a bug in Twitch's API. To chat, click the 'Open Chat' " +
-                        "link in the right panel to open it in a new tab." );
-                }
-
                 // Construct the Twitter share url and text, and assign it to the share button.
                 var twitter_text;
                 switch ( twitchDeck.display.streamers.length ) {
@@ -330,7 +325,7 @@
                 console.log( "Loading chat." );
                 $( '#chat-container' ).append( '<iframe id="chat-frame" class="chat-embed" scrolling="no" src="' + (twitchDeck.display.omitChat == 'true' && twitchDeck.display.streamers.length > twitchDeck.display.omitChatThreshold ? "" : "https://twitch.tv/" + twitchDeck.display.streamers[ 0 ].name + "/chat") + '"></iframe>' );
                 if ( twitchDeck.display.omitChat == 'true' && twitchDeck.display.streamers.length > twitchDeck.display.omitChatThreshold ) {
-                    $( '#chat-container' ).append( '<a id="backup_chat_link" href="http://www.twitch.tv/' + twitchDeck.display.streamers[ 0 ].name + '/chat" target="_blank" style="text-align: left; vertical-align: top;">Open Chat</a>' );
+                    $( '#chat-container' ).append( '<a id="backup_chat_link" href="http://www.twitch.tv/' + twitchDeck.display.streamers[ 0 ].name + '/chat" target="_blank">The Chat Panel is currently disabled due to a bug in Twitch\'s API. To open this channel\'s chat room in a new tab, click here.</a>' );
                 }
             },
             startTimers: function () {

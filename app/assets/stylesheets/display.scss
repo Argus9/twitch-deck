@@ -99,6 +99,11 @@ select option {
     }
 }
 
+#backup_chat_link {
+    font-size: $text-large;
+    text-align: center;
+}
+
 #chat-container {
     flex-basis: 340px;
     flex-grow: 1;
@@ -109,6 +114,8 @@ select option {
 
     border: 0px;
     border-left: 2px solid $light-purple;
+
+    text-align: center;
 
     > select {
         flex: 0 0 auto;
