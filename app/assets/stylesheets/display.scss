@@ -126,6 +126,12 @@ select option {
     }
 }
 
+#landing_container {
+    font-size: $text-large;
+    text-align: center;
+    vertical-align: middle;
+}
+
 #main-container {
     min-height: 100%;
     display: flex;

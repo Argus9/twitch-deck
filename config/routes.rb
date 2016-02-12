@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 	# See how all your routes lay out with "rake routes".
 
 	# You can have the root of your site routed with "root"
-	# root 'welcome#index'
+	# root 'welcome#help'
 
 	# Example of regular route:
 	#   get 'products/:id' => 'catalog#view'
@@ -55,14 +55,14 @@ Rails.application.routes.draw do
 	#   end
 
 	get '/google4727e3162513d814.html',
-	      to: proc { |env| [200, {}, ['google-site-verification: google4727e3162513d814.html']] }
-	get 'are_streams_online', to: 'display#are_streams_online'
+	      to: proc { |_| [200, {}, ['google-site-verification: google4727e3162513d814.html']] }
 	get 'demo', controller: :display
-	get 'replace_main_stream', controller: :display
-	get '*streamers', to: 'display#embed_streams'
+	get 'player/*streamers', to: 'display#embed_streams'
+	get '*streamers', to: redirect( '/player/%{streamers}' )
+	get 'help', to: 'display#help'
 
 	get '/', to: 'display#index'
 
 	# If nothing else fits, take us to the main welcome landing.
-	root 'display#index'
+	root 'display#help'
 end
