@@ -47,6 +47,10 @@
         </div>
 
 <script>
+    window.streamerNames = "<%= @streamer_names %>";
+    // Immediately change the URL to avoid emberchat freezing on longer URLs.
+    // See https://github.com/justintv/Twitch-API/issues/499
+    window.history.pushState( null, "", "/loadChat" );
     $( document ).ready( function () {
         console.log( "Document is ready. Initializing Javascript." );
         twitchDeck.display.initialize( '<%= @streamers.to_json.html_safe %>' );
@@ -57,6 +61,11 @@
             // Resize the on-deck streams at startup to maintain aspect ratio.
             twitchDeck.display.resizeOnDeckStreams();
         }
+
+        setTimeout(function () {
+            window.history.pushState( null, "",
+                ("/player/" + window.streamerNames).replace( /&amp;/g, '&' ) );
+        }, 5000 );
     } );
 </script>
 </body>
