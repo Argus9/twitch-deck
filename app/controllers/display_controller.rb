@@ -17,9 +17,16 @@ class DisplayController < ApplicationController
 		# and will affect ordering by the application when one goes offline.
 		raise 'Must pass at least one streamer as a parameter' if params['streamers'].blank?
 
-		@streamers = []
+		# Check and see if the streamers have changed.
+		if params['streamers'].exclude?( 'loadChat' ) &&
+			(session[:streamers] && session[:streamers] != params['streamers']) || session[:streamers].nil?
+			session[:streamers] = params['streamers']
+		end
 
-		params['streamers'].downcase.split('&').each do |name|
+		@streamers = []
+		@streamer_names = session[:streamers]
+
+		session[:streamers].downcase.split('&').each do |name|
 			@streamers << { 'name' => name, 'priority' => @streamers.count, 'status' => 'offline' } unless @streamers.select { |streamer| streamer['name'] == name }.present?
 		end
 
@@ -39,7 +46,6 @@ class DisplayController < ApplicationController
 
 		# Once we know which streams are online, sort them based on online status, then by priority.
 		@streamers.sort_by! { |streamer| [streamer['status'] == 'online' ? 0 : 1, streamer['priority']] }
-		session['streamers'] = @streamers.to_json
 
 			# We are now ready to use the +@streamers+ Array to render streams in the view! Save the @streamers to the
 			# session.
