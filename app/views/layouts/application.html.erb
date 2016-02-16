@@ -15,7 +15,9 @@
     <meta itemprop="description" content="Watch multiple Twitch.tv streamers at once. Let TwitchDeck make sure there's always something to watch, and manage the volume. Just sit back and enjoy, free and right in your browser."/>
 </head>
 <body>
-
+<% flash.each do |message_type, message| %>
+    <div class="alert alert-<%= message_type %>"><%= message %></div>
+<% end %>
 <%= yield %>
 
 </body>

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+	get 'logins/new'
+
 	# The priority is based upon order of creation: first created -> highest priority.
 	# See how all your routes lay out with "rake routes".
 
@@ -29,7 +31,7 @@ Rails.application.routes.draw do
 	# Example resource route with sub-resources:
 	#   resources :products do
 	#     resources :comments, :sales
-	#     resource :seller
+	#     resource :sell
 	#   end
 
 	# Example resource route with more complex sub-resources:
@@ -55,11 +57,14 @@ Rails.application.routes.draw do
 	#   end
 
 	get '/google4727e3162513d814.html',
-	      to: proc { |_| [200, {}, ['google-site-verification: google4727e3162513d814.html']] }
-	get 'demo', controller: :display
+	    to: proc { |_| [200, {}, ['google-site-verification: google4727e3162513d814.html']] }
 	get 'help', to: 'display#help'
+	resources :users
+	get 'login' => 'logins#new'
+	post 'login' => 'logins#create'
+	delete 'logout' => 'logins#destroy'
 	get 'player/*streamers', to: 'display#embed_streams'
-	get '*streamers', to: redirect( '/player/%{streamers}' )
+	get '*streamers', to: redirect('/player/%{streamers}')
 
 	get '/', to: 'display#index'
 

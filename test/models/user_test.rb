@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-    test 'Valid user saves successfully' do
+    test 'Valid users saves successfully' do
         assert_nothing_raised do
             User.new( username: 'foo', email: 'foo@bar.com', password: 'foobarbaz' ).save!
         end

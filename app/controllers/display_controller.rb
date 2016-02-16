@@ -13,7 +13,7 @@ class DisplayController < ApplicationController
 
 	def embed_streams
 		# Parse parameters into all streamers.
-		# ORDER MATTERS! The order in which a user inputs streamer names will determine who the "primary" streamer will be,
+		# ORDER MATTERS! The order in which a users inputs streamer names will determine who the "primary" streamer will be,
 		# and will affect ordering by the application when one goes offline.
 		raise 'Must pass at least one streamer as a parameter' if params['streamers'].blank?
 
@@ -32,7 +32,7 @@ class DisplayController < ApplicationController
 
 		# Use Twitch API to determine which streamers are online and which are
 		# offline. Order the array of streamers based on online/offline status
-		# first, then by priority as passed by the user.
+		# first, then by priority as passed by the users.
 		status = JSON.parse make_request 'https://api.twitch.tv/kraken/streams?channel='\
             "#{ @streamers.map { |streamer| streamer['name'] }.join ',' }"
 		unless status['streams'].empty? # All streams are offline
