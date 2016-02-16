@@ -220,8 +220,13 @@
                     console.log( "Main streamer went offline. Loading a new main streamer." );
                     $( '#main-stream-player' ).attr( 'src',
                         twitchDeck.display.getPlayerUrl( twitchDeck.display.streamers[ 0 ].name, false ) );
+                    window.history.pushState( null, "", "/loadChat" );
                     $( '#chat-frame' ).attr( 'src',
                         'https://twitch.tv/' + twitchDeck.display.streamers[ 0 ].name + '/chat' );
+                    setTimeout( function () {
+                        window.history.pushState( null, "",
+                            ("/player/" + window.streamerNames).replace( /&amp;/g, '&' ) );
+                    }, 5000 );
                     streamsChanged = true;
                 }
 
