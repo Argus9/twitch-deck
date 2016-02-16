@@ -57,9 +57,9 @@ Rails.application.routes.draw do
 	get '/google4727e3162513d814.html',
 	      to: proc { |_| [200, {}, ['google-site-verification: google4727e3162513d814.html']] }
 	get 'demo', controller: :display
+	get 'help', to: 'display#help'
 	get 'player/*streamers', to: 'display#embed_streams'
 	get '*streamers', to: redirect( '/player/%{streamers}' )
-	get 'help', to: 'display#help'
 
 	get '/', to: 'display#index'
 
