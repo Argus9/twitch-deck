@@ -1,3 +1,5 @@
+@import 'bootstrap-sprockets';
+@import 'bootstrap';
 @import 'variables';
 
 // ====== //
@@ -17,7 +19,6 @@ span {
     color: $light-purple;
 
     &.button {
-        font-size: $text-large;
         font-weight: bold;
         text-decoration: none;
         background-color: $dark-purple;
@@ -57,7 +58,7 @@ span {
     }
 }
 
-body {
+body, .twitchdeck-theme {
     color: $purple;
     background-color: $abyss;
     font-family: arial;
@@ -285,10 +286,6 @@ select option {
             padding: 0 5px 0 5px;
         }
     }
-}
-
-#switch-label {
-    font-size: $text-large;
 }
 
 .beta {
