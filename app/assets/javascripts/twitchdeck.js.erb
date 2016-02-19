@@ -66,13 +66,8 @@
 
                 // Swap a different chat window whenever the drop-down box changes.
                 $( '#chat-changer' ).change( function () {
-                    window.history.pushState( null, "", "/loadChat" );
                     $( '#chat-frame' )[ 0 ].src = 'https://twitch.tv/' +
                         $( '#chat-changer option:selected' ).text() + '/chat';
-                    setTimeout( function () {
-                        window.history.pushState( null, "",
-                            ("/player/" + window.streamerNames).replace( /&amp;/g, '&' ) );
-                    }, 5000 );
                 } );
 
                 // Depending on the number of streamers selected, change the layout for optimal viewing.
