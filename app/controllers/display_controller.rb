@@ -2,13 +2,20 @@ require 'net/http'
 
 class DisplayController < ApplicationController
 	def index
+		if logged_in?
+			redirect_to controller: :display, action: :embed_streams, 'streamers' => current_user.streamers
+		end
 		response = JSON.parse make_request 'https://api.twitch.tv/kraken/streams?stream_type=live'
-		@example_link_href = 'http://' + (ENV['CANONICAL_HOST'] || 'localhost:3000') + '/player/' +
-			response['streams'].select do |stream|
-				stream['channel']['language'] == I18n.locale.to_s
-			end[0...7].map do |stream|
-				stream['channel']['name']
-			end.join('&')
+		if response['status'] && response['status'] >= 500
+			@example_link_href = ''
+		else
+			@example_link_href = 'http://' + (ENV['CANONICAL_HOST'] || 'localhost:3000') + '/player/' +
+				response['streams'].select do |stream|
+					stream['channel']['language'] == I18n.locale.to_s
+				end[0...7].map do |stream|
+					stream['channel']['name']
+				end.join('&')
+		end
 	end
 
 	def embed_streams
@@ -20,7 +27,7 @@ class DisplayController < ApplicationController
 		@streamers = []
 
 		params['streamers'].downcase.split('&').each do |name|
-			@streamers << { 'name' => name, 'priority' => @streamers.count, 'status' => 'offline' } unless @streamers.select { |streamer| streamer['name'] == name }.present?
+			@streamers << { 'name' => name, 'priority' => @streamers.count, 'status' => 'online' } unless @streamers.select { |streamer| streamer['name'] == name }.present?
 		end
 
 		# Use Twitch API to determine which streamers are online and which are
@@ -28,12 +35,17 @@ class DisplayController < ApplicationController
 		# first, then by priority as passed by the users.
 		status = JSON.parse make_request 'https://api.twitch.tv/kraken/streams?channel='\
             "#{ @streamers.map { |streamer| streamer['name'] }.join ',' }"
-		unless status['streams'].empty? # All streams are offline
-			@streamers.each do |streamer|
-				# The channel name will only be present if it's online.
-				streamer['status'] = status['streams'].select do |stream|
-					stream['channel']['name'] == streamer['name']
-				end.present? ? 'online' : 'offline'
+		if status['status'] && status['status'] >= 500
+			flash.now[:danger] = 'The Twitch API did not respond - loading all streams. Use "Switch to" buttons ' \
+			  'to change streamers.'
+		else
+			unless status['streams'].empty? # All streams are offline
+				@streamers.each do |streamer|
+					# The channel name will only be present if it's online.
+					streamer['status'] = status['streams'].select do |stream|
+						stream['channel']['name'] == streamer['name']
+					end.present? ? 'online' : 'offline'
+				end
 			end
 		end
 

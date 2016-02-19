@@ -60,9 +60,9 @@ Rails.application.routes.draw do
 	    to: proc { |_| [200, {}, ['google-site-verification: google4727e3162513d814.html']] }
 	get 'help', to: 'display#help'
 	resources :users
-	get 'login' => 'logins#new'
-	post 'login' => 'logins#create'
-	delete 'logout' => 'logins#destroy'
+	get 'login' => 'sessions#new'
+	post 'login' => 'sessions#create'
+	delete 'logout' => 'sessions#destroy'
 	get 'player/*streamers', to: 'display#embed_streams'
 	get '*streamers', to: redirect('/player/%{streamers}')
 

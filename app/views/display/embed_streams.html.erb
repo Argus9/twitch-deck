@@ -57,6 +57,11 @@
             // Resize the on-deck streams at startup to maintain aspect ratio.
             twitchDeck.display.resizeOnDeckStreams();
         }
+
+        // Hide any alert messages at the top
+        setTimeout( function () {
+            $( '.alert' ).fadeOut( 1000 );
+        }, 10000 )
     } );
 </script>
 </body>
