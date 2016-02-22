@@ -31,9 +31,9 @@ class UsersController < ApplicationController
 	def update
 		@user = User.find params[:id]
 		if @user.update_attribute :streamers, params['streamers']
-			render 200
+			render status: 200
 		else
-			render 500
+			render status: 500
 		end
 	end
 
