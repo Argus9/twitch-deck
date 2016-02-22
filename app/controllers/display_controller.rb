@@ -14,7 +14,7 @@ class DisplayController < ApplicationController
 		if response['status'] && response['status'] >= 500
 			@example_link_href = ''
 		else
-			@example_link_href = 'http://' + (ENV['CANONICAL_HOST'] || 'localhost:3000') + '/player/' +
+			@example_link_href = 'https://' + (ENV['CANONICAL_HOST'] || 'localhost:3000') + '/player/' +
 				response['streams'].select do |stream|
 					stream['channel']['language'] == I18n.locale.to_s
 				end[0...7].map do |stream|

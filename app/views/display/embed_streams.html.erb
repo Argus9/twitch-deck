@@ -18,15 +18,15 @@
     </div>
     <div id="main-stream" class="flex_row">
         <div id="main-stream-container">
-            <iframe id="main-stream-player" style="order: 0;" src="http://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false"></iframe>
+            <iframe id="main-stream-player" style="order: 0;" src="https://player.twitch.tv/?channel=<%= @streamers.first['name'] %>&auto_play=true&muted=false"></iframe>
             <% if @streamers.count.between? 2, 4 %>
-                <iframe class="on-deck-stream" style="order: 1;" src="http://player.twitch.tv/?channel=<%= @streamers[1]['name'] %>&auto_play=true&muted=true"></iframe>
+                <iframe class="on-deck-stream" style="order: 1;" src="https://player.twitch.tv/?channel=<%= @streamers[1]['name'] %>&auto_play=true&muted=true"></iframe>
             <% end %>
             <% if @streamers.count.between? 3, 4 %>
-                <iframe class="on-deck-stream" style="order: 2;" src="http://player.twitch.tv/?channel=<%= @streamers[2]['name'] %>&auto_play=true&muted=true"></iframe>
+                <iframe class="on-deck-stream" style="order: 2;" src="https://player.twitch.tv/?channel=<%= @streamers[2]['name'] %>&auto_play=true&muted=true"></iframe>
             <% end %>
             <% if @streamers.count == 4 %>
-                <iframe class="on-deck-stream" style="order: 3;" src="http://player.twitch.tv/?channel=<%= @streamers[3]['name'] %>&auto_play=true&muted=true"></iframe>
+                <iframe class="on-deck-stream" style="order: 3;" src="https://player.twitch.tv/?channel=<%= @streamers[3]['name'] %>&auto_play=true&muted=true"></iframe>
             <% end %>
         </div>
         <div id="chat-container">
@@ -40,7 +40,7 @@
     <div id="stream-queue" class="flex_row">
         <% if @streamers.count > 4 %>
             <% @streamers[1..-1].each_with_index do |streamer, index| %>
-                <iframe class="on-deck-stream" src="http://player.twitch.tv/?channel=<%= streamer['name'] %>&auto_play=true&muted=true" style="order: <%= index %>;"></iframe>
+                <iframe class="on-deck-stream" src="https://player.twitch.tv/?channel=<%= streamer['name'] %>&auto_play=true&muted=true" style="order: <%= index %>;"></iframe>
             <% end %>
             </div>
         <% end %>
