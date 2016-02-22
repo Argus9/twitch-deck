@@ -31,11 +31,9 @@ class UsersController < ApplicationController
 	def update
 		@user = User.find params[:id]
 		if @user.update_attribute :streamers, params['streamers']
-			flash[:success] = 'Streamers updated.'
-			redirect_to '/profile'
+			render 200
 		else
-			flash[:fatal] = 'Update failed, please try again.'
-			render :edit
+			render 500
 		end
 	end
 
