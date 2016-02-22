@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TwitchDeck - Welcome!</title>
+    <title>TwitchDeck - Help</title>
     <%= render 'partials/google_analytics_init' %>
 </head>
 <body>
@@ -9,27 +9,22 @@
     <h1>Welcome to the TwitchDeck Beta!</h1>
     <h3>What is TwitchDeck?</h3>
     <p>A web application that lets you watch multiple Twitch streams on the same page, at the same time. TwitchDeck
-        displays a "primary" streamer in a larger player, with your other streamers displayed below in smaller players,
-        with volume turned down by default.</p>
+        displays a "primary" streamer in a larger player, with your other streamers displayed below in smaller players.
+        TwitchDeck will adjust the size, position, and audio of streamers for you automatically.</p>
 
     <h3>How does it work?</h3>
     <p>After entering your preferred priority of streamers, TwitchDeck will put the first online streamer in the main
         player, in the center of the screen, with the audio set to max. Next, TwitchDeck will place any remaining online
         streams, in order, in the subway bar under the main player with the volume turned off. Finally, offline streams
         will be placed behind them.</p>
-
-    <h3>How do I use it?</h3>
-    <p>Enter the names of the streamers you'd like to watch, in order of priority. For instance:
-        <b><%= ENV['CANONICAL_HOST'] || 'localhost:3000' %>
-            /player/day9tv&covert_muffin&kinggothalion&professorbroman&riotgames</b> will display
-        <a href="https://www.twitch.tv/day9tv">Day[9]</a>'s stream in the main player, the others in smaller streams
-        below it. TwitchDeck will order the
-        streams on-page first by whether they're online or offline, then by the priority you specify.</p>
-    <p>In this example, once Day[9]'s stream goes offline, TwitchDeck will check the other streams, and if either
-        are online, it will take the main stream over and move Day[9]'s stream to the deck.</p>
-    <p>You can also register for a free account. This will let you store your favorite streamers and quickly load up
-        TwitchDeck with those streamers without having to enter them into the address bar every time. You can re-order
-        your preferred streamers in an easy-to-use UI in your profile page.</p>
+    <p>The order you provide streamers in determines their priority. If the highest-priority online streamer isn't in
+        the main player, it will trade places with that stream. The opposite is true if the main streamer goes offline -
+        the next highest-priority streamer will take its place in the main stream. You can override this behavior by
+        using the series of buttons above the main player - whichever one you click will swap places with whichever
+        stream is in the main player.</p>
+    <p>TwitchDeck will control the audio of each stream automatically so the main streamer is turned on while others are
+        turned off, but you're able to change audio and stream quality like a normal Twitch stream player by hovering
+        over each stream.</p>
 
     <h3>Do I have to pay to use TwitchDeck?</h3>
     <p>No! TwitchDeck is, and will always remain, free. I created TwitchDeck to give the Twitch community and myself a
@@ -39,6 +34,20 @@
 
     <h3>Where can I get updates, request features, or report a problem?</h3>
     <p>Check out the TwitchDeck subreddit at <%= link_to 'r/twitchdeck', 'http://www.reddit.com/r/twitchdeck' %></p>
+
+    <h3>There's a blank box next to the main stream frame. What's that about?</h3>
+    <p>That's the chat panel. Normally, you'd see the chat for the main streamer (or whichever you select) in that
+        panel, so you can chat while you watch. Unfortunately, when TwitchDeck switched to using SSL to secure all
+        transactions, the panel stopped loading. As it turns out, Twitch does not yet support HTTPS for their embedded
+        chat iframe, so until they do, there isn't anything that can be done to load that chat panel.</p>
+    <p>The good news is that there's a workaround in place - if you click the "Open Chat" button next to the drop-down
+        over what would be the chat panel, the selected stream's chat will open in a new tab. You can then, for
+        instance, drag that out into its own browser window and place it next to the main TwitchDeck window. Even
+        better, once Twitch flips the lights on for HTTPS chat, the panel will just work, appearing in the
+        currently-blank spot in the UI.</p>
+    <p>Until then, your best bet is to open the chat in a new window and hide the chat panel. I feel your pain -
+        something's just missing with that chat panel gone - but hang in there! Twitch is hard at work to get it
+        done.</p>
 
     <h1>Terms of Service</h1>
     <p><b>Last updated November 29, 2015.</b></p>

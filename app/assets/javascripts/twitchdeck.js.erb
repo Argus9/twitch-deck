@@ -254,6 +254,8 @@
                     $.each( twitchDeck.display.streamers, function ( _, streamer ) {
                         chatSelect.append( '<option value="' + streamer.name + '">' + streamer.name + '</option>' );
                     } );
+                    $( 'a#open-chat' ).attr( 'href',
+                        'https://www.twitch.tv/' + twitchDeck.display.streamers[ 0 ].name + '/chat' );
                 }
 
                 // Finally, reset the list of "switch to" buttons to match the current stream order and status.
