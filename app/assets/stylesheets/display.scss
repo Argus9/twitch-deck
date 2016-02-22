@@ -13,6 +13,20 @@ a, a:link, a:visited, a:active {
         color: white;
         text-decoration: none;
     }
+
+    &.btn-primary-purple {
+        color: $light-purple;
+        background-color: $dark-purple;
+
+        &:hover {
+            color: white;
+            background-color: $light-purple;
+        }
+    }
+}
+
+button.btn-primary-purple {
+    @extend a.btn-primary-purple;
 }
 
 span {

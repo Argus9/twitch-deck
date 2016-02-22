@@ -59,7 +59,8 @@ Rails.application.routes.draw do
 	get '/google4727e3162513d814.html',
 	    to: proc { |_| [200, {}, ['google-site-verification: google4727e3162513d814.html']] }
 	get 'help', to: 'display#help'
-	resources :users
+	get 'users/update', controller: :users, action: :update
+	get 'profile', controller: :users, action: :edit
 	resources :account_activations, only: [:edit]
 	resources :password_resets, only: [:new, :create, :edit, :update]
 	get 'login' => 'sessions#new'

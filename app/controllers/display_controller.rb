@@ -3,7 +3,12 @@ require 'net/http'
 class DisplayController < ApplicationController
 	def index
 		if logged_in?
-			redirect_to controller: :display, action: :embed_streams, 'streamers' => current_user.streamers
+			if current_user.streamers.present?
+				redirect_to controller: :display, action: :embed_streams, 'streamers' => current_user.streamers
+			else
+				flash[:info] = 'Add streamers to your profile below.'
+				redirect_to edit_user_url(current_user)
+			end
 		end
 		response = JSON.parse make_request 'https://api.twitch.tv/kraken/streams?stream_type=live'
 		if response['status'] && response['status'] >= 500
@@ -37,7 +42,7 @@ class DisplayController < ApplicationController
             "#{ @streamers.map { |streamer| streamer['name'] }.join ',' }"
 		if status['status'] && status['status'] >= 500
 			flash.now[:danger] = 'The Twitch API did not respond - loading all streams. Use "Switch to" buttons ' \
-			  'to change streamers.'
+			   'to change streamers.'
 		else
 			unless status['streams'].empty? # All streams are offline
 				@streamers.each do |streamer|

@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
 	before_action :logged_in_user, only: [:edit, :update]
-	before_action :correct_user, only: [:edit, :update]
 
 	def show
 		@user = User.find params[:id]
@@ -22,16 +21,20 @@ class UsersController < ApplicationController
 	end
 
 	def edit
-		@user = User.find params[:id]
+		if logged_in?
+			@user = User.find current_user.id
+		else
+			redirect_to root_url
+		end
 	end
 
 	def update
 		@user = User.find params[:id]
-		if @user.update_attributes user_params
-			flash[:success] = 'Profile updated.'
+		if @user.update_attribute :streamers, params['streamers']
+			flash.now[:success] = 'Streamers updated.'
 			redirect_to @user
 		else
-			render :edit
+			render 500
 		end
 	end
 
@@ -49,12 +52,5 @@ class UsersController < ApplicationController
 			flash[:danger] = 'Please log in.'
 			redirect_to login_url
 		end
-	end
-
-	##
-	# Confirms the correct user.
-	def correct_user
-		@user = User.find params[:id]
-		redirect_to root_url unless current_user? @user
 	end
 end
