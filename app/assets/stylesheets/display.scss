@@ -5,6 +5,10 @@
 // ====== //
 // Normal //
 // ====== //
+a.button {
+    @extend span.button;
+}
+
 a, a:link, a:visited, a:active {
     color: $light-purple;
     text-decoration: none;
