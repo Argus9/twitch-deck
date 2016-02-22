@@ -7,16 +7,21 @@
 </head>
 <body>
 <div id="landing-container">
+    <%= render 'partials/main_menu' %>
     <div class="landing-buffer"></div>
     <div class="landing-box">
         <h1>Welcome to TwitchDeck!</h1>
         <h3>Ready to get started?</h3>
+        Hit the "Login" link in the top-right corner to log in or register.
+        <h4>OR</h4>
         In your URL bar above, type in
         <span style="text-decoration: underline;"><%= ENV['CANONICAL_HOST'] || 'localhost:3000' %>/player/</span>
         followed by
         <span style="text-decoration: underline;">the streamers you want to watch, separated by '&' characters</span>.
-        <h3>Here's an example:</h3>
-        <i><a id="demo-link" href="<%= @example_link_href %>"><%= @example_link_href %></a></i>
+        <% if @example_link_href.present? %>
+            <h3>Here's an example:</h3>
+            <i><a id="demo-link" href="<%= @example_link_href %>"><%= @example_link_href %></a></i>
+        <% end %>
     </div>
     <div class="landing-buffer"></div>
 </div>

@@ -2,7 +2,20 @@
 
 .menu {
     text-align: right;
-    font-size: $text-large;
+}
+
+ul#display-menu {
+    > li {
+        display: inline;
+
+        &:before {
+            content: "  \2022  ";
+        }
+
+        &.no-bullet:before {
+            content: "";
+        }
+    }
 }
 
 #theater_mode_toggle.theater_mode_active {
@@ -11,4 +24,21 @@
 
 #hide_chat_toggle.hide_chat_mode_active {
     color: white;
+}
+
+ul.dropdown-menu {
+    background-color: $abyss;
+
+    > li {
+        > a, a:link, a:visited, a:active {
+            color: $light-purple;
+            text-decoration: none;
+
+            &:hover {
+                color: white;
+                text-decoration: none;
+                background-color: #222;
+            }
+        }
+    }
 }

@@ -1,0 +1,5 @@
+<h1>TwitchDeck</h1>
+
+<p>Hi there! Welcome to TwitchDeck. Please click the link below to activate your account:</p>
+
+<%= link_to 'Activate', edit_account_activation_url(@user.activation_token, email: @user.email) %>

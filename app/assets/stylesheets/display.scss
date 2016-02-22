@@ -1,3 +1,5 @@
+@import 'bootstrap-sprockets';
+@import 'bootstrap';
 @import 'variables';
 
 // ====== //
@@ -11,13 +13,26 @@ a, a:link, a:visited, a:active {
         color: white;
         text-decoration: none;
     }
+
+    &.btn-primary-purple {
+        color: $light-purple;
+        background-color: $dark-purple;
+
+        &:hover {
+            color: white;
+            background-color: $light-purple;
+        }
+    }
+}
+
+button.btn-primary-purple {
+    @extend a.btn-primary-purple;
 }
 
 span {
     color: $light-purple;
 
     &.button {
-        font-size: $text-large;
         font-weight: bold;
         text-decoration: none;
         background-color: $dark-purple;
@@ -57,7 +72,7 @@ span {
     }
 }
 
-body {
+body, .twitchdeck-theme {
     color: $purple;
     background-color: $abyss;
     font-family: arial;
@@ -285,10 +300,6 @@ select option {
             padding: 0 5px 0 5px;
         }
     }
-}
-
-#switch-label {
-    font-size: $text-large;
 }
 
 .beta {
