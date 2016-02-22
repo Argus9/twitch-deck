@@ -309,13 +309,6 @@
                 $( 'body' ).css( 'display', 'table' ).height();
                 $( 'body' ).css( 'display', 'block' );
             },
-            /*
-             * Loads the chat iframe.
-             */
-            loadChat: function () {
-                console.log( "Loading chat." );
-                $( '#chat-container' ).append( '<iframe id="chat-frame" class="chat-embed" scrolling="no" src="https://twitch.tv/' + twitchDeck.display.streamers[ 0 ].name + '/chat"></iframe>' );
-            },
             startTimers: function () {
                 console.log( "Startimg timers." );
                 // Set up an interval to update stream layouts on the page every 15 seconds.

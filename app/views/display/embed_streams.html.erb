@@ -35,6 +35,7 @@
                     <option value="<%= streamer['name'] %>"><%= streamer['name'] %></option>
                 <% end %>
             </select>
+            <iframe id="chat-frame" class="chat-embed" scrolling="no" src="https://twitch.tv/<%= @streamers.first['name'] %>/chat"></iframe>
         </div>
     </div>
     <div id="stream-queue" class="flex_row">
@@ -50,7 +51,6 @@
     $( document ).ready( function () {
         console.log( "Document is ready. Initializing Javascript." );
         twitchDeck.display.initialize( '<%= @streamers.to_json.html_safe %>' );
-        twitchDeck.display.loadChat();
         twitchDeck.display.startTimers();
 
         if ( twitchDeck.display.streamers.length > 4 ) {
