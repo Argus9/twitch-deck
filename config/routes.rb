@@ -60,6 +60,7 @@ Rails.application.routes.draw do
 	    to: proc { |_| [200, {}, ['google-site-verification: google4727e3162513d814.html']] }
 	get 'help', to: 'display#help'
 	resources :users
+	resources :account_activations, only: [:edit]
 	get 'login' => 'sessions#new'
 	post 'login' => 'sessions#create'
 	delete 'logout' => 'sessions#destroy'
