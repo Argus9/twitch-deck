@@ -61,7 +61,7 @@ Rails.application.routes.draw do
 	get 'help', to: 'display#help'
 	get 'users/update', controller: :users, action: :update
 	get 'profile', controller: :users, action: :edit
-	resources :users, only: [:show, :new, :create]
+	resources :users, only: [:show, :new, :create, :edit]
 	resources :account_activations, only: [:edit]
 	resources :password_resets, only: [:new, :create, :edit, :update]
 	get 'login' => 'sessions#new'
