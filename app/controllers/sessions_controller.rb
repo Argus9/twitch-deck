@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
 				if user.streamers.present?
 					redirect_to controller: :display, action: :embed_streams, 'streamers' => user.streamers
 				else
-					redirect_to redirect_back_or user
+					redirect_to user
 				end
 			else
 				message = 'Account not activated. '
