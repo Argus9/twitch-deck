@@ -1,77 +1,79 @@
-<% provide :title, 'Edit user' %>
-<%= gravatar_for @user %> <%= @user.email %>
+<div style="width: 80%;">
+    <% provide :title, 'Edit user' %>
+    <%= gravatar_for @user %> <%= @user.email %>
 
-<h1>Streamers</h1>
-<p>Drag and drop streamers to change priority.</p>
-<div><input id="streamer-name" type="text" style="width: 300px;">
-    <button id="add-streamer" class="btn btn-primary-purple">Add</button>
-</div>
-<ol class="vertical">
-    <% if @user.streamers.present? %>
-        <% @user.streamers.split('&').each do |streamer| %>
-            <li class="streamer-name" data-name="<%= streamer %>">
-                <button class="delete btn btn-primary-purple">X</button> <%= streamer.downcase %></li>
+    <h1>Streamers</h1>
+    <p>Drag and drop streamers to change priority.</p>
+    <div><input id="streamer-name" type="text" style="width: 300px;">
+        <button id="add-streamer" class="btn btn-primary-purple">Add</button>
+    </div>
+    <ol class="vertical">
+        <% if @user.streamers.present? %>
+            <% @user.streamers.split('&').each do |streamer| %>
+                <li class="streamer-name" data-name="<%= streamer %>">
+                    <button class="delete btn btn-primary-purple">X</button> <%= streamer.downcase %></li>
+            <% end %>
         <% end %>
-    <% end %>
-</ol>
-<button id="save-streamers" class="btn btn-primary-purple">Save</button>
-<a href="<%= root_url %>" class="btn btn-primary-purple">Go Back</a>
-<script src="js/jquery-sortable.js"></script>
+    </ol>
+    <button id="save-streamers" class="btn btn-primary-purple">Save</button>
+    <a href="<%= root_url %>" class="btn btn-primary-purple">Go Back</a>
+    <script src="js/jquery-sortable.js"></script>
 
-<script>
-    $( '#add-streamer' ).click( function () {
-        var name = $( '#streamer-name' ).val();
-        if ( name === '' ) {
-            alert( "Streamer name can't be blank." );
-        } else if ( getStreamersFromList().indexOf( name.toLowerCase() ) !== -1 ) {
-            alert( "Streamer is already in your list." );
-        } else {
-            $( 'ol.vertical' ).append( '<li class="streamer-name" data-name="' + name + '"><button class="delete btn btn-primary-purple">X</button> ' + name + '</li>' );
-            $( 'button.delete' ).click( function () {
-                $( this ).parent().remove();
-            } );
-            $( '#streamer-name' ).val( '' );
-        }
-    } );
-
-    $( '#streamer-name' ).keyup( function ( event ) {
-        if ( event.keyCode == 13 ) { // Enter
-            $( '#add-streamer' ).click();
-        }
-    } );
-
-    $( '#save-streamers' ).click( function () {
-        $( '#save-streamers' ).prop( 'disabled', true );
-        var new_streamers = getStreamersFromList().join( '&' );
-        $.ajax( {
-            type: 'GET',
-            url: '/users/update',
-            data: {
-                id: '<%= @user.id %>',
-                streamers: new_streamers
-            },
-            success: function () {
-                alert( "Update successful." );
-                $( '#save-streamers' ).prop( 'disabled', false );
-            },
-            fail: function () {
-                alert( "Updated failed, please try again." );
-                $( '#save-streamers' ).prop( 'disabled', false );
+    <script>
+        $( '#add-streamer' ).click( function () {
+            var name = $( '#streamer-name' ).val();
+            if ( name === '' ) {
+                alert( "Streamer name can't be blank." );
+            } else if ( getStreamersFromList().indexOf( name.toLowerCase() ) !== - 1 ) {
+                alert( "Streamer is already in your list." );
+            } else {
+                $( 'ol.vertical' ).append( '<li class="streamer-name" data-name="' + name + '"><button class="delete btn btn-primary-purple">X</button> ' + name + '</li>' );
+                $( 'button.delete' ).click( function () {
+                    $( this ).parent().remove();
+                } );
+                $( '#streamer-name' ).val( '' );
             }
         } );
-    } );
 
-    $( 'button.delete' ).click( function () {
-        $( this ).parent().remove();
-    } );
-
-    $( function () {
-        $( 'ol.vertical' ).sortable();
-    } )
-
-    var getStreamersFromList = function () {
-        return $.map( $( 'ol.vertical' ).children(), function ( li ) {
-            return $( li ).data( 'name' );
+        $( '#streamer-name' ).keyup( function ( event ) {
+            if ( event.keyCode == 13 ) { // Enter
+                $( '#add-streamer' ).click();
+            }
         } );
-    };
-</script>
+
+        $( '#save-streamers' ).click( function () {
+            $( '#save-streamers' ).prop( 'disabled', true );
+            var new_streamers = getStreamersFromList().join( '&' );
+            $.ajax( {
+                type: 'GET',
+                url: '/users/update',
+                data: {
+                    id: '<%= @user.id %>',
+                    streamers: new_streamers
+                },
+                success: function () {
+                    alert( "Update successful." );
+                    $( '#save-streamers' ).prop( 'disabled', false );
+                },
+                fail: function () {
+                    alert( "Updated failed, please try again." );
+                    $( '#save-streamers' ).prop( 'disabled', false );
+                }
+            } );
+        } );
+
+        $( 'button.delete' ).click( function () {
+            $( this ).parent().remove();
+        } );
+
+        $( function () {
+            $( 'ol.vertical' ).sortable();
+        } )
+
+        var getStreamersFromList = function () {
+            return $.map( $( 'ol.vertical' ).children(), function ( li ) {
+                return $( li ).data( 'name' );
+            } );
+        };
+    </script>
+</div>
