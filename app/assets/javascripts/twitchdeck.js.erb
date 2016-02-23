@@ -67,7 +67,7 @@
                 // Swap a different chat window whenever the drop-down box changes.
                 $( '#chat-changer' ).change( function () {
                     var selectedOption = $( '#chat-changer option:selected' ).text();
-                    $( '#chat-frame' ).attr( 'src', 'https://twitch.tv/' + selectedOption + '/chat' );
+                    $( '#chat-frame' ).attr( 'src', 'https://www.google.com/search?q=%http://twitch.tv/' + selectedOption + '/chat&btnI=Im+Feeling+Lucky' );
                     $( 'a#open-chat' ).attr( 'href', 'https://twitch.tv/' + selectedOption + '/chat' );
                 } );
 
@@ -217,7 +217,8 @@
                     $( '#main-stream-player' ).attr( 'src',
                         twitchDeck.display.getPlayerUrl( twitchDeck.display.streamers[ 0 ].name, false ) );
                     $( '#chat-frame' ).attr( 'src',
-                        'https://twitch.tv/' + twitchDeck.display.streamers[ 0 ].name + '/chat' );
+                        'https://www.google.com/search?q=%http://twitch.tv/' + twitchDeck.display.streamers[ 0 ].name + '/chat&btnI=Im+Feeling+Lucky' );
+
                     streamsChanged = true;
                 }
 
