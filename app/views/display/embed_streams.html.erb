@@ -36,10 +36,10 @@
                         <option value="<%= streamer['name'] %>"><%= streamer['name'] %></option>
                     <% end %>
                 </select>
-                <a id="open-chat" class="button" href="https://www.twitch.tv/<%= @streamers.first['name'] %>/chat" target="_blank" style="flex: 0 0 auto;">Open
+                <a id="open-chat" class="button" href="https://www.twitch.tv/<%= @streamers.first['name'] %>/chat" target="_blank" style="flex: 0 0 auto;">Popout
                     Chat</a>
             </div>
-            <iframe id="chat-frame" class="chat-embed" scrolling="no" src="https://www.google.com/search?q=%http://twitch.tv/<%= @streamers.first['name'] %>/chat&btnI=Im+Feeling+Lucky"></iframe>
+            <iframe id="chat-frame" class="chat-embed" scrolling="no" src="/redirect?streamer=<%= @streamers.first['name'] %>"></iframe>
         </div>
     </div>
     <div id="stream-queue" class="flex_row">
