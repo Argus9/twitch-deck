@@ -11,7 +11,6 @@ Rails.application.routes.draw do
 	get 'login' => 'sessions#new'
 	post 'login' => 'sessions#create'
 	delete 'logout' => 'sessions#destroy'
-    get 'redirect' => 'redirector#redirect'
 	get 'player/*streamers', to: 'display#embed_streams'
 	get '*streamers', to: redirect('/player/%{streamers}')
 
