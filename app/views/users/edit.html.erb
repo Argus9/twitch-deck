@@ -6,6 +6,7 @@
     <p>Drag and drop streamers to change priority.</p>
     <div><input id="streamer-name" type="text" style="width: 300px;">
         <button id="add-streamer" class="btn btn-primary-purple">Add</button>
+        <span id="error_messages" style="color: red;"></span>
     </div>
     <ol class="vertical">
         <% if @user.streamers.present? %>
@@ -24,14 +25,29 @@
             var name = $( '#streamer-name' ).val();
             if ( name === '' ) {
                 alert( "Streamer name can't be blank." );
-            } else if ( getStreamersFromList().indexOf( name.toLowerCase() ) !== - 1 ) {
+            } else if ( getStreamersFromList().indexOf( name.toLowerCase() ) !== -1 ) {
                 alert( "Streamer is already in your list." );
             } else {
-                $( 'ol.vertical' ).append( '<li class="streamer-name" data-name="' + name + '"><button class="delete btn btn-primary-purple">X</button> ' + name + '</li>' );
-                $( 'button.delete' ).click( function () {
-                    $( this ).parent().remove();
+                $.ajax( {
+                    type: 'GET',
+                    url: 'https://api.twitch.tv/kraken/channels/' + name,
+                    async: true
+                } ).success( function ( data ) {
+                    console.log( "Success" );
+                    if ( typeof data.error == 'undefined' ) {
+                        $( 'ol.vertical' ).append( '<li class="streamer-name" data-name="' + name + '"><button class="delete btn btn-primary-purple">X</button> ' + name + '</li>' );
+                        $( 'button.delete' ).click( function () {
+                            $( this ).parent().remove();
+                        } );
+                        $( '#streamer-name' ).val( '' );
+                    } else {
+                    }
+                } ).fail( function () {
+                    $( 'span#error_messages' ).text( "Streamer not found." );
+                    setTimeout( function () {
+                        $( 'span#error_messages' ).fadeOut( 1000 );
+                    }, 5000 );
                 } );
-                $( '#streamer-name' ).val( '' );
             }
         } );
 

@@ -38,7 +38,7 @@
                 // Called when the "Theater Mode" button is pressed.
                 $( '#theater_mode_toggle' ).click( function () {
                     if ( $( '#theater_mode_toggle' ).hasClass( 'theater_mode_active' ) ) {
-                        twitchDeck.display.resizeOnDeckStreams();
+                        if ( twitchDeck.display.streamers.length > 4 ) twitchDeck.display.resizeOnDeckStreams();
                         $( '#theater_mode_toggle' ).removeClass( 'theater_mode_active' );
                         $( '#stream-queue' ).removeClass( 'theater' );
                         $( '#main-stream-container' ).removeClass( 'theater' );
