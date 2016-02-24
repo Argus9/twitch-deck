@@ -18,6 +18,7 @@
     </ol>
     <button id="save-streamers" class="btn btn-primary-purple">Save</button>
     <a href="<%= root_url %>" class="btn btn-primary-purple">Go Back</a>
+    <span id="submit_success" style="color: green;"></span>
     <script src="js/jquery-sortable.js"></script>
 
     <script>
@@ -68,7 +69,10 @@
                     streamers: new_streamers
                 },
                 success: function () {
-                    alert( "Update successful." );
+                    $( 'span#submit_success' ).text( "Success!" );
+                    setTimeout( function () {
+                        $( 'span#submit_success' ).fadeOut( 1000 );
+                    }, 5000 );
                     $( '#save-streamers' ).prop( 'disabled', false );
                 },
                 fail: function () {
