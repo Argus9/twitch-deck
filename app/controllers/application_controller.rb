@@ -15,11 +15,10 @@ class ApplicationController < ActionController::Base
 		total_users = User.count
 		activated_users = User.where('activated = true').count
 
-		streamers = new Hash 0
-		User.where('streamers is not null').select(:streamers).map(&:streamers).each do |streamers|
-			streamers.split('&').each { |streamer| streamers[streamer] += 1 }
+		streamers = Hash.new(0)
+		User.where('streamers is not null').select(:streamers).map(&:streamers).each do | streamers |
+			streamers.split('&').each { | name | streamers[name] += 1 }
 		end
-
 		top_streamers = streamers.sort_by { |_, count| -count }[0...10]
 
 		UserMailer.digest(top_streamers, new_users, total_users, activated_users, yesterday).deliver_now

@@ -19,7 +19,3 @@ development:
 test:
   <<: *default
   database: twitchdeck_test
-
-production:
-  <<: *default
-  database: twitchdeck_production
