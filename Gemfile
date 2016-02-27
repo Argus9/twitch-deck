@@ -57,4 +57,7 @@ end
 group :production do
 	# Use Puma as our web server
 	gem 'puma'
+
+	# Schedule code to run
+	gem 'rufus-scheduler'
 end
