@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
 	protect_from_forgery with: :exception, except: :replace_main_stream
 	include SessionsHelper
 
-	scheduler = Rufus::Scheduler.start_new
+	scheduler = Rufus::Scheduler.new
 
 	# Run daily at 6 AM.
 	logger.info 'Setting up scheduler tasks to run at 6 AM.'
