@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
 	scheduler = Rufus::Scheduler.start_new
 
 	# Run daily at 6 AM.
+	logger.info 'Setting up scheduler tasks to run at 6 AM.'
 	scheduler.cron '0 0 6 1/1 * ? *' do
 		# Compile and send a daily digest of stats.
 		yesterday = 1.day.ago.to_date
@@ -22,8 +23,10 @@ class ApplicationController < ActionController::Base
 		top_streamers = streamers.sort_by { |_, count| -count }[0...10]
 
 		UserMailer.digest(top_streamers, new_users, total_users, activated_users, yesterday).deliver_now
+		logger.info 'Sent TwitchDeck digest email to jzisser9@gmail.com.'
 
 		# Cull inactive user accounts that are at least 30 days old.
 		User.where('created_at <= ? AND activated = false', 30.days.ago).destroy_all
+		logger.info 'Culled old inactive users.'
 	end
 end
