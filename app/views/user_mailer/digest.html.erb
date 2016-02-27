@@ -1,0 +1,13 @@
+<h1>TwitchDeck Daily Digest for <%= @date %></h1>
+
+<ul>
+    <li><b>New users: </b><%= @new_users %></li>
+    <li><b>Top streamers: </b></li>
+    <li><ul>
+        <% @top_streamers.each do |streamer| %>
+            <li><%= streamer.first %>: <%= streamer[1] %> users</li>
+        <% end %>
+    </ul></li>
+    <li><b>Total users: </b><%= @total_users %></li>
+    <li><b>Total activated users: </b> <%= @total_activated_users %></li>
+</ul>
