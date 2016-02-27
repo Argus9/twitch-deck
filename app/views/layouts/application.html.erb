@@ -13,6 +13,34 @@
     <!-- Google+ Tags -->
     <meta itemprop="name" content="TwitchDeck - The Smarter Stream Player"/>
     <meta itemprop="description" content="Watch multiple Twitch.tv streamers at once. Let TwitchDeck make sure there's always something to watch, and manage the volume. Just sit back and enjoy, free and right in your browser."/>
+
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function ( f, b, e, v, n, t, s ) {
+            if ( f.fbq )return;
+            n = f.fbq = function () {
+                n.callMethod ?
+                    n.callMethod.apply( n, arguments ) : n.queue.push( arguments )
+            };
+            if ( !f._fbq )f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement( e );
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName( e )[ 0 ];
+            s.parentNode.insertBefore( t, s )
+        }( window,
+            document, 'script', '//connect.facebook.net/en_US/fbevents.js' );
+
+        fbq( 'init', '447962168735449' );
+        fbq( 'track', "PageView" );</script>
+    <noscript><img height="1" width="1" style="display:none"
+                   src="https://www.facebook.com/tr?id=447962168735449&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Facebook Pixel Code -->
 </head>
 <body>
 <% flash.each do |message_type, message| %>
