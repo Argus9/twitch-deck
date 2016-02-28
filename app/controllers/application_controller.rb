@@ -9,8 +9,11 @@ class ApplicationController < ActionController::Base
 
 		# Run daily at 6 AM.
 		logger.info 'Setting up scheduler tasks to run at 6 AM.'
-		scheduler.cron '*/5 * * * *' do # Temporarily run every 5 minutes to test.
-		# scheduler.cron '0 6 * * *' do
+		scheduler.cron '0 6 * * *' do
+			# Cull inactive user accounts that are at least 30 days old.
+			culled_users = User.destroy_all("created_at <= '#{ 30.days.ago.to_date }' AND activated = false").count
+			logger.info "Culled #{ culled_users } inactive users."
+
 			# Compile and send a daily digest of stats.
 			yesterday = 1.day.ago.to_date
 			new_users = User.where('DATE(created_at) = ?', yesterday).count
@@ -23,12 +26,8 @@ class ApplicationController < ActionController::Base
 			end
 			top_streamers = streamer_counts.sort_by { |_, count| -count }[0...10]
 
-			UserMailer.digest(top_streamers, new_users, total_users, activated_users, yesterday).deliver_now
+			UserMailer.digest(top_streamers, new_users, total_users, activated_users, culled_users, yesterday).deliver_now
 			logger.info 'Sent TwitchDeck digest email to jzisser9@gmail.com.'
-
-			# Cull inactive user accounts that are at least 30 days old.
-			User.where('created_at <= ? AND activated = false', 30.days.ago).destroy_all
-			logger.info 'Culled old inactive users.'
 		end
 	end
 end

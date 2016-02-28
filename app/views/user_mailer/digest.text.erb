@@ -1,6 +1,7 @@
 TwitchDeck Daily Digest for <%= @date %>
 
 New users: <%= @new_users %>
+Culled users: <%= @culled_users %>
 Top streamers:
 <% @top_streamers.each do |streamer| %>
     <%= streamer.first %>: <%= streamer[1] %> users

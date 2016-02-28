@@ -2,12 +2,13 @@
 
 <ul>
     <li><b>New users: </b><%= @new_users %></li>
+    <li><b>Culled users: </b><%= @culled_users %></li>
     <li><b>Top streamers: </b></li>
-    <li><ul>
+    <ul>
         <% @top_streamers.each do |streamer| %>
             <li><%= streamer.first %>: <%= streamer[1] %> users</li>
         <% end %>
-    </ul></li>
+    </ul>
     <li><b>Total users: </b><%= @total_users %></li>
     <li><b>Total activated users: </b> <%= @total_activated_users %></li>
 </ul>
