@@ -7,7 +7,7 @@
 
 /* Forms */
 
-input, textarea, select, .uneditable-input {
+input, textarea, /*select,*/ .uneditable-input {
     border: 1px solid #bbb;
     width: 100%;
     margin-bottom: 15px;
@@ -44,7 +44,7 @@ body.dragging, body.dragging * {
 }
 
 ol.vertical {
-    margin: 0 0 9px 0;
+    margin-bottom: 0px;
     margin-left: -45px;
     min-height: 10px;
 

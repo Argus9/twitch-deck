@@ -12,8 +12,8 @@
 
                 // Called when a "switch to" button is clicked, which forces the streamer into the main player while
                 // shifting all streamers on-deck down by one.
-                $( '.stream-button' ).click( function () {
-                    var streamerName = $( this ).text();
+                $( '#stream-changer' ).change( function () {
+                    var streamerName = $( '#stream-changer option:selected' ).text();
 
                     // Find the streamer whose name matches the one on the button.
                     var matchingStreamer = {};
@@ -261,22 +261,13 @@
 
                 // Finally, reset the list of "switch to" buttons to match the current stream order and status.
                 if ( streamsChanged ) {
-                    $.each( $( '.stream-button' ), function ( position, button ) {
-                        $( button ).text( twitchDeck.display.streamers[ position ].name );
-                        if ( twitchDeck.display.streamers[ position ].status === 'offline' ) {
-                            $( button ).addClass( 'button-inactive' );
-                            $( button ).removeClass( 'button' );
-                            $( button ).removeClass( 'button-active' );
+                    var streamSelect = $( '#stream-changer' );
+                    streamSelect.empty();
+                    $.each( twitchDeck.display.streamers, function ( _, streamer ) {
+                        if ( streamer.status === 'online' ) {
+                            streamSelect.append( '<option value="' + streamer.name + '">' + streamer.name + '</option>' );
                         } else {
-                            if ( position === 0 && twitchDeck.display.streamers[ position ].status === 'online' ) {
-                                $( button ).removeClass( 'button-inactive' );
-                                $( button ).removeClass( 'button' );
-                                $( button ).addClass( 'button-active' )
-                            } else {
-                                $( button ).removeClass( 'button-inactive' );
-                                $( button ).removeClass( 'button-active' );
-                                $( button ).addClass( 'button' );
-                            }
+                            streamSelect.append( '<optgroup label="' + streamer.name + '">' );
                         }
                     } );
                 }

@@ -9,11 +9,15 @@
 <div id="main-container">
     <div id="stream-switch-tabs" class="flex_row">
         <div id="switch-label">Switch to...</div>
-        <div id="streamer-buttons">
-            <% @streamers.each_with_index do |streamer, position| %>
-                <span class="stream-button button<%= '-inactive' if streamer['status'] === 'offline' %><%= '-active' if position === 0 && streamer['status'] === 'online' %>"><%= streamer['name'] %></span>
+        <select id="stream-changer" style="flex: 1;">
+            <% @streamers.each do |streamer| %>
+                <% if streamer['status'] === 'online' %>
+                    <option value="<%= streamer['name'] %>"><%= streamer['name'] %></option>
+                <% else %>
+                    <optgroup label="<%= streamer['name'] %>"></optgroup>
+                <% end %>
             <% end %>
-        </div>
+        </select>
         <%= render 'partials/menu' %>
     </div>
     <div id="main-stream" class="flex_row">

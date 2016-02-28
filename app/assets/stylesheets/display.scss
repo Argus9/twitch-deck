@@ -115,6 +115,12 @@ select option {
     }
 }
 
+select optgroup {
+    color: $dark-purple;
+    background-color: $dark-gray;
+    text-decoration: none;
+}
+
 #chat-container {
     flex-basis: 340px;
     flex-grow: 1;
@@ -353,6 +359,7 @@ select option {
     color: $purple;
     background-color: $purple;
     height: 10px;
+    width: 10px;
 }
 
 ::-webkit-scrollbar-track {
