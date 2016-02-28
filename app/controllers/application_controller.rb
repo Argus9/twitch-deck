@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
 		# Run daily at 6 AM.
 		logger.info 'Setting up scheduler tasks to run at 6 AM.'
-		scheduler.cron '5 * * * *' do # Temporarily run every 5 minutes to test.
+		scheduler.cron '*/5 * * * *' do # Temporarily run every 5 minutes to test.
 		# scheduler.cron '0 6 * * *' do
 			# Compile and send a daily digest of stats.
 			yesterday = 1.day.ago.to_date
