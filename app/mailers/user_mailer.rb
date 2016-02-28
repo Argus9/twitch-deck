@@ -29,13 +29,14 @@ class UserMailer < ApplicationMailer
 
 	##
 	# Sends a daily digest email to the Admin user.
-	def digest top_streamers, new_users, total_users, total_activated_users, culled_users, date
-		@new_users = new_users
-		@top_streamers = top_streamers
-		@total_users = total_users
-		@total_activated_users = total_activated_users
-		@culled_users = culled_users
-		@date = date
-		mail to: 'jzisser9@gmail.com', subject: "TwitchDeck Daily Digest for #{ date }"
+	def digest summary
+		@new_users = summary.new_users
+		@top_streamers = summary.top_streamers
+		@total_users = summary.total_users
+		@total_active_users = summary.total_active_users
+		@culled_users = summary.culled_users
+		@date = summary.date
+		@user_growth = "#{( @total_active_users / DailySummary.find_by_date(@date - 1.day).active_users) * 100 }%"
+		mail to: 'jzisser9@gmail.com', subject: "TwitchDeck Daily Digest for #{ @date }"
 	end
 end
