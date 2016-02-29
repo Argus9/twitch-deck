@@ -5,7 +5,7 @@
     <li><b>Culled users: </b><%= @culled_users %></li>
     <li><b>Top streamers: </b></li>
     <ul>
-        <% @top_streamers.each do |streamer| %>
+        <% JSON.parse(@top_streamers).each do |streamer| %>
             <li><%= streamer.first %>: <%= streamer[1] %> users</li>
         <% end %>
     </ul>
