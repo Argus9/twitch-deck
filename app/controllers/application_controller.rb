@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 		scheduler.cron '0 6 * * *' do
 			summary = DailySummary.new
 			# Cull inactive user accounts that are at least 30 days old.
-			summary.culled_users = User.destroy_all("created_at <= '#{ 30.days.ago.to_date }' AND activated = false").count
+			summary.culled_users = User.destroy_all("created_at <= '#{ 7.days.ago.to_date }' AND activated = false").count
 			logger.info "Culled #{ summary.culled_users } inactive users."
 
 			# Compile and send a daily digest of stats.
