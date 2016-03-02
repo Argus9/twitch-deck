@@ -36,8 +36,9 @@ class UserMailer < ApplicationMailer
 		@active_users = summary.active_users
 		@culled_users = summary.culled_users
 		@date = summary.date
+		active_users_yesterday = DailySummary.find_by_date(@date - 1.day).active_users
 		@user_growth = DailySummary.count < 2 ? '0%' :
-			"#{( @active_users.to_f / DailySummary.find_by_date(@date - 1.day).active_users.to_f) * 100 }%"
+			"#{(( @active_users.to_f - active_users_yesterday.to_f) * 100) / active_users_yesterday }%"
 		mail to: 'jzisser9@gmail.com', subject: "TwitchDeck Daily Digest for #{ @date }"
 	end
 end
