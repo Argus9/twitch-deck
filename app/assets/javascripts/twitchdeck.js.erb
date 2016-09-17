@@ -171,6 +171,7 @@
                     url: 'https://api.twitch.tv/kraken/streams?channel=' + $.map( twitchDeck.display.streamers, function ( streamer ) {
                         return streamer.name;
                     } ).join( ',' ),
+                    headers: { "Client-ID": "<%= ENV["TWITCH_CLIENT_ID"] %>" },
                     async: true
                 } ).success( function ( data ) {
                     $.each( twitchDeck.display.streamers, function ( _, streamer ) {
