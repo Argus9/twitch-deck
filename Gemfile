@@ -44,6 +44,9 @@ gem 'rack-canonical-host'
 group :development, :test do
 	# Call 'byebug' anywhere in the code to stop execution and get a debugger console
 	# gem 'byebug'
+
+    # Stores environment variables in project-specific ".env" file
+	gem 'dotenv-rails'
 end
 
 group :development do

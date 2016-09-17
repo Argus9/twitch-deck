@@ -71,11 +71,12 @@ class DisplayController < ApplicationController
 	# @return [String] The response body.
 	def make_request url
 		uri = URI.parse url
-		req = Net::HTTP.new uri.host, uri.port
-		req.use_ssl = true if uri.scheme == 'https'
-		req.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        req.add_field "Client-ID", ENV["TWITCH_CLIENT_ID"]
+		http = Net::HTTP.new uri.host, uri.port
+        http.use_ssl = true if uri.scheme == 'https'
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        req = Net::HTTP::Get.new uri.request_uri
+        req["Client-ID"] = ENV["TWITCH_CLIENT_ID"]
 
-		req.get(uri.request_uri).body
+		http.request(req).body
 	end
 end
