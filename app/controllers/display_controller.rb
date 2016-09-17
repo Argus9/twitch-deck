@@ -44,7 +44,7 @@ class DisplayController < ApplicationController
 			flash.now[:danger] = 'The Twitch API did not respond - loading all streams. Use "Switch to" buttons ' \
 			   'to change streamers.'
 		else
-			unless status['streams'].empty? # All streams are offline
+			unless status && status['streams'] && status['streams'].empty? # All streams are offline
 				@streamers.each do |streamer|
 					# The channel name will only be present if it's online.
 					streamer['status'] = status['streams'].select do |stream|
@@ -74,6 +74,7 @@ class DisplayController < ApplicationController
 		req = Net::HTTP.new uri.host, uri.port
 		req.use_ssl = true if uri.scheme == 'https'
 		req.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        req.add_field "Client-ID", ENV["TWITCH_CLIENT_ID"]
 
 		req.get(uri.request_uri).body
 	end
